@@ -1,3 +1,23 @@
 from django.contrib import admin
+from .models import *
 
-# Register your models here.
+admin.site.register(School)
+admin.site.register(Teacher)
+admin.site.register(Parent)
+admin.site.register(Student)
+admin.site.register(SchoolClass)
+admin.site.register(Assignment)
+admin.site.register(Assignee)
+admin.site.register(AssignmentMedia)
+admin.site.register(Story)
+admin.site.register(StoryMedia)
+admin.site.register(Announcement)
+admin.site.register(Event)
+admin.site.register(Helper)
+admin.site.register(Sticker)
+admin.site.register(StickerType)
+admin.site.register(ParentSettings)
+admin.site.register(NotificationMode)
+admin.site.register(ChatGroup)
+admin.site.register(GroupMember)
+admin.site.register(Message)
