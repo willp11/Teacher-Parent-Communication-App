@@ -57,3 +57,27 @@ class AssigneeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignee
         fields = '__all__'
+
+class AnnouncementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Announcement
+        fields = '__all__'
+
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = '__all__'
+
+class StorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Story
+        fields = '__all__'
+
+class ClassDetailSerializer(serializers.ModelSerializer):
+    announcements = AnnouncementSerializer(many=True)
+    events = EventSerializer(many=True)
+    stories = StorySerializer(many=True)
+
+    class Meta:
+        model = SchoolClass
+        fields = ('announcements', 'events', 'stories')

@@ -66,7 +66,7 @@ class AssignmentMedia(models.Model):
 class Story(models.Model):
     title = models.CharField(max_length=100)
     content = models.CharField(max_length=1024)
-    school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE)
+    school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE, related_name='stories')
 
     def __str__(self):
         return self.title
@@ -79,7 +79,7 @@ class StoryMedia(models.Model):
 class Announcement(models.Model):
     title = models.CharField(max_length=100)
     content = models.CharField(max_length=1024)
-    school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE)
+    school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE, related_name='announcements')
 
     def __str__(self):
         return self.title
@@ -88,7 +88,7 @@ class Event(models.Model):
     name = models.CharField(max_length=100)
     date = models.DateField(auto_now=False)
     description = models.CharField(max_length=512)
-    school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE)
+    school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE, related_name='events')
 
     def __str__(self):
         return self.name
