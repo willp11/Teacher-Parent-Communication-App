@@ -56,7 +56,7 @@ INSTALLED_APPS = [
 
     # local
     'accounts.apps.AccountsConfig',
-    'teacher.apps.TeacherConfig'
+    'school.apps.SchoolConfig'
 ]
 
 MIDDLEWARE = [
