@@ -11,18 +11,18 @@ class School(models.Model):
         return self.name + self.city
 
 class Teacher(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='teacher')
     school = models.ForeignKey(School,  on_delete=models.DO_NOTHING, null=True, blank=True)
 
     def __str__(self):
-        return self.user.name
+        return self.user.username
 
 class Parent(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='parent')
     invite_code = models.CharField(max_length=8)
 
     def __str__(self):
-        return self.user.name
+        return self.user.username
 
 class SchoolClass(models.Model):
     name = models.CharField(max_length=100)
