@@ -11,14 +11,14 @@ class School(models.Model):
         return self.name + self.city
 
 class Teacher(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='teacher')
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='teacher')
     school = models.ForeignKey(School,  on_delete=models.DO_NOTHING, null=True, blank=True)
 
     def __str__(self):
         return self.user.username
 
 class Parent(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='parent')
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='parent')
     invite_code = models.CharField(max_length=8)
 
     def __str__(self):
@@ -34,7 +34,7 @@ class SchoolClass(models.Model):
 
 class Student(models.Model):
     name = models.CharField(max_length=100)
-    parent = models.ForeignKey(Parent, on_delete=models.DO_NOTHING)
+    parent = models.ForeignKey(Parent, on_delete=models.DO_NOTHING, related_name='children')
     school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -54,6 +54,7 @@ class Assignee(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     feedback = models.CharField(max_length=1024, null=True, blank=True)
     score = models.IntegerField(null=True, blank=True)
+    in_portfolio = models.BooleanField(default=False)
 
     def __str__(self):
         return self.student.name + self.assignment.title
@@ -116,18 +117,21 @@ class NotificationMode(models.Model):
         (EMAIL, 'Email'),
         (SMS, 'SMS'),
     ]
-    name = models.CharField(max_length=16, choices=NOTIFICATION_CHOICES, default=APP, unique=True)
+    name = models.CharField(max_length=16, choices=NOTIFICATION_CHOICES, default=APP, primary_key=True)
 
     def __str__(self):
         return self.name
 
 class ParentSettings(models.Model):
-    parent = models.ForeignKey(Parent, on_delete=models.CASCADE)
-    notification_mode = models.ForeignKey(NotificationMode, on_delete=models.DO_NOTHING)
+    parent = models.OneToOneField(Parent, on_delete=models.CASCADE, related_name='settings')
+    notification_mode = models.OneToOneField(NotificationMode, on_delete=models.DO_NOTHING, default='App')
     message_received_notification = models.BooleanField(default=True)
     new_story_notification = models.BooleanField(default=False)
     new_announcement_notification = models.BooleanField(default=False)
     new_event_notification = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.parent.user.username
 
 class ChatGroup(models.Model):
     name = models.CharField(max_length=100)

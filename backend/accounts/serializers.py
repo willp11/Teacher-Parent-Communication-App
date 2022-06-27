@@ -3,9 +3,9 @@ from .models import CustomUser
 from school.serializers import TeacherSerializer, ParentSerializer
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    teacher = TeacherSerializer(many=True) # we get error if not put many=True, although there aren't many
-    parent = ParentSerializer(many=True)
+    teacher = TeacherSerializer()
+    parent = ParentSerializer()
 
     class Meta:
         model = CustomUser
-        fields = ('pk', 'email', 'username', 'email_verified', 'teacher', 'parent')
+        fields = ('id', 'email', 'username', 'email_verified', 'teacher', 'parent')
