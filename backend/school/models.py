@@ -1,3 +1,4 @@
+from time import time
 from tkinter import CASCADE
 from django.db import models
 from accounts.models import CustomUser
@@ -51,7 +52,7 @@ class Assignment(models.Model):
 
 class Assignee(models.Model):
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='portfolio')
     feedback = models.CharField(max_length=1024, null=True, blank=True)
     score = models.IntegerField(null=True, blank=True)
     in_portfolio = models.BooleanField(default=False)
@@ -60,7 +61,7 @@ class Assignee(models.Model):
         return self.student.name + self.assignment.title
 
 class AssignmentMedia(models.Model):
-    assignee = models.ForeignKey(Assignee, on_delete=models.CASCADE)
+    assignee = models.ForeignKey(Assignee, on_delete=models.CASCADE, related_name='assignment_media')
     file = models.FileField(upload_to="assignment_media/")
     
 class Story(models.Model):
@@ -76,6 +77,16 @@ class StoryMedia(models.Model):
     file = models.FileField(upload_to="story_media/")
     description = models.CharField(max_length=256, null=True, blank=True)
 
+class StoryComment(models.Model):
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='user_comments')
+    story = models.ForeignKey(Story, on_delete=models.CASCADE, related_name='story_comments')
+    content = models.CharField(max_length=1024)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.author.username + ' ' + self.story.title + ' ' + self.created_at
+
 class Announcement(models.Model):
     title = models.CharField(max_length=100)
     content = models.CharField(max_length=1024)
@@ -90,13 +101,14 @@ class Event(models.Model):
     date = models.DateField(auto_now=False)
     description = models.CharField(max_length=512)
     school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE, related_name='events')
+    helpers_required = models.IntegerField(default=0, blank=True)
 
     def __str__(self):
         return self.name
 
 class Helper(models.Model):
-    parent = models.ForeignKey(Parent, on_delete=models.CASCADE)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    parent = models.ForeignKey(Parent, on_delete=models.CASCADE, related_name='helping_at')
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='helpers')
 
 class StickerType(models.Model):
     name = models.CharField(max_length=100)
@@ -136,13 +148,17 @@ class ParentSettings(models.Model):
 
 class ChatGroup(models.Model):
     name = models.CharField(max_length=100)
+    group_owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='chat_groups_owned')
 
     def __str__(self):
         return self.name
 
 class GroupMember(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    group = models.ForeignKey(ChatGroup, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='chat_group_member')
+    group = models.ForeignKey(ChatGroup, on_delete=models.CASCADE, related_name='chat_members')
+
+    class Meta:
+        unique_together = ('user', 'group')
 
 class Message(models.Model):
     sender = models.ForeignKey(GroupMember, on_delete=models.DO_NOTHING)

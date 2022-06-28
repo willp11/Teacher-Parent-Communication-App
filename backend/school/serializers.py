@@ -26,7 +26,7 @@ class TeacherNameSerializer(serializers.ModelSerializer):
 class ParentSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ParentSettings
-        fields = '__all__'
+        exclude = ('parent',)
 
 class SchoolClassSerializer(serializers.ModelSerializer):
     teacher = TeacherNameSerializer()
@@ -95,7 +95,7 @@ class ClassCreateSerializer(serializers.ModelSerializer):
 class StudentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ('name', 'school_class')
+        fields = ('pk', 'name', 'school_class')
 
 class AssigneeCreateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -121,3 +121,66 @@ class AssigneeInPortfolioUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignee
         fields = ('pk', 'in_portfolio')
+
+class PortfolioItemSerializer(serializers.ModelSerializer):
+    assignment_media = AssignmentMediaSerializer(many=True)
+    class Meta:
+        model = Assignee
+        fields = ('assignment', 'feedback', 'score', 'assignment_media')
+
+class StudentPortfolioSerializer(serializers.ModelSerializer):
+    portfolio = PortfolioItemSerializer(many=True)
+    class Meta:
+        model = Student
+        fields = ('pk', 'name', 'parent', 'school_class', 'portfolio')
+
+class RequestHelpersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ('pk', 'helpers_required')
+
+class HelperSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Helper
+        fields = ('event',)
+
+class UsernameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('username',)
+
+class StoryCommentListSerializer(serializers.ModelSerializer):
+    author = UsernameSerializer()
+    class Meta:
+        model = StoryComment
+        fields = '__all__'
+
+class StoryCommentCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StoryComment
+        fields = ('content', 'story')
+
+class StoryCommentUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StoryComment
+        fields = ('content', 'updated_at',)
+
+class ChatGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChatGroup
+        fields = ('name',)
+
+class GroupMemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GroupMember
+        fields = '__all__'
+
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = '__all__'
+
+class MessageCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = ('group', 'content')
