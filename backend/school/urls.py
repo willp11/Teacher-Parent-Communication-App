@@ -2,6 +2,10 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
+    path('school-create/', SchoolCreateView.as_view(), name='school_create'),
+    path('parent-create/', ParentCreateView.as_view(), name='parent_create'),
+    path('teacher-create/', TeacherCreateView.as_view(), name='teacher_create'),
+    path('teacher-school-update/', TeacherSchoolUpdateView.as_view(), name='teacher_school_update'),
     path('portfolio/<int:student>/', PortfolioListView.as_view(), name='portfolio'),
     path('class/<int:pk>/', ClassDetailView.as_view(), name='class_detail'),
     path('class-create/', ClassCreateView.as_view(), name='class_create'),

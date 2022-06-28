@@ -17,11 +17,21 @@ class TeacherSerializer(serializers.ModelSerializer):
         model = Teacher
         fields = '__all__'
 
+class TeacherCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Teacher
+        fields = ('school',)
+
 class TeacherNameSerializer(serializers.ModelSerializer):
     user = UserNameOnlySerializer()
     class Meta:
         model = Teacher
         fields = ('user',)
+
+class ParentCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Parent
+        fields = ('invite_code',)
 
 class ParentSettingsSerializer(serializers.ModelSerializer):
     class Meta:

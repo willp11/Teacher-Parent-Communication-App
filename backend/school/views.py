@@ -7,6 +7,32 @@ from .serializers import *
 from .models import *
 from .utils import check_has_child_in_class
 
+class SchoolCreateView(CreateAPIView):
+    serializer_class = SchoolSerializer
+    permission_classes = [IsAuthenticated]
+
+class TeacherCreateView(CreateAPIView):
+    serializer_class = TeacherCreateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class TeacherSchoolUpdateView(RetrieveUpdateAPIView):
+    serializer_class = TeacherCreateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        teacher = get_object_or_404(Teacher, user=self.request.user)
+        return teacher
+
+class ParentCreateView(CreateAPIView):
+    serializer_class = ParentCreateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 class PortfolioListView(ListAPIView):
     serializer_class = AssigneeSerializer
     permission_classes = [IsAuthenticated]
