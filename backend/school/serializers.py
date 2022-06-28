@@ -51,7 +51,7 @@ class ParentSerializer(serializers.ModelSerializer):
 class AssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignment
-        fields = ('title', 'description', 'maximum_score')
+        fields = '__all__'
 
 class AssigneeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -73,6 +73,11 @@ class StorySerializer(serializers.ModelSerializer):
         model = Story
         fields = '__all__'
 
+class StoryMediaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StoryMedia
+        fields = '__all__'
+
 class ClassDetailSerializer(serializers.ModelSerializer):
     announcements = AnnouncementSerializer(many=True)
     events = EventSerializer(many=True)
@@ -81,3 +86,38 @@ class ClassDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = SchoolClass
         fields = ('announcements', 'events', 'stories')
+
+class ClassCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SchoolClass
+        fields = ('name', 'teacher', 'school')
+
+class StudentCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ('name', 'school_class')
+
+class AssigneeCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Assignee
+        fields = ('pk', 'assignment', 'student')
+
+class AssigneeDeleteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Assignee
+        fields = ('pk')
+
+class AssignmentMediaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AssignmentMedia
+        fields = ('__all__')
+
+class AssigneeScoreUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Assignee
+        fields = ('pk', 'score')
+
+class AssigneeInPortfolioUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Assignee
+        fields = ('pk', 'in_portfolio')
