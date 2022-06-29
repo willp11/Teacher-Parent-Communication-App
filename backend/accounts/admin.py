@@ -9,7 +9,8 @@ class CustomUserAdmin(UserAdmin):
     model = CustomUser
     list_display = [
         'email',
-        'username',
+        'first_name',
+        'last_name',
         'is_staff',
         'email_verified',
     ]

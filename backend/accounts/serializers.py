@@ -19,18 +19,13 @@ class NameRegistrationSerializer(RegisterSerializer):
 class LoginSerializerNew(LoginSerializer):
     username = None
 
-# class LoginSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = CustomUser
-#         fields = ('email', 'password')
-
 class UserProfileSerializer(serializers.ModelSerializer):
     teacher = TeacherSerializer()
     parent = ParentSerializer()
 
     class Meta:
         model = CustomUser
-        fields = ('id', 'email', 'username', 'email_verified', 'teacher', 'parent')
+        fields = ('id', 'email', 'first_name', 'last_name', 'email_verified', 'teacher', 'parent')
 
 class CustomPasswordResetSerializer(PasswordResetSerializer):
     @property
