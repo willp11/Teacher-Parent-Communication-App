@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from dj_rest_auth.registration.views import VerifyEmailView, ConfirmEmailView
 from dj_rest_auth.views import PasswordResetView, PasswordResetConfirmView
+from django.contrib.auth.views import PasswordChangeView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,5 +27,6 @@ urlpatterns = [
     path('api/v1/dj-rest-auth/account-confirm-email/', VerifyEmailView.as_view(), name='account_email_verification_sent'),
     path('api/v1/dj-rest-auth/password/reset/', PasswordResetView.as_view(), name='password_reset'),
     path('api/v1/dj-rest-auth/password/reset/confirm/<str:uid>/<str:token>/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('api/v1/dj-rest-auth/password/change/', PasswordChangeView.as_view(), name='password_change'),
     path('api/v1/school/', include('school.urls'))
 ]

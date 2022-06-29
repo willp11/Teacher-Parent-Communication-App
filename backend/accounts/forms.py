@@ -1,5 +1,12 @@
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from .models import CustomUser
+from allauth.account.utils import (filter_users_by_email, user_pk_to_url_str, user_username)
+from allauth.utils import build_absolute_uri
+from allauth.account.adapter import get_adapter
+from allauth.account.forms import default_token_generator
+from allauth.account import app_settings
+from dj_rest_auth.serializers import AllAuthPasswordResetForm
+from django.contrib.sites.shortcuts import get_current_site
 
 class CustomUserCreationForm(UserCreationForm):
     class meta(UserCreationForm):
@@ -11,15 +18,7 @@ class CustomUserChangeForm(UserChangeForm):
         model = CustomUser
         fields = UserChangeForm.Meta.fields
 
-from allauth.account.utils import (filter_users_by_email, user_pk_to_url_str, user_username)
-from allauth.utils import build_absolute_uri
-from allauth.account.adapter import get_adapter
-from allauth.account.forms import default_token_generator
-from allauth.account import app_settings
-from dj_rest_auth.serializers import AllAuthPasswordResetForm
-from django.contrib.sites.shortcuts import get_current_site
-from django.urls.base import reverse
-
+# https://stackoverflow.com/questions/34897834/how-to-customize-django-rest-auth-password-reset-email-content-template/70624462#70624462
 class CustomAllAuthPasswordResetForm(AllAuthPasswordResetForm):
 
     def clean_email(self):
