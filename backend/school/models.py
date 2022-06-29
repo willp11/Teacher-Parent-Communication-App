@@ -13,7 +13,7 @@ class School(models.Model):
 
 class Teacher(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='teacher')
-    school = models.ForeignKey(School,  on_delete=models.DO_NOTHING, null=True, blank=True)
+    school = models.ForeignKey(School,  on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.user.username
@@ -28,14 +28,14 @@ class Parent(models.Model):
 class SchoolClass(models.Model):
     name = models.CharField(max_length=100)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    school = models.ForeignKey(School, on_delete=models.DO_NOTHING, null=True, blank=True)
+    school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name
 
 class Student(models.Model):
     name = models.CharField(max_length=100)
-    parent = models.ForeignKey(Parent, on_delete=models.DO_NOTHING, related_name='children', null=True, blank=True)
+    parent = models.ForeignKey(Parent, on_delete=models.SET_NULL, related_name='children', null=True, blank=True)
     school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -137,7 +137,7 @@ class NotificationMode(models.Model):
 
 class ParentSettings(models.Model):
     parent = models.OneToOneField(Parent, on_delete=models.CASCADE, related_name='settings')
-    notification_mode = models.OneToOneField(NotificationMode, on_delete=models.DO_NOTHING, default='App')
+    notification_mode = models.OneToOneField(NotificationMode, on_delete=models.SET_DEFAULT, default='App')
     message_received_notification = models.BooleanField(default=True)
     new_story_notification = models.BooleanField(default=False)
     new_announcement_notification = models.BooleanField(default=False)
@@ -161,7 +161,19 @@ class GroupMember(models.Model):
         unique_together = ('user', 'group')
 
 class Message(models.Model):
-    sender = models.ForeignKey(GroupMember, on_delete=models.DO_NOTHING)
+    sender = models.ForeignKey(GroupMember, on_delete=models.SET_NULL, null=True)
     group = models.ForeignKey(ChatGroup, on_delete=models.CASCADE)
     content = models.CharField(max_length=1024)
     time = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.sender + ' ' + self.time
+
+class InviteCode(models.Model):
+    student = models.OneToOneField(Student, on_delete=models.CASCADE, related_name='invite_code')
+    code = models.CharField(max_length=8, unique=True)
+    parent = models.ForeignKey(Parent, on_delete=models.SET_NULL, null=True, blank=True)
+    used = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.code

@@ -194,3 +194,8 @@ class MessageCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = ('group', 'content')
+
+class InviteCodeCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InviteCode
+        fields = ('student', 'code', 'used')

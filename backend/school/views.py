@@ -5,7 +5,7 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from .serializers import *
 from .models import *
-from .utils import check_has_child_in_class
+from .utils import check_has_child_in_class, generate_invite_code
 
 class SchoolCreateView(CreateAPIView):
     serializer_class = SchoolSerializer
@@ -31,7 +31,18 @@ class ParentCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        # check invite code is valid
+        invite_code = get_object_or_404(InviteCode, code=self.request.data['invite_code'], used=False)
+        # save parent instance
+        parent = serializer.save(user=self.request.user)
+        # update invite code instance
+        invite_code.parent = parent
+        invite_code.used = True
+        invite_code.save()
+        # update student instance
+        student = invite_code.student
+        student.parent = parent
+        student.save()
 
 class PortfolioListView(ListAPIView):
     serializer_class = AssigneeSerializer
@@ -68,7 +79,22 @@ class StudentCreateView(CreateAPIView):
         teacher = get_object_or_404(Teacher, user=self.request.user)
         # user must be teacher of this class
         school_class = get_object_or_404(SchoolClass, pk=self.request.POST['school_class'][0], teacher=teacher)
-        serializer.save(school_class=school_class)
+        student = serializer.save(school_class=school_class)
+
+        valid_code = False
+        while valid_code == False:
+            # create parent invite
+            invite_code = generate_invite_code()
+            # check invite code is unique
+            if len(InviteCode.objects.filter(code=invite_code)) == 0:
+                valid_code = True
+        
+        invite_serializer = InviteCodeCreateSerializer(data={'student': student.pk, 'code': invite_code, 'used': False})
+        if invite_serializer.is_valid():
+            invite_serializer.save()
+        else:
+            student.delete()
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class StudentDeleteView(RetrieveDestroyAPIView):
     serializer_class = StudentCreateSerializer
