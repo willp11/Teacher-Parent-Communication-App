@@ -170,7 +170,7 @@ CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
 SITE_ID = 1
 
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 
@@ -188,6 +188,11 @@ ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'http://localhost:8000/a
 LOGIN_URL = 'http://localhost:8000/api/v1/dj-rest-auth/login/'
 
 REST_AUTH_SERIALIZERS = {
+    'LOGIN_SERIALIZER': 'accounts.serializers.LoginSerializerNew',
     'USER_DETAILS_SERIALIZER': 'accounts.serializers.UserProfileSerializer',
     'PASSWORD_RESET_SERIALIZER': 'accounts.serializers.CustomPasswordResetSerializer'
+}
+
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'accounts.serializers.NameRegistrationSerializer',
 }
