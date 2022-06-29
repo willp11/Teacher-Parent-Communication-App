@@ -4,7 +4,7 @@ from .models import *
 class UserNameOnlySerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('id', 'name',)
+        fields = ('id', 'username',)
 
 class SchoolSerializer(serializers.ModelSerializer):
     class Meta:
