@@ -17,7 +17,9 @@ const Profile = () => {
         first_name: "",
         last_name: "",
         email: "",
-        email_verified: null
+        email_verified: null,
+        parent: null,
+        teacher: null
     });
 
     useEffect(()=>{
@@ -38,6 +40,47 @@ const Profile = () => {
         
     }, [token, dispatch]);
 
+    let email_verified_div = null;
+    let select_account_type_div = null;
+    let account_type_div = null;
+    if (profile.email_verified === false) {
+        email_verified_div = (
+            <div className="modal-dark-bg">
+                <div className="email-verified-div">
+                    <h2>Email Not Verified</h2>
+                    <p>Check your email and click the link to verify your account.</p>
+                    <p>Once verified, refresh the page to continue.</p>
+                </div>
+            </div>
+        )
+    } else if (profile.email_verified === true) {
+        if (profile.teacher === null && profile.parent === null) {
+            select_account_type_div = (
+                <div>
+                    <h2>Select account type</h2>
+                    <div className="select-account-type-div-inner">
+                        <div className="select-account-type-btn">Teacher</div>
+                        <div className="select-account-type-btn">Parent</div>
+                    </div>
+                </div>
+            )
+        } else if (profile.teacher !== null) {
+            account_type_div = (
+                <div>
+                    <h2>Account Type</h2>
+                    <p>Teacher</p>
+                </div>
+            )
+        } else if (profile.parent !== null) {
+            account_type_div = (
+                <div>
+                    <h2>Account Type</h2>
+                    <p>Parent</p>
+                </div>
+            )
+        }
+    }
+
     return (
         <div className="Profile">
             <Navigation />
@@ -46,8 +89,9 @@ const Profile = () => {
             <p>{profile.first_name} {profile.last_name}</p>
             <h2>Email</h2>
             <p>{profile.email}</p>
-            <h2>Email Verified</h2>
-            <p>{profile.email_verified ? "True": "False"}</p>
+            {email_verified_div}
+            {select_account_type_div}
+            {account_type_div}
         </div>
     );
 }
