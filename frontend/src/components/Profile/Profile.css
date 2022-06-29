@@ -25,6 +25,13 @@
     background-color: white;
 }
 
+.select-account-type-div {
+    padding: 10px;
+    width: 500px;
+    margin: 0 auto;
+    border: 1px solid grey;
+    border-radius: 10px;
+}
 .select-account-type-div-inner {
     display: flex;
     justify-content: center;
@@ -37,4 +44,18 @@
     margin: 10px;
     width: 100px;
     cursor: pointer;
+}
+.account-type-submit {
+    padding: 5px;
+    border-radius: 5px;
+    margin: 10px;
+    cursor: pointer;
+}
+.invite-code-input-div {
+    padding-top: 10px;
+    padding-bottom: 30px;
+    width: 500px;
+    margin: 0 auto;
+    border: 1px solid grey;
+    border-radius: 10px;
 }

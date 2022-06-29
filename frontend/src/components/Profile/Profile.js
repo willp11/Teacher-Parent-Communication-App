@@ -12,6 +12,10 @@ const Profile = () => {
 
     const token = useSelector((state) => state.auth.token);
 
+    const [selectedAccountType, setSelectedAccountType] = useState(null);
+    const [showInviteCodeInput, setShowInviteCodeInput] = useState(false);
+    const [showSelectAccountType, setShowSelectAccountType] = useState(true);
+
     const [profile, setProfile] = useState({
         username: "",
         first_name: "",
@@ -21,6 +25,35 @@ const Profile = () => {
         parent: null,
         teacher: null
     });
+
+    const handleShowInviteCodeInput = () => {
+        setShowInviteCodeInput(true);
+        setShowSelectAccountType(false);
+    }
+
+    const handleSubmitInviteCode = () => {
+        setShowInviteCodeInput(false);
+        
+        // TO DO
+        // send POST request to create parent account
+        // update profile state with new parent object
+        console.log("create parent")
+    }
+
+    const handleSubmitCreateTeacher = () => {
+        // TO DO
+        // send POST request to create teacher account
+        // update profile state with new teacher object
+        console.log("create teacher")
+    }
+
+    const handleSelectAccountType = () => {
+        if (selectedAccountType === 'parent') {
+            handleShowInviteCodeInput()
+        } else if (selectedAccountType === 'teacher') {
+            handleSubmitCreateTeacher()
+        }
+    }
 
     useEffect(()=>{
         const headers = {
@@ -40,6 +73,17 @@ const Profile = () => {
         
     }, [token, dispatch]);
 
+    let inviteCodeInputDiv = null;
+    if (showInviteCodeInput) {
+        inviteCodeInputDiv = (
+            <div className="invite-code-input-div">
+                <h2>Invite Code</h2>
+                <input placeholder="Invite Code"/>
+                <button onClick={handleSubmitInviteCode}>Submit</button>
+            </div>
+        )
+    }
+
     let email_verified_div = null;
     let select_account_type_div = null;
     let account_type_div = null;
@@ -54,14 +98,21 @@ const Profile = () => {
             </div>
         )
     } else if (profile.email_verified === true) {
-        if (profile.teacher === null && profile.parent === null) {
+        if (profile.teacher === null && profile.parent === null && showSelectAccountType) {
             select_account_type_div = (
-                <div>
+                <div className="select-account-type-div">
                     <h2>Select account type</h2>
                     <div className="select-account-type-div-inner">
-                        <div className="select-account-type-btn">Teacher</div>
-                        <div className="select-account-type-btn">Parent</div>
+                        <div 
+                            className="select-account-type-btn" 
+                            style={selectedAccountType === 'teacher' ? {'backgroundColor': '#72CC50'} : {} }
+                            onClick={()=>setSelectedAccountType('teacher')}>Teacher</div>
+                        <div 
+                            className="select-account-type-btn" 
+                            style={selectedAccountType === 'parent' ? {'backgroundColor': '#72CC50'} : {} }
+                            onClick={()=>setSelectedAccountType('parent')}>Parent</div>
                     </div>
+                    <button className="account-type-submit" onClick={handleSelectAccountType}>Submit</button>
                 </div>
             )
         } else if (profile.teacher !== null) {
@@ -92,6 +143,7 @@ const Profile = () => {
             {email_verified_div}
             {select_account_type_div}
             {account_type_div}
+            {inviteCodeInputDiv}
         </div>
     );
 }
