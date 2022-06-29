@@ -24,10 +24,11 @@ const Register = () => {
         }
     }, [token, navigate]);
 
-    const handleRegister = (username, email, password, passwordConfirmation) => {
+    const handleRegister = (email, firstName, lastName, password, passwordConfirmation) => {
         const data = {
-            username,
             email,
+            first_name: firstName,
+            last_name: lastName,
             password1: password,
             password2: passwordConfirmation
         };
@@ -50,19 +51,21 @@ const Register = () => {
 
     const formik = useFormik({
         initialValues: {
-            username: "",
             email: "",
+            firstName: "",
+            lastName: "",
             password: "",
             passwordConfirmation: ""
         },
         onSubmit: (values) =>  {
-            handleRegister(values.username, values.email, values.password, values.passwordConfirmation);
+            handleRegister(values.email, values.firstName, values.lastName, values.password, values.passwordConfirmation);
         },
         validationSchema: Yup.object({
-            username: Yup.string().trim().required("username is required"),
             email: Yup.string().trim().required("email is required"),
+            firstName: Yup.string().trim().required("first name is required"),
+            // lastName is not required as maybe people only have 1 name
             password: Yup.string().trim().required("password is required"),
-            passwordConfirmation: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match')
+            passwordConfirmation: Yup.string().required("password confirmation is required").oneOf([Yup.ref('password'), null], 'Passwords must match')
         })
     });
 
@@ -73,17 +76,6 @@ const Register = () => {
             <form onSubmit={formik.handleSubmit}>
                 <div>
                     <input
-                        id="username"
-                        type="text"
-                        placeholder="Username"
-                        name="username"
-                        value={formik.values.username}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                    /> <br/>
-                    {formik.errors.username ? <div>{formik.errors.username} </div> : null}
-
-                    <input
                         id="email"
                         type="text"
                         placeholder="Email"
@@ -91,8 +83,33 @@ const Register = () => {
                         value={formik.values.email}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        className="RegisterInput"
                     /> <br/>
-                    {formik.errors.email ? <div>{formik.errors.email} </div> : null}
+                    {formik.errors.email ? <div className="RegisterWarning">{formik.errors.email} </div> : null}
+
+                    <input
+                        id="firstName"
+                        type="text"
+                        placeholder="First Name"
+                        name="firstName"
+                        value={formik.values.firstName}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        className="RegisterInput"
+                    /> <br/>
+                    {formik.errors.firstName ? <div className="RegisterWarning">{formik.errors.firstName} </div> : null}
+
+                    <input
+                        id="lastName"
+                        type="text"
+                        placeholder="Last Name"
+                        name="lastName"
+                        value={formik.values.lastName}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        className="RegisterInput"
+                    /> <br/>
+                    {formik.errors.lastName ? <div style={{fontSize: "0.8rem"}}>{formik.errors.lastName} </div> : null}
 
                     <input
                         id="password"
@@ -102,8 +119,9 @@ const Register = () => {
                         value={formik.values.password}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        className="RegisterInput"
                     /> <br/>
-                    {formik.errors.password ? <div>{formik.errors.password} </div> : null}
+                    {formik.errors.password ? <div className="RegisterWarning">{formik.errors.password} </div> : null}
 
                     <input
                         id="passwordConfirmation"
@@ -113,8 +131,9 @@ const Register = () => {
                         value={formik.values.passwordConfirmation}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        className="RegisterInput"
                     />
-                    {formik.errors.passwordConfirmation ? <div>{formik.errors.passwordConfirmation} </div> : null}
+                    {formik.errors.passwordConfirmation ? <div className="RegisterWarning">{formik.errors.passwordConfirmation} </div> : null}
                 </div>
                 <div hidden={false}>
                     {message}

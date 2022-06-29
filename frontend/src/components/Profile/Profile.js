@@ -13,8 +13,9 @@ const Profile = () => {
     const token = useSelector((state) => state.auth.token);
 
     const [profile, setProfile] = useState({
-        pk: null,
         username: "",
+        first_name: "",
+        last_name: "",
         email: "",
         email_verified: null
     });
@@ -41,10 +42,8 @@ const Profile = () => {
         <div className="Profile">
             <Navigation />
             <h1>Profile</h1>
-            <h2>ID</h2>
-            <p>{profile.pk}</p>
-            <h2>Username</h2>
-            <p>{profile.username}</p>
+            <h2>Name</h2>
+            <p>{profile.first_name} {profile.last_name}</p>
             <h2>Email</h2>
             <p>{profile.email}</p>
             <h2>Email Verified</h2>

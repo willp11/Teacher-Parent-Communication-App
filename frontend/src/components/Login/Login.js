@@ -23,9 +23,8 @@ const Login = () => {
         }
     }, [token, navigate]);
 
-    const handleLogin = (username, email, password) => {
+    const handleLogin = (email, password) => {
         const data = {
-            username,
             email,
             password: password
         };
@@ -49,15 +48,13 @@ const Login = () => {
 
     const formik = useFormik({
         initialValues: {
-            username: "",
             email: "",
             password: ""
         },
         onSubmit: (values) =>  {
-            handleLogin(values.username, values.email, values.password);
+            handleLogin(values.email, values.password);
         },
         validationSchema: Yup.object({
-            username: Yup.string().trim().required("username is required"),
             email: Yup.string().trim().required("email is required"),
             password: Yup.string().trim().required("password is required"),
         })
@@ -69,16 +66,6 @@ const Login = () => {
             <h1>Login</h1>
             <form onSubmit={formik.handleSubmit}>
                 <div>
-                    <input
-                        id="username"
-                        type="text"
-                        placeholder="Username"
-                        name="username"
-                        value={formik.values.username}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                    /> <br/>
-                    {formik.errors.username ? <div>{formik.errors.username} </div> : null}
 
                     <input
                         id="email"
@@ -89,7 +76,7 @@ const Login = () => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                     /> <br/>
-                    {formik.errors.email ? <div>{formik.errors.email} </div> : null}
+                    {formik.errors.email ? <div className="LoginWarning">{formik.errors.email} </div> : null}
 
                     <input
                         id="password"
@@ -100,7 +87,7 @@ const Login = () => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                     /> <br/>
-                    {formik.errors.password ? <div>{formik.errors.password} </div> : null}
+                    {formik.errors.password ? <div className="LoginWarning">{formik.errors.password} </div> : null}
                 </div>
                 <div hidden={false}>
                     {message}

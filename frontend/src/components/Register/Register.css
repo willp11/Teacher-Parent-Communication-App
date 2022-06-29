@@ -11,3 +11,12 @@
     justify-content: center;
     margin-top: 10px;
 }
+
+.RegisterInput {
+
+}
+
+.RegisterWarning {
+    margin-bottom: 5px;
+    font-size: 0.8rem;
+}
