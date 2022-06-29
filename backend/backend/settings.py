@@ -188,5 +188,6 @@ ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'http://localhost:8000/a
 LOGIN_URL = 'http://localhost:8000/api/v1/dj-rest-auth/login/'
 
 REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'accounts.serializers.UserProfileSerializer'
+    'USER_DETAILS_SERIALIZER': 'accounts.serializers.UserProfileSerializer',
+    'PASSWORD_RESET_SERIALIZER': 'accounts.serializers.CustomPasswordResetSerializer'
 }
