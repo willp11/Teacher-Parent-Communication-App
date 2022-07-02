@@ -1,5 +1,5 @@
 import './Profile.css';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import Navigation from '../Navigation/Navigation';
@@ -19,6 +19,9 @@ const Profile = () => {
     const [showSelectAccountType, setShowSelectAccountType] = useState(true);
     const [loading, setLoading] = useState(false);
     const [changePwordMsg, setChangePwordMsg] = useState("");
+    const [inviteCode, setInviteCode] = useState("");
+    const [schoolList, setSchoolList] = useState([]);
+    const [selectedSchool, setSelectedSchool] = useState("");
     const [profile, setProfile] = useState({
         username: "",
         first_name: "",
@@ -29,26 +32,92 @@ const Profile = () => {
         teacher: null
     });
 
+    // GET USER PROFILE REQUEST
+    const getUserProfile = useCallback(() => {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token
+        };
+
+        axios.get('http://localhost:8000/api/v1/dj-rest-auth/user/', {headers: headers})
+            .then(res=>{
+                console.log(res);
+                setProfile(res.data);
+                dispatch(authSlice.actions.setAccount({account: res.data}));
+            })
+            .catch(err=>{
+                console.log(err);
+            })
+    }, [token]);
+
+    // GET SCHOOLS LIST REQUEST
+    const getSchoolList = useCallback(() => {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token
+        };
+
+        axios.get('http://localhost:8000/api/v1/school/school-list-create/', {headers: headers})
+            .then(res=>{
+                console.log(res);
+                setSchoolList(res.data);
+            })
+            .catch(err=>{
+                console.log(err);
+            })
+    }, [token])
+
     // BUTTON AND INPUT HANDLER FUNCTIONS
     const handleShowInviteCodeInput = () => {
         setShowInviteCodeInput(true);
         setShowSelectAccountType(false);
     }
 
-    const handleSubmitInviteCode = () => {
+    // CREATE PARENT - SUBMIT INVITE CODE
+    const handleSubmitInviteCode = (invite_code) => {
         setShowInviteCodeInput(false);
         
-        // TO DO
         // send POST request to create parent account
-        // update profile state with new parent object
-        console.log("create parent")
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token
+        };
+        const data = {
+            invite_code
+        }
+        axios.post('http://localhost:8000/api/v1/school/parent-create/', data, {headers: headers})
+            .then(res=>{
+                console.log(res);
+                if (res.status === 201) {
+                    getUserProfile()
+                    console.log("Created parent account")
+                }
+            })
+            .catch(err=>{
+                console.log(err);
+            })
     }
 
     const handleSubmitCreateTeacher = () => {
-        // TO DO
         // send POST request to create teacher account
-        // update profile state with new teacher object
-        console.log("create teacher")
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token
+        };
+        const data = {
+            school: null
+        }
+        axios.post('http://localhost:8000/api/v1/school/teacher-create/', data, {headers: headers})
+            .then(res=>{
+                console.log(res);
+                if (res.status === 201) {
+                    getUserProfile()
+                    console.log("Created teacher account")
+                }
+            })
+            .catch(err=>{
+                console.log(err);
+            })
     }
 
     const handleSelectAccountType = () => {
@@ -97,24 +166,32 @@ const Profile = () => {
             })
     }
 
-    // ON COMPONENT MOUNT, GET USER'S PROFILE DATA FROM API
-    useEffect(()=>{
-        const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Token ' + token
-        };
+    const submitSelectSchoolHandler = () => {
+        if (selectedSchool !== "" && profile.teacher !== null) {
+            // Send POST request to change teacher's school
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + token
+            };
+            const data = {
+                school: selectedSchool,
+            };
+            axios.put('http://localhost:8000/api/v1/school/teacher-school-update/', data, {headers: headers})
+                .then(res => {
+                    console.log(res);
+                    getUserProfile();
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        }
+    }
 
-        axios.get('http://localhost:8000/api/v1/dj-rest-auth/user/', {headers: headers})
-            .then(res=>{
-                console.log(res);
-                setProfile(res.data);
-                dispatch(authSlice.actions.setAccount({account: res.data}));
-            })
-            .catch(err=>{
-                console.log(err);
-            })
-        
-    }, [token, dispatch]);
+    // ON COMPONENT MOUNT, GET USER'S PROFILE DATA FROM API, GET LIST OF SCHOOLS
+    useEffect(()=>{
+        getUserProfile()
+        getSchoolList()
+    }, [getUserProfile]);
 
     // CHOOSE ACCOUNT TYPE AND VERIFY EMAIL DIVS
     let inviteCodeInputDiv = null;
@@ -122,11 +199,35 @@ const Profile = () => {
         inviteCodeInputDiv = (
             <div className="invite-code-input-div">
                 <h2>Invite Code</h2>
-                <input placeholder="Invite Code"/>
-                <button onClick={handleSubmitInviteCode}>Submit</button>
+                <input placeholder="Invite Code" onChange={(e)=>setInviteCode(e.target.value)}/>
+                <button onClick={()=>handleSubmitInviteCode(inviteCode)}>Submit</button>
             </div>
         )
     }
+
+    // SCHOOL LIST DROPDOWN (TEACHER ACCOUNT ONLY)
+    let schoolListDropdownItems = schoolList.map((school)=>{
+        return (
+            <option key={school.id} value={school.id}>{school.name}</option>
+        );
+    })
+    let schoolListDropdown = (
+        <select value={selectedSchool} onChange={e=>setSelectedSchool(e.target.value)}>
+            <option value={null}>Select School</option>
+            {schoolListDropdownItems}
+        </select>
+    )
+    let selectSchoolDiv = (
+        <div>
+            <h3>Change School</h3>
+            {schoolListDropdown}
+            <button onClick={submitSelectSchoolHandler}>Submit</button>
+        </div>
+    )
+
+    // CHILDREN LIST (PARENT ACCOUNT ONLY)
+    // if account type is parent, get list of children that have this parent - GET student_list_by_parent
+    // display link to student list by parent by page and pass in the list of students
 
     let email_verified_div = null;
     let select_account_type_div = null;
@@ -164,13 +265,27 @@ const Profile = () => {
                 <div>
                     <h2>Account Type</h2>
                     <p>Teacher</p>
+                    <h3>School</h3>
+                    <p>{profile.teacher.school === null ? "You do not have a school yet!" : profile.teacher.school.name}</p>
+                    {selectSchoolDiv}
                 </div>
             )
         } else if (profile.parent !== null) {
+            let children_list = profile.parent.children.map(child => {
+                return (
+                    <div key={child.id} className="children-list-div">
+                        <h4>{child.name}</h4>
+                        <p>{child.school_class.school.name}</p>
+                        <p>{child.school_class.name}</p>
+                    </div>
+                )
+            })
             account_type_div = (
                 <div>
                     <h2>Account Type</h2>
                     <p>Parent</p>
+                    <h3>My Children</h3>
+                    {children_list}
                 </div>
             )
         }

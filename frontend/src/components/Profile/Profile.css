@@ -60,3 +60,13 @@
     border: 1px solid grey;
     border-radius: 10px;
 }
+
+.children-list-div {
+    width: 300px;
+    max-width: 90vw;
+    margin: 0 auto 10px auto;
+    padding: 5px;
+    border: 1px solid grey;
+    border-radius: 5px;
+    cursor: pointer;
+}
