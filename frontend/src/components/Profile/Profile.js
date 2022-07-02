@@ -5,17 +5,20 @@ import axios from 'axios';
 import Navigation from '../Navigation/Navigation';
 import { useDispatch } from 'react-redux';
 import authSlice from "../../store/slices/auth";
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 const Profile = () => {
 
     const dispatch = useDispatch();
 
+    // STATE
     const token = useSelector((state) => state.auth.token);
-
     const [selectedAccountType, setSelectedAccountType] = useState(null);
     const [showInviteCodeInput, setShowInviteCodeInput] = useState(false);
     const [showSelectAccountType, setShowSelectAccountType] = useState(true);
-
+    const [loading, setLoading] = useState(false);
+    const [changePwordMsg, setChangePwordMsg] = useState("");
     const [profile, setProfile] = useState({
         username: "",
         first_name: "",
@@ -26,6 +29,7 @@ const Profile = () => {
         teacher: null
     });
 
+    // BUTTON AND INPUT HANDLER FUNCTIONS
     const handleShowInviteCodeInput = () => {
         setShowInviteCodeInput(true);
         setShowSelectAccountType(false);
@@ -55,6 +59,45 @@ const Profile = () => {
         }
     }
 
+    const handleSendPwordReset = (new_password1, new_password2) => {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token
+        };
+        const data = {
+            new_password1, 
+            new_password2
+        };
+
+        setLoading(true);
+
+        axios.post('http://localhost:8000/api/v1/dj-rest-auth/password/change/', data, {headers: headers})
+            .then(res=>{
+                console.log(res);
+                let msg = (
+                    <div>Password Changed Successfully!</div>
+                )
+                setChangePwordMsg(msg)
+            })
+            .catch(err=>{
+                console.log(err);
+                setChangePwordMsg("There was a problem changing your password!");
+                if (err.response.status === 400 && ('new_password2' in err.response.data)) {
+                    let err_msg = "<div>";
+                    err.response.data.new_password2.forEach((msg)=>{
+                        err_msg += msg + "<br/>"
+                    });
+                    err_msg += "</div>"
+                    let err_div = <div dangerouslySetInnerHTML={{__html: err_msg}}></div>
+                    setChangePwordMsg(err_div);
+                }
+            })
+            .finally(()=>{
+                setLoading(false);
+            })
+    }
+
+    // ON COMPONENT MOUNT, GET USER'S PROFILE DATA FROM API
     useEffect(()=>{
         const headers = {
             'Content-Type': 'application/json',
@@ -73,6 +116,7 @@ const Profile = () => {
         
     }, [token, dispatch]);
 
+    // CHOOSE ACCOUNT TYPE AND VERIFY EMAIL DIVS
     let inviteCodeInputDiv = null;
     if (showInviteCodeInput) {
         inviteCodeInputDiv = (
@@ -132,6 +176,57 @@ const Profile = () => {
         }
     }
 
+    // CHANGE PASSWORD
+    const formik = useFormik({
+        initialValues: {
+            password: "",
+            passwordConfirmation: ""
+        },
+        onSubmit: (values) =>  {
+            handleSendPwordReset(values.password, values.passwordConfirmation);
+        },
+        validationSchema: Yup.object({
+            password: Yup.string().trim().required("password is required"),
+            passwordConfirmation: Yup.string().required("password confirmation is required").oneOf([Yup.ref('password'), null], 'Passwords must match')
+        })
+    });
+    let change_password_div = (
+        <div>
+            <h2>Change Password</h2>
+            <form onSubmit={formik.handleSubmit}>
+                <div>
+                    <input
+                        id="password"
+                        type="password"
+                        placeholder="Password"
+                        name="password"
+                        value={formik.values.password}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        className="RegisterInput"
+                    /> <br/>
+                    {formik.errors.password ? <div className="RegisterWarning">{formik.errors.password} </div> : null}
+
+                    <input
+                        id="passwordConfirmation"
+                        type="password"
+                        placeholder="Password Confirmation"
+                        name="passwordConfirmation"
+                        value={formik.values.passwordConfirmation}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        className="RegisterInput"
+                    />
+                    {formik.errors.passwordConfirmation ? <div className="RegisterWarning">{formik.errors.passwordConfirmation} </div> : null}
+                </div>
+                <div className="RegisterBtn">
+                    <button type="submit" disabled={loading}>Submit</button>
+                </div>
+                {changePwordMsg}
+            </form>
+        </div>
+    )
+
     return (
         <div className="Profile">
             <Navigation />
@@ -144,6 +239,7 @@ const Profile = () => {
             {select_account_type_div}
             {account_type_div}
             {inviteCodeInputDiv}
+            {change_password_div}
         </div>
     );
 }
