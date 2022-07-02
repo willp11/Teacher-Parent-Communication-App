@@ -44,6 +44,10 @@ class ParentCreateView(CreateAPIView):
         student = invite_code.student
         student.parent = parent
         student.save()
+        # create parent settings instance
+        settings = ParentSettings(parent=parent)
+        settings.save()
+
 
 class PortfolioListView(ListAPIView):
     serializer_class = AssigneeSerializer
