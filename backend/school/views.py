@@ -7,9 +7,10 @@ from .serializers import *
 from .models import *
 from .utils import check_has_child_in_class, generate_invite_code
 
-class SchoolCreateView(CreateAPIView):
+class SchoolCreateView(ListCreateAPIView):
     serializer_class = SchoolSerializer
     permission_classes = [IsAuthenticated]
+    queryset = School.objects.all()
 
 class TeacherCreateView(CreateAPIView):
     serializer_class = TeacherCreateSerializer
