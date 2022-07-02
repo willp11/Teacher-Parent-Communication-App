@@ -1,5 +1,6 @@
 .Profile {
     text-align: center;
+    padding-bottom: 20px;
 }
 
 .modal-dark-bg {
@@ -62,11 +63,34 @@
 }
 
 .children-list-div {
+    box-sizing: border-box;
     width: 300px;
     max-width: 90vw;
     margin: 0 auto 10px auto;
     padding: 5px;
     border: 1px solid grey;
     border-radius: 5px;
+    cursor: pointer;
+}
+
+.parent-settings-div {
+    box-sizing: border-box;
+    width: 300px;
+    max-width: 90vw;
+    margin: 0 auto;
+    padding-bottom: 20px;
+    border: 1px solid grey;
+    border-radius: 5px;
+}
+.parent-settings-select-btn {
+    cursor: pointer;
+}
+.parent-settings-edit-btn {
+    margin-top: 20px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.parent-settings-edit-mode button {
     cursor: pointer;
 }

@@ -22,6 +22,8 @@ const Profile = () => {
     const [inviteCode, setInviteCode] = useState("");
     const [schoolList, setSchoolList] = useState([]);
     const [selectedSchool, setSelectedSchool] = useState("");
+    const [editSettingsMode, setEditSettingsMode] = useState(false);
+    const [editedParentSettings, setEditedParentSettings] = useState(null);
     const [profile, setProfile] = useState({
         username: "",
         first_name: "",
@@ -44,11 +46,14 @@ const Profile = () => {
                 console.log(res);
                 setProfile(res.data);
                 dispatch(authSlice.actions.setAccount({account: res.data}));
+                if (res.data.parent !== null) {
+                    setEditedParentSettings(res.data.parent.settings);
+                }
             })
             .catch(err=>{
                 console.log(err);
             })
-    }, [token]);
+    }, [token, dispatch]);
 
     // GET SCHOOLS LIST REQUEST
     const getSchoolList = useCallback(() => {
@@ -187,11 +192,38 @@ const Profile = () => {
         }
     }
 
+    // PARENT SETTINGS HANDLERS
+    const editParentSettingsHandler = (setting, value) => {
+        let settings = {...editedParentSettings};
+        settings[setting] = value;
+        setEditedParentSettings(settings);
+    }
+    const cancelEditParentSettings = () => {
+        setEditedParentSettings(profile.parent.settings);
+        setEditSettingsMode(false);
+    }
+    const submitEditParentSettings = () => {
+        console.log("submitting edit parent settings")
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token
+        };
+        axios.put('http://localhost:8000/api/v1/school/parent-settings-update/', editedParentSettings, {headers: headers})
+            .then(res => {
+                console.log(res);
+                getUserProfile();
+                setEditSettingsMode(false);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+
     // ON COMPONENT MOUNT, GET USER'S PROFILE DATA FROM API, GET LIST OF SCHOOLS
     useEffect(()=>{
         getUserProfile()
         getSchoolList()
-    }, [getUserProfile]);
+    }, [getUserProfile, getSchoolList]);
 
     // CHOOSE ACCOUNT TYPE AND VERIFY EMAIL DIVS
     let inviteCodeInputDiv = null;
@@ -280,10 +312,100 @@ const Profile = () => {
                     </div>
                 )
             })
+            let parent_settings = (
+                <div className="parent-settings-div">
+                    <h3>Settings</h3>
+                    <h4>Notification Mode</h4>
+                    <div className="parent-settings">
+                        <button className={profile.parent.settings.notification_mode === "App" ? "selected" : ""}>App</button>
+                        <button className={profile.parent.settings.notification_mode === "Email" ? "selected" : ""}>Email</button>
+                        <button className={profile.parent.settings.notification_mode === "SMS" ? "selected" : ""}>SMS</button>
+                    </div>
+                    <h4>Message Received</h4>
+                    <div className="parent-settings">
+                        <button className={profile.parent.settings.message_received_notification === true ? "selected" : ""}>Yes</button>
+                        <button className={profile.parent.settings.message_received_notification === false ? "selected" : ""}>No</button>
+                    </div>
+                    <h4>New Announcement</h4>
+                    <div className="parent-settings">
+                        <button className={profile.parent.settings.new_announcement_notification === true ? "selected" : ""}>Yes</button>
+                        <button className={profile.parent.settings.new_announcement_notification === false ? "selected" : ""}>No</button>
+                    </div>
+                    <h4>New Story</h4>
+                    <div className="parent-settings">
+                        <button className={profile.parent.settings.new_story_notification === true ? "selected" : ""}>Yes</button>
+                        <button className={profile.parent.settings.new_story_notification === false ? "selected" : ""}>No</button>
+                    </div>
+                    <h4>New Event</h4>
+                    <div className="parent-settings">
+                        <button className={profile.parent.settings.new_event_notification === true ? "selected" : ""}>Yes</button>
+                        <button className={profile.parent.settings.new_event_notification === false ? "selected" : ""}>No</button>
+                    </div>
+                    <button className="parent-settings-edit-btn" onClick={()=>setEditSettingsMode(true)}>Edit Settings</button>
+                </div>
+            )
+            if (editSettingsMode) {
+                parent_settings = (
+                    <div className="parent-settings-div">
+                        <h3>Settings</h3>
+                        <h4>Notification Mode</h4>
+                        <div className="parent-settings-edit-mode">
+                            <button 
+                                onClick={()=>editParentSettingsHandler("notification_mode", "App")}
+                                className={editedParentSettings.notification_mode === "App" ? "selected" : ""}>App</button>
+                            <button 
+                                onClick={()=>editParentSettingsHandler("notification_mode", "Email")}    
+                                className={editedParentSettings.notification_mode === "Email" ? "selected" : ""}>Email</button>
+                            <button 
+                                onClick={()=>editParentSettingsHandler("notification_mode", "SMS")}
+                                className={editedParentSettings.notification_mode === "SMS" ? "selected" : ""}>SMS</button>
+                        </div>
+                        <h4>Message Received</h4>
+                        <div className="parent-settings-edit-mode">
+                            <button 
+                                onClick={()=>editParentSettingsHandler("message_received_notification", true)}
+                                className={editedParentSettings.message_received_notification === true ? "selected" : ""}>Yes</button>
+                            <button 
+                                onClick={()=>editParentSettingsHandler("message_received_notification", false)}
+                                className={editedParentSettings.message_received_notification === false ? "selected" : ""}>No</button>
+                        </div>
+                        <h4>New Announcement</h4>
+                        <div className="parent-settings-edit-mode">
+                            <button 
+                                onClick={()=>editParentSettingsHandler("new_announcement_notification", true)}
+                                className={editedParentSettings.new_announcement_notification === true ? "selected" : ""}>Yes</button>
+                            <button 
+                                onClick={()=>editParentSettingsHandler("new_announcement_notification", false)}
+                                className={editedParentSettings.new_announcement_notification === false ? "selected" : ""}>No</button>
+                        </div>
+                        <h4>New Story</h4>
+                        <div className="parent-settings-edit-mode">
+                            <button 
+                                onClick={()=>editParentSettingsHandler("new_story_notification", true)}
+                                className={editedParentSettings.new_story_notification === true ? "selected" : ""}>Yes</button>
+                            <button 
+                                onClick={()=>editParentSettingsHandler("new_story_notification", false)}
+                                className={editedParentSettings.new_story_notification === false ? "selected" : ""}>No</button>
+                        </div>
+                        <h4>New Event</h4>
+                        <div className="parent-settings-edit-mode">
+                            <button 
+                                onClick={()=>editParentSettingsHandler("new_event_notification", true)}
+                                className={editedParentSettings.new_event_notification === true ? "selected" : ""}>Yes</button>
+                            <button 
+                                onClick={()=>editParentSettingsHandler("new_event_notification", false)}
+                                className={editedParentSettings.new_event_notification === false ? "selected" : ""}>No</button>
+                        </div>
+                        <button className="parent-settings-edit-btn" onClick={cancelEditParentSettings}>Cancel</button>
+                        <button className="parent-settings-edit-btn" onClick={submitEditParentSettings}>Submit</button>
+                    </div>
+                );
+            }
             account_type_div = (
                 <div>
                     <h2>Account Type</h2>
                     <p>Parent</p>
+                    {parent_settings}
                     <h3>My Children</h3>
                     {children_list}
                 </div>
