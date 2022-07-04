@@ -97,6 +97,11 @@ class ClassDetailSerializer(serializers.ModelSerializer):
         model = SchoolClass
         fields = ('announcements', 'events', 'stories')
 
+class ClassListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SchoolClass
+        fields = '__all__'
+
 class ClassCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = SchoolClass

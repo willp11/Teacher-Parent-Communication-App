@@ -67,6 +67,14 @@ class ClassDetailView(RetrieveAPIView):
         class_id = self.kwargs['pk']
         return get_object_or_404(SchoolClass, pk=class_id)
 
+class ClassListView(ListAPIView):
+    serializer_class = ClassListSerializer
+    permission_classes = [IsAuthenticated, IsEmailVerified]
+
+    def get_queryset(self):
+        teacher = get_object_or_404(Teacher, user=self.request.user)
+        return SchoolClass.objects.filter(teacher=teacher)
+
 class ClassCreateView(CreateAPIView):
     serializer_class = ClassCreateSerializer
     permission_classes = [IsAuthenticated, IsEmailVerified]
