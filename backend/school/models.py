@@ -137,7 +137,7 @@ class NotificationMode(models.Model):
 
 class ParentSettings(models.Model):
     parent = models.OneToOneField(Parent, on_delete=models.CASCADE, related_name='settings')
-    notification_mode = models.OneToOneField(NotificationMode, on_delete=models.SET_DEFAULT, default='App')
+    notification_mode = models.ForeignKey(NotificationMode, on_delete=models.SET_DEFAULT, default='App')
     message_received_notification = models.BooleanField(default=True)
     new_story_notification = models.BooleanField(default=False)
     new_announcement_notification = models.BooleanField(default=False)
