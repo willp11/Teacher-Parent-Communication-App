@@ -82,6 +82,22 @@ const SchoolClass = () => {
                 console.log(err);
             })
     }
+    // DELETE FUNCTION
+    const handleDelete = (id, model) => {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token
+        }
+        const url = 'http://localhost:8000/api/v1/school/' + model + '-delete/' + id + '/';
+        axios.delete(url, {headers: headers})
+            .then(res=>{
+                console.log(res);
+                getClassInfo();
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
 
     // CREATE STORY FUNCTION
     const handleCreateStory = (title, content, actions) => {
@@ -207,6 +223,7 @@ const SchoolClass = () => {
                     <h3>{announcement.title}</h3>
                     <p>{announcement.date}</p>
                     <p>{announcement.content}</p>
+                    <button onClick={()=>handleDelete(announcement.id, "announcement")}>Delete</button>
                 </div>
             )
         });
@@ -309,6 +326,7 @@ const SchoolClass = () => {
                     <h3>{event.name}</h3>
                     <p>{event.date}</p>
                     <p>{event.description}</p>
+                    <button onClick={()=>handleDelete(event.id, "event")}>Delete</button>
                 </div>
             )
         });
@@ -355,6 +373,7 @@ const SchoolClass = () => {
                 <div className="list-div" key={story.id}>
                     <h3>{story.title}</h3>
                     <p>{story.content}</p>
+                    <button onClick={()=>handleDelete(story.id, "story")}>Delete</button>
                 </div>
             )
         });
@@ -391,6 +410,7 @@ const SchoolClass = () => {
             return (
                 <div className="list-div" key={student.id}>
                     <h3>{student.name}</h3>
+                    <button onClick={()=>handleDelete(student.id, "student")}>Delete</button>
                 </div>
             )
         });
