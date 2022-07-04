@@ -36,8 +36,7 @@ const SchoolClass = () => {
     }, [getClassInfo])
 
     // CREATE ANNOUNCEMENT FUNCTION
-    const handleCreateAnnouncement = (title, content) => {
-        console.log("creating announcement");
+    const handleCreateAnnouncement = (title, content, actions) => {
         const headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
@@ -52,6 +51,77 @@ const SchoolClass = () => {
             .then(res=>{
                 console.log(res);
                 getClassInfo();
+                actions.resetForm();
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+
+    // CREATE EVENT FUNCTION
+    const handleCreateEvent = (name, date, description, helpers_required, actions) => {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token
+        }
+        const data = {
+            name, 
+            date, 
+            description, 
+            helpers_required,
+            school_class: schoolClass.id
+        }
+        const url = 'http://localhost:8000/api/v1/school/event-create/';
+        axios.post(url, data, {headers: headers})
+            .then(res=>{
+                console.log(res);
+                getClassInfo();
+                actions.resetForm();
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+
+    // CREATE STORY FUNCTION
+    const handleCreateStory = (title, content, actions) => {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token
+        }
+        const data = {
+            title, 
+            content,
+            school_class: schoolClass.id
+        }
+        const url = 'http://localhost:8000/api/v1/school/story-create/';
+        axios.post(url, data, {headers: headers})
+            .then(res=>{
+                console.log(res);
+                getClassInfo();
+                actions.resetForm();
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+
+    // CREATE STUDENT FUNCTION
+    const handleCreateStudent = (name, actions) => {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token
+        }
+        const data = {
+            name, 
+            school_class: schoolClass.id
+        }
+        const url = 'http://localhost:8000/api/v1/school/student-create/';
+        axios.post(url, data, {headers: headers})
+            .then(res=>{
+                console.log(res);
+                getClassInfo();
+                actions.resetForm();
             })
             .catch(err => {
                 console.log(err);
@@ -64,12 +134,65 @@ const SchoolClass = () => {
             title: "",
             content: "",
         },
-        onSubmit: (values) =>  {
-            handleCreateAnnouncement(values.title, values.content);
+        onSubmit: (values, actions) =>  {
+            handleCreateAnnouncement(values.title, values.content, actions);
         },
         validationSchema: Yup.object({
             title: Yup.string().trim().required("title is required"),
             content: Yup.string().trim().required("content is required")
+        })
+    });
+
+    // CREATE EVENT FORM
+    const formatDate = () => {
+        return new Date().toLocaleDateString()
+    }
+    const event_formik = useFormik({
+        initialValues: {
+            name: "",
+            date: "",
+            description: "",
+            helpers: 0
+        },
+        onSubmit: (values, actions) => {
+            handleCreateEvent(values.name, values.date, values.description, values.helpers, actions);
+        },
+        validationSchema: Yup.object({
+            name: Yup.string().trim().required("name is required"),
+            date: Yup.date().min(
+                new Date(),
+                `Date needs to be after ${formatDate()}`
+            ),
+            description: Yup.string().trim().required("description is required"),
+            helpers: 0
+        })
+    });
+
+    // CREATE STORY FORM
+    const story_formik = useFormik({
+        initialValues: {
+            title: "",
+            content: "",
+        },
+        onSubmit: (values, actions) =>  {
+            handleCreateStory(values.title, values.content, actions);
+        },
+        validationSchema: Yup.object({
+            title: Yup.string().trim().required("title is required"),
+            content: Yup.string().trim().required("content is required")
+        })
+    });
+
+    // CREATE STUDENT FORM
+    const student_formik = useFormik({
+        initialValues: {
+            name: ""
+        },
+        onSubmit: (values, actions) =>  {
+            handleCreateStudent(values.name, actions);
+        },
+        validationSchema: Yup.object({
+            name: Yup.string().trim().required("name is required")
         })
     });
 
@@ -111,6 +234,7 @@ const SchoolClass = () => {
                         value={announcement_formik.values.content}
                         onChange={announcement_formik.handleChange}
                         onBlur={announcement_formik.handleBlur}
+                        placeholder="Content"
                     /> <br/>
                     {announcement_formik.errors.content ? <div className="ErrorMsg">{announcement_formik.errors.content} </div> : null}
                 </div>
@@ -129,6 +253,56 @@ const SchoolClass = () => {
             </div>
         )
         // EVENTS
+        let create_event_form = (
+            <form onClick={event_formik.handleSubmit}>
+                <div>
+                    <input
+                        type="text"
+                        placeholder="Event Name"
+                        name="name"
+                        value={event_formik.values.name}
+                        onChange={event_formik.handleChange}
+                        onBlur={event_formik.handleBlur}
+                        style={{textAlign: "center"}}
+                    /> <br/>
+                    {event_formik.errors.name ? <div className="ErrorMsg">{event_formik.errors.name} </div> : null}
+
+                    <input
+                        type="date"
+                        placeholder="Date"
+                        name="date"
+                        value={event_formik.values.date}
+                        onChange={event_formik.handleChange}
+                        onBlur={event_formik.handleBlur}
+                    /> <br/>
+                    {event_formik.errors.date ? <div className="ErrorMsg">{event_formik.errors.date} </div> : null}
+
+                    <textarea
+                        rows="10"
+                        name="description"
+                        value={event_formik.values.description}
+                        onChange={event_formik.handleChange}
+                        onBlur={event_formik.handleBlur}
+                        placeholder="Description"
+                    /> <br/>
+                    {event_formik.errors.description ? <div className="ErrorMsg">{event_formik.errors.description} </div> : null}
+
+                    <input
+                        type="number"
+                        placeholder="No. helpers"
+                        name="helpers"
+                        value={event_formik.values.helpers}
+                        onChange={event_formik.handleChange}
+                        onBlur={event_formik.handleBlur}
+                        style={{textAlign: "center"}}
+                    /> <br/>
+                    {event_formik.errors.helpers ? <div className="ErrorMsg">{event_formik.errors.helpers} </div> : null}
+                </div>
+                <div>
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+        ) 
         let events = schoolClass.events.map((event)=>{
             return (
                 <div className="list-div" key={event.id}>
@@ -141,11 +315,41 @@ const SchoolClass = () => {
         let events_div = (
             <div className="list-div-wrapper">
                 <h2>Events</h2>
+                {create_event_form}
                 {schoolClass.events.length === 0 ? <p>There are no events</p> : null}
                 {events}
             </div>
         )
         // STORIES
+        let create_story_form = (
+            <form onSubmit={story_formik.handleSubmit}>
+                <div>
+                    <input
+                        type="text"
+                        placeholder="Title"
+                        name="title"
+                        value={story_formik.values.title}
+                        onChange={story_formik.handleChange}
+                        onBlur={story_formik.handleBlur}
+                        style={{textAlign: "center"}}
+                    /> <br/>
+                    {story_formik.errors.title ? <div className="ErrorMsg">{story_formik.errors.title} </div> : null}
+
+                    <textarea
+                        rows="10"
+                        name="content"
+                        value={story_formik.values.content}
+                        onChange={story_formik.handleChange}
+                        onBlur={story_formik.handleBlur}
+                        placeholder="Content"
+                    /> <br/>
+                    {story_formik.errors.content ? <div className="ErrorMsg">{story_formik.errors.content} </div> : null}
+                </div>
+                <div>
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+        )
         let stories = schoolClass.stories.map((story)=>{
             return (
                 <div className="list-div" key={story.id}>
@@ -157,8 +361,45 @@ const SchoolClass = () => {
         let stories_div = (
             <div className="list-div-wrapper">
                 <h2>Stories</h2>
+                {create_story_form}
                 {schoolClass.stories.length === 0 ? <p>There are no stories</p> : null}
                 {stories}
+            </div>
+        )
+
+        // STUDENTS
+        let create_student_form = (
+            <form onSubmit={student_formik.handleSubmit}>
+                <div>
+                    <input
+                        type="text"
+                        placeholder="Name"
+                        name="name"
+                        value={student_formik.values.name}
+                        onChange={student_formik.handleChange}
+                        onBlur={student_formik.handleBlur}
+                        style={{textAlign: "center"}}
+                    /> <br/>
+                    {student_formik.errors.name ? <div className="ErrorMsg">{student_formik.errors.name} </div> : null}
+                </div>
+                <div>
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+        )
+        let students = schoolClass.students.map((student)=>{
+            return (
+                <div className="list-div" key={student.id}>
+                    <h3>{student.name}</h3>
+                </div>
+            )
+        });
+        let students_div = (
+            <div className="list-div-wrapper">
+                <h2>Students</h2>
+                {create_student_form}
+                {schoolClass.students.length === 0 ? <p>There are no students</p> : null}
+                {students}
             </div>
         )
 
@@ -171,6 +412,7 @@ const SchoolClass = () => {
                     {announcements_div}
                     {events_div}
                     {stories_div}
+                    {students_div}
                 </div>
             </div>
         )

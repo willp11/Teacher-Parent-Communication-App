@@ -3,11 +3,12 @@
 }
 
 .list-div-wrapper {
-    min-height: 500px;
+    height: 600px;
     width: 360px;
     padding: 10px;
     border: 1px solid grey;
     border-radius: 5px;
+    overflow: scroll;
 }
 
 .list-div {
