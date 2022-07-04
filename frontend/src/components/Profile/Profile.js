@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import authSlice from "../../store/slices/auth";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { Link } from 'react-router-dom';
 
 const Profile = () => {
 
@@ -116,7 +117,6 @@ const Profile = () => {
                 console.log(res);
                 if (res.status === 201) {
                     getUserProfile()
-                    console.log("Created teacher account")
                 }
             })
             .catch(err=>{
@@ -138,7 +138,6 @@ const Profile = () => {
                 console.log(res);
                 if (res.status === 201) {
                     getUserProfile()
-                    console.log("Created teacher account")
                 }
             })
             .catch(err=>{
@@ -314,8 +313,8 @@ const Profile = () => {
             // CLASS LIST
             let school_class_list = profile.teacher.school_classes.map((school_class) => {
                 return (
-                    <div className="school-class-div">
-                        <h4>{school_class.name}</h4>
+                    <div key={school_class.id} className="school-class-list-div">
+                        <Link to={"/class/"+school_class.id}><h4>{school_class.name}</h4></Link>
                     </div>
                 )
             })

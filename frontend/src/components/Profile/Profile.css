@@ -95,8 +95,7 @@
     cursor: pointer;
 }
 
-.school-class-div {
-    cursor: pointer;
+.school-class-list-div {
     box-sizing: border-box;
     width: 300px;
     max-width: 90vw;

@@ -15,6 +15,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { Provider } from "react-redux";
 import Profile from './components/Profile/Profile';
 import Logout from './components/Logout/Logout';
+import SchoolClass from './components/SchoolClass/SchoolClass';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -27,6 +28,7 @@ root.render(
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path="/class/:id" element={<SchoolClass />} />
         </Routes>
       </BrowserRouter>
     </PersistGate>
