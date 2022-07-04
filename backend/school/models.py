@@ -27,7 +27,7 @@ class Parent(models.Model):
 
 class SchoolClass(models.Model):
     name = models.CharField(max_length=100)
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='school_classes')
     school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):

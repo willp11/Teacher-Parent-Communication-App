@@ -11,11 +11,17 @@ class SchoolSerializer(serializers.ModelSerializer):
         model = School
         fields = '__all__'
 
+class ClassNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = School
+        fields = ('id', 'name',)
+
 class TeacherSerializer(serializers.ModelSerializer):
     school = SchoolSerializer()
+    school_classes = ClassNameSerializer(many=True)
     class Meta:
         model = Teacher
-        fields = '__all__'
+        fields = ('id', 'school', 'school_classes')
 
 class TeacherCreateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -88,6 +94,11 @@ class StoryMediaSerializer(serializers.ModelSerializer):
         model = StoryMedia
         fields = '__all__'
 
+class ClassListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SchoolClass
+        fields = '__all__'
+
 class ClassDetailSerializer(serializers.ModelSerializer):
     announcements = AnnouncementSerializer(many=True)
     events = EventSerializer(many=True)
@@ -97,15 +108,10 @@ class ClassDetailSerializer(serializers.ModelSerializer):
         model = SchoolClass
         fields = ('announcements', 'events', 'stories')
 
-class ClassListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SchoolClass
-        fields = '__all__'
-
 class ClassCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = SchoolClass
-        fields = ('name', 'teacher', 'school')
+        fields = ('name',)
 
 class StudentCreateSerializer(serializers.ModelSerializer):
     class Meta:

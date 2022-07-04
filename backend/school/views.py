@@ -82,7 +82,7 @@ class ClassCreateView(CreateAPIView):
     def perform_create(self, serializer):
         # user must be a teacher
         teacher = get_object_or_404(Teacher, user=self.request.user)
-        serializer.save(teacher=teacher)
+        serializer.save(teacher=teacher, school=teacher.school)
 
 class StudentCreateView(CreateAPIView):
     serializer_class = StudentCreateSerializer
