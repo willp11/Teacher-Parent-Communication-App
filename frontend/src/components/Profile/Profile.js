@@ -24,6 +24,7 @@ const Profile = () => {
     const [selectedSchool, setSelectedSchool] = useState("");
     const [editSettingsMode, setEditSettingsMode] = useState(false);
     const [editedParentSettings, setEditedParentSettings] = useState(null);
+    const [newClassName, setNewClassName] = useState("");
     const [profile, setProfile] = useState({
         username: "",
         first_name: "",
@@ -43,7 +44,6 @@ const Profile = () => {
 
         axios.get('http://localhost:8000/api/v1/dj-rest-auth/user/', {headers: headers})
             .then(res=>{
-                console.log(res);
                 setProfile(res.data);
                 dispatch(authSlice.actions.setAccount({account: res.data}));
                 if (res.data.parent !== null) {
@@ -64,7 +64,6 @@ const Profile = () => {
 
         axios.get('http://localhost:8000/api/v1/school/school-list-create/', {headers: headers})
             .then(res=>{
-                console.log(res);
                 setSchoolList(res.data);
             })
             .catch(err=>{
@@ -113,6 +112,28 @@ const Profile = () => {
             school: null
         }
         axios.post('http://localhost:8000/api/v1/school/teacher-create/', data, {headers: headers})
+            .then(res=>{
+                console.log(res);
+                if (res.status === 201) {
+                    getUserProfile()
+                    console.log("Created teacher account")
+                }
+            })
+            .catch(err=>{
+                console.log(err);
+            })
+    }
+
+    const createClassHandler = () => {
+        // send POST request to create a new class
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token
+        };
+        const data = {
+            name: newClassName
+        }
+        axios.post('http://localhost:8000/api/v1/school/class-create/', data, {headers: headers})
             .then(res=>{
                 console.log(res);
                 if (res.status === 201) {
@@ -257,10 +278,6 @@ const Profile = () => {
         </div>
     )
 
-    // CHILDREN LIST (PARENT ACCOUNT ONLY)
-    // if account type is parent, get list of children that have this parent - GET student_list_by_parent
-    // display link to student list by parent by page and pass in the list of students
-
     let email_verified_div = null;
     let select_account_type_div = null;
     let account_type_div = null;
@@ -292,7 +309,17 @@ const Profile = () => {
                     <button className="account-type-submit" onClick={handleSelectAccountType}>Submit</button>
                 </div>
             )
-        } else if (profile.teacher !== null) {
+        } // TEACHER ACCOUNT
+        else if (profile.teacher !== null) {
+            // CLASS LIST
+            let school_class_list = profile.teacher.school_classes.map((school_class) => {
+                return (
+                    <div className="school-class-div">
+                        <h4>{school_class.name}</h4>
+                    </div>
+                )
+            })
+
             account_type_div = (
                 <div>
                     <h2>Account Type</h2>
@@ -300,9 +327,16 @@ const Profile = () => {
                     <h3>School</h3>
                     <p>{profile.teacher.school === null ? "You do not have a school yet!" : profile.teacher.school.name}</p>
                     {selectSchoolDiv}
+                    <h3>My Classes</h3>
+                    {school_class_list}
+                    <h3>Create Class</h3>
+                    <input value={newClassName} onChange={(e)=>setNewClassName(e.target.value)} placeholder="Name"/>
+                    <button onClick={createClassHandler}>Create new class</button>
                 </div>
             )
-        } else if (profile.parent !== null) {
+        } // PARENT ACCOUNT 
+        else if (profile.parent !== null) {
+            // CHILDREN LIST 
             let children_list = profile.parent.children.map(child => {
                 return (
                     <div key={child.id} className="children-list-div">
@@ -312,6 +346,7 @@ const Profile = () => {
                     </div>
                 )
             })
+            // PARENT SETTINGS
             let parent_settings = (
                 <div className="parent-settings-div">
                     <h3>Settings</h3>

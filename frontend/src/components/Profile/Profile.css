@@ -94,3 +94,14 @@
 .parent-settings-edit-mode button {
     cursor: pointer;
 }
+
+.school-class-div {
+    cursor: pointer;
+    box-sizing: border-box;
+    width: 300px;
+    max-width: 90vw;
+    margin: 0 auto;
+    padding: 10px;
+    border: 1px solid grey;
+    border-radius: 5px;
+}
