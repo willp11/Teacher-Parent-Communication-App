@@ -99,14 +99,22 @@ class ClassListSerializer(serializers.ModelSerializer):
         model = SchoolClass
         fields = '__all__'
 
+class StudentNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ('id', 'name')
+
 class ClassDetailSerializer(serializers.ModelSerializer):
+    teacher = TeacherNameSerializer()
+    school = SchoolSerializer()
     announcements = AnnouncementSerializer(many=True)
     events = EventSerializer(many=True)
     stories = StorySerializer(many=True)
+    students = StudentNameSerializer(many=True)
 
     class Meta:
         model = SchoolClass
-        fields = ('announcements', 'events', 'stories')
+        fields = ('id', 'name', 'school', 'teacher', 'announcements', 'events', 'stories', 'students')
 
 class ClassCreateSerializer(serializers.ModelSerializer):
     class Meta:

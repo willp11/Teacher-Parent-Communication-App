@@ -92,7 +92,7 @@ class StudentCreateView(CreateAPIView):
         # user must be a teacher
         teacher = get_object_or_404(Teacher, user=self.request.user)
         # user must be teacher of this class
-        school_class = get_object_or_404(SchoolClass, pk=self.request.POST['school_class'][0], teacher=teacher)
+        school_class = get_object_or_404(SchoolClass, pk=self.request.data['school_class'], teacher=teacher)
         student = serializer.save(school_class=school_class)
 
         valid_code = False
@@ -132,7 +132,7 @@ class AnnouncementCreateView(CreateAPIView):
         # user must be a teacher
         teacher = get_object_or_404(Teacher, user=self.request.user)
         # user must be teacher of this class
-        school_class = get_object_or_404(SchoolClass, pk=self.request.POST['school_class'][0], teacher=teacher)
+        school_class = get_object_or_404(SchoolClass, pk=self.request.data['school_class'], teacher=teacher)
         serializer.save(school_class=school_class)
 
 class EventCreateView(CreateAPIView):
@@ -143,7 +143,7 @@ class EventCreateView(CreateAPIView):
         # user must be a teacher
         teacher = get_object_or_404(Teacher, user=self.request.user)
         # user must be teacher of this class
-        school_class = get_object_or_404(SchoolClass, pk=self.request.POST['school_class'][0], teacher=teacher)
+        school_class = get_object_or_404(SchoolClass, pk=self.request.data['school_class'], teacher=teacher)
         serializer.save(school_class=school_class)
 
 class StoryCreateView(CreateAPIView):
@@ -154,7 +154,7 @@ class StoryCreateView(CreateAPIView):
         # user must be a teacher
         teacher = get_object_or_404(Teacher, user=self.request.user)
         # user must be teacher of this class
-        school_class = get_object_or_404(SchoolClass, pk=self.request.POST['school_class'][0], teacher=teacher)
+        school_class = get_object_or_404(SchoolClass, pk=self.request.data['school_class'], teacher=teacher)
         serializer.save(school_class=school_class)
 
 class StoryMediaCreateView(CreateAPIView):
@@ -165,7 +165,7 @@ class StoryMediaCreateView(CreateAPIView):
         # user must be a teacher
         teacher = get_object_or_404(Teacher, user=self.request.user)
         # get story 
-        story = get_object_or_404(Story, pk=self.request.POST['story'][0])
+        story = get_object_or_404(Story, pk=self.request.data['story'])
         # user must be teacher of the class that story belongs to
         get_object_or_404(SchoolClass, pk=story.school_class.pk, teacher=teacher)
         serializer.save(story=story)
@@ -178,7 +178,7 @@ class AssignmentCreateView(CreateAPIView):
         # user must be a teacher
         teacher = get_object_or_404(Teacher, user=self.request.user)
         # user must be teacher of this class
-        school_class = get_object_or_404(SchoolClass, pk=self.request.POST['school_class'][0], teacher=teacher)
+        school_class = get_object_or_404(SchoolClass, pk=self.request.data['school_class'], teacher=teacher)
         serializer.save(school_class=school_class)
 
 class AssigneeCreateView(ListCreateAPIView):
@@ -224,7 +224,7 @@ class AssignmentMediaCreateView(CreateAPIView):
     def perform_create(self, serializer):
         # user must be teacher of class that assignment is set for
         teacher = get_object_or_404(Teacher, user=self.request.user)
-        assignee = get_object_or_404(Assignee, pk=self.request.POST['assignee'][0])
+        assignee = get_object_or_404(Assignee, pk=self.request.data['assignee'])
         assignment = get_object_or_404(Assignment, pk=assignee.assignment.pk)
         if assignment.school_class.teacher != teacher:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
