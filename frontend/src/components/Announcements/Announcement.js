@@ -103,7 +103,7 @@ const Announcements = (props) => {
         }
     }
 
-    // CREATE/UPDATE ANNOUNCEMENT FORM
+    // CREATE ANNOUNCEMENT FORM
     let create_announcement_form = (
         <form onSubmit={announcement_formik.handleSubmit}>
             <div>
@@ -156,7 +156,7 @@ const Announcements = (props) => {
         )
         return (
             <div className="list-div" key={announcement.id}>
-                {(editMode) ? editOnDiv : editOffDiv}
+                {(editMode && announcementToEdit === announcement.id) ? editOnDiv : editOffDiv}
             </div>
         )
     });
@@ -164,7 +164,7 @@ const Announcements = (props) => {
     let announcements_div = (
         <div className="list-div-wrapper">
             <h2>Announcements</h2>
-            {(!editMode) ? create_announcement_form : null}
+            {create_announcement_form}
             {announcements.length === 0 ? <p>There are no announcements</p> : null}
             {announcements}
         </div>
