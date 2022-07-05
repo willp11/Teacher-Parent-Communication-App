@@ -126,6 +126,11 @@ class StudentCreateSerializer(serializers.ModelSerializer):
         model = Student
         fields = ('pk', 'name', 'school_class')
 
+class StudentUpdateNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ('name',)
+
 class AssigneeCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignee
