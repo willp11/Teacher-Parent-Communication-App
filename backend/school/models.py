@@ -50,6 +50,7 @@ class Assignment(models.Model):
     def __str__(self):
         return self.title
 
+
 class Assignee(models.Model):
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='portfolio')
@@ -59,6 +60,9 @@ class Assignee(models.Model):
 
     def __str__(self):
         return self.student.name + self.assignment.title
+
+    class Meta:
+        unique_together = ('student', 'assignment')
 
 class AssignmentMedia(models.Model):
     assignee = models.ForeignKey(Assignee, on_delete=models.CASCADE, related_name='assignment_media')

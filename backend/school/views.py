@@ -345,12 +345,43 @@ class AssigneeDeleteView(RetrieveDestroyAPIView):
         assignee = instance
         teacher = get_object_or_404(Teacher, user=self.request.user)
         assignment = get_object_or_404(Assignment, pk=assignee.assignment.pk)
+
         # check user is teacher of the class
         if assignment.school_class.teacher != teacher:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         else:
             instance.delete()
             return Response(status=status.HTTP_200_OK)
+
+# TO DO
+# ASSIGNEE DELETE LIST VIEW
+# take a list of assignees that we want to delete
+class AssigneeDeleteListView(ListAPIView, DestroyAPIView):
+    serializer_class = AssigneeDeleteSerializer
+    permission_classes = [IsAuthenticated, IsEmailVerified]
+
+    def get_queryset(self):
+        assignment = get_object_or_404(Assignment, pk=self.kwargs['pk'])
+        return Assignee.objects.filter(assignment=assignment)
+
+    # overwrite destroy so can pass in a list
+    def destroy(self, request, *args, **kwargs):
+        # check user is teacher of the class
+        teacher = get_object_or_404(Teacher, user=self.request.user)
+        assignment = get_object_or_404(Assignment, pk=self.kwargs['pk'])
+        if assignment.school_class.teacher != teacher:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        # get all instances - put in list to ensure we get all and don't just delete some
+        assignment_objects = []
+        for assignee in request.data:
+            instance = get_object_or_404(Assignee, assignment=assignee['assignment'], student=assignee['student'])
+            assignment_objects.append(instance)
+        # delete the instances
+        for obj in assignment_objects:
+            obj.delete()
+
+        return Response(status=status.HTTP_200_OK)
 
 class AssignmentMediaCreateView(CreateAPIView):
     serializer_class = AssignmentMediaSerializer

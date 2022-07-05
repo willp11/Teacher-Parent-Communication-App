@@ -153,7 +153,6 @@ class StudentUpdateNameSerializer(serializers.ModelSerializer):
         fields = ('name',)
 
 class AssigneeCreateSerializer(serializers.ModelSerializer):
-    student = StudentNameSerializer()
     class Meta:
         model = Assignee
         fields = ('id', 'assignment', 'student')
