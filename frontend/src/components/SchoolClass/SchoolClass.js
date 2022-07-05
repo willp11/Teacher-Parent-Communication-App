@@ -8,6 +8,7 @@ import Announcements from '../Announcements/Announcement';
 import Events from '../Events/Events';
 import Stories from '../Stories/Stories';
 import Students from '../Students/Students';
+import Assignments from '../Assignments/Assignments';
 
 const SchoolClass = () => {
 
@@ -67,6 +68,7 @@ const SchoolClass = () => {
                     <Events getClassInfo={getClassInfo} events={schoolClass.events} handleDelete={handleDelete} classId={schoolClass.id}/>
                     <Stories getClassInfo={getClassInfo} stories={schoolClass.stories} handleDelete={handleDelete} classId={schoolClass.id} />
                     <Students getClassInfo={getClassInfo} students={schoolClass.students} handleDelete={handleDelete} classId={schoolClass.id} />
+                    <Assignments getClassInfo={getClassInfo} assignments={schoolClass.assignments} handleDelete={handleDelete} classId={schoolClass.id} />
                 </div>
             </div>
         )
