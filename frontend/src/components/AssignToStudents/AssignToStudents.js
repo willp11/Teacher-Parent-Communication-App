@@ -100,7 +100,7 @@ const AssignToStudents = (props) => {
             'Authorization': 'Token ' + token
         }
         const url = 'http://localhost:8000/api/v1/school/assignee-delete-list/' + props.assignment.id + '/';
-        axios.post(url, data_arr, {headers: headers})
+        axios.delete(url, {headers: headers, data: data_arr})
             .then(res=>{
                 console.log(res);
                 getAllocatedStudents();
@@ -120,7 +120,7 @@ const AssignToStudents = (props) => {
         selectedStudents.forEach((stud, index)=>{
             // if there, remove it
             if (stud.id === student.id) {
-                console.log(`found student: ${student.id}`)
+                console.log(`found student in selectedStudents: ${student.id}`)
                 newStudentsList.splice(index, 1);
                 foundStudent = true;
             }
@@ -144,7 +144,7 @@ const AssignToStudents = (props) => {
         selectDeleteStudents.forEach((stud, index)=>{
             // if there, remove it
             if (stud.id === student.id) {
-                console.log(`found student: ${student.id}`)
+                console.log(`found student in selectDeleteStudents: ${student.id}`)
                 newStudentsList.splice(index, 1);
                 foundStudent = true;
             }
@@ -163,7 +163,7 @@ const AssignToStudents = (props) => {
         return (
             <div style={{margin: "10px"}} key={student.id}>
                 {student.name}
-                <input type="checkbox" onChange={()=>handleSelectStudent(student)}/>
+                <input type="checkbox" onChange={()=>handleSelectStudentToDelete(student)}/>
             </div>
         )
     })
@@ -171,7 +171,7 @@ const AssignToStudents = (props) => {
         return (
             <div style={{margin: "10px"}} key={student.id}>
                 {student.name}
-                <input type="checkbox" onChange={()=>handleSelectStudentToDelete(student)}/>
+                <input type="checkbox" onChange={()=>handleSelectStudent(student)}/>
             </div>
         )
     })
