@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import * as Yup from 'yup';
 import axios from "axios";
 import { useState } from "react";
+import AssignToStudents from "../AssignToStudents/AssignToStudents";
 
 const Assignments = (props) => {
 
@@ -18,6 +19,19 @@ const Assignments = (props) => {
         description: "",
         maximum_score: 0
     });
+
+    // ASSIGN TO STUDENTS MODE
+    const [assignMode, setAssignMode] = useState(false);
+    const [assignmentToAssign, setAssignmentToAssign] = useState(null);
+    const toggleAssignMode = (assignment) => {
+        if (assignMode) {
+            setAssignMode(false);
+            setAssignmentToAssign(null);
+        } else {
+            setAssignMode(true);
+            setAssignmentToAssign(assignment);
+        }
+    }
 
     // CREATE ASSIGNMENT FUNCTION
     const handleCreateAssignment = (title, description, maximum_score, actions) => {
@@ -169,7 +183,9 @@ const Assignments = (props) => {
                 <p>{assignment.description}</p>
                 <p>Maximum score: {assignment.maximum_score}</p>
                 <button onClick={()=>toggleEditMode(assignment)}>Edit</button> <br/>
-                <button onClick={()=>props.handleDelete(assignment.id, "assignment")}>Delete</button>
+                <button onClick={()=>props.handleDelete(assignment.id, "assignment")}>Delete</button> <br />
+
+                <button style={{marginTop: "20px"}} onClick={()=>toggleAssignMode(assignment)}>Assign</button> <br/>
             </div>
         )
         return (
@@ -187,7 +203,11 @@ const Assignments = (props) => {
         </div>
     )
 
-    return assignments_div;
+    if (assignMode) {
+        return <AssignToStudents students={props.students} assignment={assignmentToAssign} toggleAssignMode={toggleAssignMode}/>
+    } else {
+        return assignments_div;
+    }
 
 }
 

@@ -6,8 +6,8 @@ function App() {
   return (
     <div className="App">
       <Navigation />
-      <h1>Django Auth Template</h1>
-      <p>Front-end to interact with a Django app that implements user authentication using the dj-rest-auth and allauth packages, including email verification.</p>
+      <h1>Parent Teacher Communication</h1>
+      <p>An application for teachers to organize their classes and communicate with the parents of their students.</p>
     </div>
   );
 }
