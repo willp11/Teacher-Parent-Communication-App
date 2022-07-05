@@ -153,14 +153,15 @@ class StudentUpdateNameSerializer(serializers.ModelSerializer):
         fields = ('name',)
 
 class AssigneeCreateSerializer(serializers.ModelSerializer):
+    student = StudentNameSerializer()
     class Meta:
         model = Assignee
-        fields = ('pk', 'assignment', 'student')
+        fields = ('id', 'assignment', 'student')
 
 class AssigneeDeleteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignee
-        fields = ('pk')
+        fields = ('id',)
 
 class AssignmentMediaSerializer(serializers.ModelSerializer):
     class Meta:

@@ -313,36 +313,44 @@ class AssigneeCreateView(ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsEmailVerified]
 
     def get_queryset(self):
+        assignment = get_object_or_404(Assignment, pk=self.kwargs['pk'])
+        return Assignee.objects.filter(assignment=assignment)
+
+    # override create so that we can pass a list
+    def create(self, request, *args, **kwargs):
         # check user is teacher of the class
         teacher = get_object_or_404(Teacher, user=self.request.user)
         assignment = get_object_or_404(Assignment, pk=self.kwargs['pk'])
         if assignment.school_class.teacher != teacher:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
-        return Assignee.objects.filter(assignment=assignment)
 
-    # override create so that we can pass a list
-    def create(self, request, *args, **kwargs):
+        # TO DO - overwrite serializer to ensure student is member of the class
         serializer = self.get_serializer(data=request.data, many=True)
         if serializer.is_valid():
             serializer.save()
             headers = self.get_success_headers(serializer.data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED,
-                            headers=headers)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class AssigneeDeleteView(DestroyAPIView):
+class AssigneeDeleteView(RetrieveDestroyAPIView):
     serializer_class = AssigneeDeleteSerializer
     permission_classes = [IsAuthenticated, IsEmailVerified]
 
     def get_object(self):
-        # check user is teacher of the class
-        teacher = get_object_or_404(Teacher, user=self.request.user)
         assignee = get_object_or_404(Assignee, pk=self.kwargs['pk'])
+        return assignee
+
+    def perform_destroy(self, instance):
+        assignee = instance
+        teacher = get_object_or_404(Teacher, user=self.request.user)
         assignment = get_object_or_404(Assignment, pk=assignee.assignment.pk)
+        # check user is teacher of the class
         if assignment.school_class.teacher != teacher:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
-        return assignee
+        else:
+            instance.delete()
+            return Response(status=status.HTTP_200_OK)
 
 class AssignmentMediaCreateView(CreateAPIView):
     serializer_class = AssignmentMediaSerializer
