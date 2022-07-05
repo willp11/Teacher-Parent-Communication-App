@@ -89,10 +89,20 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
         fields = '__all__'
 
+class EventUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ('name', 'date', 'description', 'helpers_required')
+
 class StorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Story
         fields = '__all__'
+
+class StoryUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Story
+        fields = ('title', 'content')
 
 class StoryMediaSerializer(serializers.ModelSerializer):
     class Meta:

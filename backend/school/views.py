@@ -202,6 +202,20 @@ class EventDeleteView(RetrieveDestroyAPIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         return event
 
+class EventUpdateView(RetrieveUpdateAPIView):
+    serializer_class = EventUpdateSerializer
+    permission_classes = [IsAuthenticated, IsEmailVerified]
+
+    def get_object(self):
+        # user must be a teacher
+        teacher = get_object_or_404(Teacher, user=self.request.user)
+        # user must be teacher of the class that the event belongs to
+        event = get_object_or_404(Event, pk=self.kwargs['pk'])
+        school_class = get_object_or_404(SchoolClass, pk=event.school_class.pk)
+        if school_class.teacher != teacher:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        return event
+
 class StoryCreateView(CreateAPIView):
     serializer_class = StorySerializer
     permission_classes = [IsAuthenticated, IsEmailVerified]
@@ -228,6 +242,20 @@ class StoryMediaCreateView(CreateAPIView):
 
 class StoryDeleteView(RetrieveDestroyAPIView):
     serializer_class = StorySerializer
+    permission_classes = [IsAuthenticated, IsEmailVerified]
+
+    def get_object(self):
+        # user must be a teacher
+        teacher = get_object_or_404(Teacher, user=self.request.user)
+        # user must be teacher of the class that the story belongs to
+        story = get_object_or_404(Story, pk=self.kwargs['pk'])
+        school_class = get_object_or_404(SchoolClass, pk=story.school_class.pk)
+        if school_class.teacher != teacher:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        return story
+
+class StoryUpdateView(RetrieveUpdateAPIView):
+    serializer_class = StoryUpdateSerializer
     permission_classes = [IsAuthenticated, IsEmailVerified]
 
     def get_object(self):
