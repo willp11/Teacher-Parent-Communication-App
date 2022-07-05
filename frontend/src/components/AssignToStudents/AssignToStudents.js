@@ -9,15 +9,18 @@ const AssignToStudents = (props) => {
 
     // list of allocated students
     const [allocatedStudents, setAllocatedStudents] = useState([]);
+    // list of not allocated students
+    const [notAllocatedStudents, setNotAllocatedStudents] = useState([]);
     // list of selected students - that we want to pass to assignee-create API
     const [selectedStudents, setSelectedStudents] = useState([]);
-
-    // students list - updated to say whether they have already been allocated
-    const [updatedStudentsList, setUpdatedStudentsList] = useState([]);
+    // list of already assigned select students - that we want to pass to assignee-delete API
+    const [selectDeleteStudents, setSelectDeleteStudents] = useState([]);
 
     // UPDATE STUDENTS LIST FROM PROPS TO SHOW IF ALLOCATED ALREADY
     const updateStudentProps = useCallback((allocatedStudents) => {
         let studentsList = [...props.students];
+        let allocatedList = [];
+        let notAllocatedList = [];
         for (let i=0; i<studentsList.length; i++) {
             let student = studentsList[i];
             let alreadyAllocated = false;
@@ -26,9 +29,14 @@ const AssignToStudents = (props) => {
                     alreadyAllocated = true;
                 }
             })
-            student.allocated = alreadyAllocated;
+            if (alreadyAllocated) {
+                allocatedList.push(student)
+            } else {
+                notAllocatedList.push(student)
+            }
         }
-        setUpdatedStudentsList(studentsList)
+        setAllocatedStudents(allocatedList);
+        setNotAllocatedStudents(notAllocatedList);
     }, [props.students])
 
     // GET ALL ALLOCATED STUDENTS FUNCTION
@@ -81,6 +89,27 @@ const AssignToStudents = (props) => {
             })
     }   
 
+    // DELETE ASSIGNED STUDENTS FUNCTION
+    const handleUnassignStudents = () => {
+        let data_arr = [];
+        selectDeleteStudents.forEach(student=>{
+            data_arr.push({assignment: props.assignment.id, student: student.id})
+        })
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token
+        }
+        const url = 'http://localhost:8000/api/v1/school/assignee-delete-list/' + props.assignment.id + '/';
+        axios.post(url, data_arr, {headers: headers})
+            .then(res=>{
+                console.log(res);
+                getAllocatedStudents();
+            })
+            .catch(err=>{
+                console.log(err);
+            })
+    }
+
     // ADD/REMOVE STUDENT FROM SELECTED STUDENTS
     const handleSelectStudent = (student) => {
         // copy student list from state
@@ -105,12 +134,44 @@ const AssignToStudents = (props) => {
         setSelectedStudents(newStudentsList);
     }
 
-    // Create student list div
-    let students_list = updatedStudentsList.map((student)=>{
+    // ADD/REMOVE STUDENT FROM ALREADY ASSIGNED SELECTED STUDENTS
+    const handleSelectStudentToDelete = (student) => {
+        // copy student list from state
+        let newStudentsList = [...selectDeleteStudents];
+
+        // search selectedStudents for the student
+        let foundStudent = false;
+        selectDeleteStudents.forEach((stud, index)=>{
+            // if there, remove it
+            if (stud.id === student.id) {
+                console.log(`found student: ${student.id}`)
+                newStudentsList.splice(index, 1);
+                foundStudent = true;
+            }
+        })
+        // if not, add it
+        if (foundStudent === false) {
+            newStudentsList.push(student);
+        }
+
+        // update state
+        setSelectDeleteStudents(newStudentsList);
+    }
+
+    // Create student list divs
+    let allocated_student_list = allocatedStudents.map((student)=>{
         return (
             <div style={{margin: "10px"}} key={student.id}>
                 {student.name}
-                <input type="checkbox" onChange={()=>handleSelectStudent(student)} checked={student.allocated}/>
+                <input type="checkbox" onChange={()=>handleSelectStudent(student)}/>
+            </div>
+        )
+    })
+    let not_allocated_student_list = notAllocatedStudents.map((student)=>{
+        return (
+            <div style={{margin: "10px"}} key={student.id}>
+                {student.name}
+                <input type="checkbox" onChange={()=>handleSelectStudentToDelete(student)}/>
             </div>
         )
     })
@@ -119,10 +180,15 @@ const AssignToStudents = (props) => {
     let assign_to_students_div = (
         <div className="list-div-wrapper">
             <button onClick={handleGoBack} style={{marginTop: "20px"}}>Go Back</button>
-            <p>Which students do you want to give the assignment to?</p>
             <h2>{props.assignment.title}</h2>
-            {students_list}
+            <h3>Unassigned Students</h3>
+            <p>Which students do you want to give the assignment to?</p>
+            {not_allocated_student_list}
             <button onClick={handleAssignStudents}>Submit</button>
+            <h3>Assigned Students</h3>
+            <p>These students have already been allocated, select to remove them from the assignment.</p>
+            {allocated_student_list}
+            <button onClick={handleUnassignStudents}>Submit</button>
         </div>
     )
 
