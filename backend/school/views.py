@@ -279,6 +279,35 @@ class AssignmentCreateView(CreateAPIView):
         school_class = get_object_or_404(SchoolClass, pk=self.request.data['school_class'], teacher=teacher)
         serializer.save(school_class=school_class)
 
+class AssignmentDeleteView(RetrieveDestroyAPIView):
+    serializer_class = AssignmentSerializer
+    permission_classes = [IsAuthenticated, IsEmailVerified]
+
+    def get_object(self):
+        # user must be a teacher
+        teacher = get_object_or_404(Teacher, user=self.request.user)
+        # user must be teacher of the class that the assignment belongs to
+        assignment = get_object_or_404(Assignment, pk=self.kwargs['pk'])
+        school_class = get_object_or_404(SchoolClass, pk=assignment.school_class.pk)
+        if school_class.teacher != teacher:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        return assignment
+
+class AssignmentUpdateView(RetrieveUpdateAPIView):
+    serializer_class = AssignmentUpdateSerializer
+    permission_classes = [IsAuthenticated, IsEmailVerified]
+
+    def get_object(self):
+        # user must be a teacher
+        teacher = get_object_or_404(Teacher, user=self.request.user)
+        # user must be teacher of the class that the assignment belongs to
+        assignment = get_object_or_404(Assignment, pk=self.kwargs['pk'])
+        school_class = get_object_or_404(SchoolClass, pk=assignment.school_class.pk)
+        if school_class.teacher != teacher:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        return assignment
+
+
 class AssigneeCreateView(ListCreateAPIView):
     serializer_class = AssigneeCreateSerializer
     permission_classes = [IsAuthenticated, IsEmailVerified]

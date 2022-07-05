@@ -69,6 +69,11 @@ class AssignmentSerializer(serializers.ModelSerializer):
         model = Assignment
         fields = '__all__'
 
+class AssignmentUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Assignment
+        fields = ('title', 'description', 'maximum_score')
+
 class AssigneeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignee
@@ -126,10 +131,11 @@ class ClassDetailSerializer(serializers.ModelSerializer):
     events = EventSerializer(many=True)
     stories = StorySerializer(many=True)
     students = StudentNameSerializer(many=True)
+    assignments = AssignmentSerializer(many=True)
 
     class Meta:
         model = SchoolClass
-        fields = ('id', 'name', 'school', 'teacher', 'announcements', 'events', 'stories', 'students')
+        fields = ('id', 'name', 'school', 'teacher', 'announcements', 'events', 'stories', 'students', 'assignments')
 
 class ClassCreateSerializer(serializers.ModelSerializer):
     class Meta:

@@ -44,7 +44,7 @@ class Student(models.Model):
 class Assignment(models.Model):
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=512)
-    school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE)
+    school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE, related_name='assignments')
     maximum_score = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
