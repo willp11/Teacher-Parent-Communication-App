@@ -163,6 +163,20 @@ class AnnouncementDeleteView(RetrieveDestroyAPIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         return announcement
 
+class AnnouncementUpdateView(RetrieveUpdateAPIView):
+    serializer_class = AnnouncementUpdateSerializer
+    permission_classes = [IsAuthenticated, IsEmailVerified]
+
+    def get_object(self):
+        # user must be a teacher
+        teacher = get_object_or_404(Teacher, user=self.request.user)
+        # user must be teacher of the class that the announcement belongs to
+        announcement = get_object_or_404(Announcement, pk=self.kwargs['pk'])
+        school_class = get_object_or_404(SchoolClass, pk=announcement.school_class.pk)
+        if school_class.teacher != teacher:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        return announcement
+
 class EventCreateView(CreateAPIView):
     serializer_class = EventSerializer
     permission_classes = [IsAuthenticated, IsEmailVerified]

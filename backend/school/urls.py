@@ -15,6 +15,7 @@ urlpatterns = [
     path('student-update/<int:pk>/', StudentUpdateView.as_view(), name='student_update'),
     path('announcement-create/', AnnouncementCreateView.as_view(), name='announcement_create'),
     path('announcement-delete/<int:pk>/', AnnouncementDeleteView.as_view(), name='announcement_delete'),
+    path('announcement-update/<int:pk>/', AnnouncementUpdateView.as_view(), name='announcement_update'),
     path('event-create/', EventCreateView.as_view(), name='event_create'),
     path('event-delete/<int:pk>/', EventDeleteView.as_view(), name='event_delete'),
     path('story-create/', StoryCreateView.as_view(), name='story_create'),

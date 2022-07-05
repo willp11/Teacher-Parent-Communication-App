@@ -79,6 +79,11 @@ class AnnouncementSerializer(serializers.ModelSerializer):
         model = Announcement
         fields = '__all__'
 
+class AnnouncementUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Announcement
+        fields = ('title', 'content')
+
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
