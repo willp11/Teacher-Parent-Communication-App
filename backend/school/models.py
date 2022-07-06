@@ -50,7 +50,6 @@ class Assignment(models.Model):
     def __str__(self):
         return self.title
 
-
 class Assignee(models.Model):
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='portfolio')
@@ -122,7 +121,7 @@ class StickerType(models.Model):
         return self.name
 
 class Sticker(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='stickers')
     type = models.ForeignKey(StickerType, on_delete=models.CASCADE)
 
 class NotificationMode(models.Model):

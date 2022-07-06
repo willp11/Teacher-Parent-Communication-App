@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from .serializers import *
 from .models import *
 from .utils import check_has_child_in_class, generate_invite_code
-from .permissions import IsEmailVerified
+from .permissions import IsEmailVerified, IsStudentParentOrTeacher
 
 class SchoolCreateView(ListCreateAPIView):
     serializer_class = SchoolSerializer
@@ -432,12 +432,10 @@ class AssigneeInPortfolioUpdateView(RetrieveUpdateAPIView):
 
 class StudentPortfolioGetView(RetrieveAPIView):
     serializer_class = StudentPortfolioSerializer
-    permission_classes = [IsAuthenticated, IsEmailVerified]
+    permission_classes = [IsAuthenticated, IsEmailVerified, IsStudentParentOrTeacher]
 
     def get_object(self):
         student = get_object_or_404(Student, pk=self.kwargs['pk'])
-        if student.school_class.teacher.user != self.request.user and student.parent.user != self.request.user:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
         return student
 
 class EventRequestHelpersUpdateView(RetrieveUpdateAPIView):

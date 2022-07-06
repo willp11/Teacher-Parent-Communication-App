@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from .models import *
 
+class UsernameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('username',)
+
 class UserNameOnlySerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
@@ -99,6 +104,22 @@ class EventUpdateSerializer(serializers.ModelSerializer):
         model = Event
         fields = ('name', 'date', 'description', 'helpers_required')
 
+class StoryCommentListSerializer(serializers.ModelSerializer):
+    author = UsernameSerializer()
+    class Meta:
+        model = StoryComment
+        fields = '__all__'
+
+class StoryCommentCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StoryComment
+        fields = ('content', 'story')
+
+class StoryCommentUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StoryComment
+        fields = ('content', 'updated_at',)
+
 class StorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Story
@@ -183,11 +204,17 @@ class PortfolioItemSerializer(serializers.ModelSerializer):
         model = Assignee
         fields = ('assignment', 'feedback', 'score', 'assignment_media')
 
+class StickerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sticker
+        fields = '__all__'
+
 class StudentPortfolioSerializer(serializers.ModelSerializer):
     portfolio = PortfolioItemSerializer(many=True)
+    stickers = StickerSerializer(many=True)
     class Meta:
         model = Student
-        fields = ('pk', 'name', 'parent', 'school_class', 'portfolio')
+        fields = ('pk', 'name', 'parent', 'school_class', 'portfolio', 'stickers')
 
 class RequestHelpersSerializer(serializers.ModelSerializer):
     class Meta:
@@ -198,27 +225,6 @@ class HelperSerializer(serializers.ModelSerializer):
     class Meta:
         model = Helper
         fields = ('event',)
-
-class UsernameSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ('username',)
-
-class StoryCommentListSerializer(serializers.ModelSerializer):
-    author = UsernameSerializer()
-    class Meta:
-        model = StoryComment
-        fields = '__all__'
-
-class StoryCommentCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = StoryComment
-        fields = ('content', 'story')
-
-class StoryCommentUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = StoryComment
-        fields = ('content', 'updated_at',)
 
 class ChatGroupSerializer(serializers.ModelSerializer):
     class Meta:
