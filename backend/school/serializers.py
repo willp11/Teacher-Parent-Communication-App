@@ -214,10 +214,19 @@ class InviteCodeOnlySerializer(serializers.ModelSerializer):
         model = InviteCode
         fields = ('code',)
 
+class StudentsClassInfoSerializer(serializers.ModelSerializer):
+    teacher = TeacherNameSerializer()
+    school = SchoolSerializer()
+
+    class Meta:
+        model = SchoolClass
+        fields = ('id', 'name', 'school', 'teacher')
+
 class StudentPortfolioSerializer(serializers.ModelSerializer):
     portfolio = PortfolioItemSerializer(many=True)
     stickers = StickerSerializer(many=True)
     invite_code = InviteCodeOnlySerializer()
+    school_class = StudentsClassInfoSerializer()
     class Meta:
         model = Student
         fields = ('pk', 'name', 'parent', 'school_class', 'portfolio', 'stickers', 'invite_code')
