@@ -18,6 +18,7 @@ const Navigation = () => {
             <div className="Nav">
                 <Link to="/logout">Logout</Link>
                 <Link to="/profile">Profile</Link>
+                <Link to="/chatHub">Chat</Link>
             </div>
         );
     }

@@ -95,7 +95,7 @@ const StudentProfile = () => {
         // Assignments div
         let assignments = studentProfile.portfolio.map((assignment)=>{
             return (
-                <div className="student-profile-assignment">
+                <div className="student-profile-assignment" key={assignment.assignment.id}>
                     <h2>{assignment.assignment.title}</h2>
                     <p>{assignment.assignment.description}</p>
                     <p><b>Score: </b>{assignment.score === null ? "--" : assignment.score} / {assignment.assignment.maximum_score}</p>
