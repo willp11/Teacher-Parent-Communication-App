@@ -1,10 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import StoryComments from "../StoryComments/StoryComments";
 
 const Story = (props) => {
 
     const token = useSelector((state) => state.auth.token);
+
+    // COMMENTS LIST
+    const [comments, setComments] = useState([]);
+
+    // GET ALL COMMENTS FOR THIS STORY
+    const getStoryComments = useCallback(()=>{
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token
+        }
+        const url = 'http://localhost:8000/api/v1/school/story-comment-list/' + props.story.id + '/';
+        axios.get(url, {headers: headers})
+            .then(res=>{
+                console.log(res);
+                setComments(res.data);
+            })
+            .catch(err=>{
+                console.log(err);
+            })
+    }, [token, props.story.id])
+
+    // ON MOUNT - GET STORY'S COMMENTS
+    useEffect(()=>{
+        getStoryComments();
+    }, [getStoryComments]);
 
     // EDIT MODE 
     const [editMode, setEditMode] = useState(false);
@@ -72,6 +98,7 @@ const Story = (props) => {
         <div>
             <h3>{props.story.title}</h3>
             <p>{props.story.content}</p>
+            <StoryComments story={props.story} comments={comments} getStoryComments={getStoryComments}/>
             <button onClick={()=>toggleEditMode(props.story)}>Edit</button> <br/>
             <button onClick={()=>props.handleDelete(props.story.id, "story")}>Delete</button>
         </div>

@@ -83,7 +83,7 @@ const Stories = (props) => {
     let stories_div = (
         <div className="list-div-wrapper">
             <h2>Stories</h2>
-            {create_story_form}
+            {/* {create_story_form} */}
             {props.stories.length === 0 ? <p>There are no stories</p> : null}
             {stories}
         </div>
