@@ -83,6 +83,7 @@ const AssignToStudents = (props) => {
             .then(res=>{
                 console.log(res);
                 getAllocatedStudents();
+                setSelectedStudents([]);
             })
             .catch(err=>{
                 console.log(err);
@@ -104,6 +105,7 @@ const AssignToStudents = (props) => {
             .then(res=>{
                 console.log(res);
                 getAllocatedStudents();
+                setSelectDeleteStudents([]);
             })
             .catch(err=>{
                 console.log(err);
@@ -181,12 +183,11 @@ const AssignToStudents = (props) => {
         <div className="list-div-wrapper">
             <button onClick={handleGoBack} style={{marginTop: "20px"}}>Go Back</button>
             <h2>{props.assignment.title}</h2>
-            <h3>Unassigned Students</h3>
             <p>Which students do you want to give the assignment to?</p>
             {not_allocated_student_list}
             <button onClick={handleAssignStudents}>Submit</button>
             <h3>Assigned Students</h3>
-            <p>These students have already been allocated, select to remove them from the assignment.</p>
+            <p>These students have already been given the assignment, select to unassign them.</p>
             {allocated_student_list}
             <button onClick={handleUnassignStudents}>Submit</button>
         </div>
