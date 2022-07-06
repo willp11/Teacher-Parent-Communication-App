@@ -65,10 +65,10 @@ const SchoolClass = () => {
                 <p><b>Teacher: </b>{schoolClass.teacher.user.first_name + " " + schoolClass.teacher.user.last_name}</p>
                 <div className="FlexRowCentered">
                     {/* <Announcements getClassInfo={getClassInfo} announcements={schoolClass.announcements} handleDelete={handleDelete} classId={schoolClass.id}/>
-                    <Events getClassInfo={getClassInfo} events={schoolClass.events} handleDelete={handleDelete} classId={schoolClass.id}/>
-                    <Stories getClassInfo={getClassInfo} stories={schoolClass.stories} handleDelete={handleDelete} classId={schoolClass.id} /> */}
-                    <Students getClassInfo={getClassInfo} students={schoolClass.students} handleDelete={handleDelete} classId={schoolClass.id} />
-                    <Assignments getClassInfo={getClassInfo} assignments={schoolClass.assignments} students={schoolClass.students} handleDelete={handleDelete} classId={schoolClass.id} />
+                    <Events getClassInfo={getClassInfo} events={schoolClass.events} handleDelete={handleDelete} classId={schoolClass.id}/> */}
+                    <Stories getClassInfo={getClassInfo} stories={schoolClass.stories} handleDelete={handleDelete} classId={schoolClass.id} />
+                    {/* <Students getClassInfo={getClassInfo} students={schoolClass.students} handleDelete={handleDelete} classId={schoolClass.id} />
+                    <Assignments getClassInfo={getClassInfo} assignments={schoolClass.assignments} students={schoolClass.students} handleDelete={handleDelete} classId={schoolClass.id} /> */}
                 </div>
             </div>
         )

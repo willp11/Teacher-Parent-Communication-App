@@ -2,21 +2,11 @@ import { useFormik } from "formik";
 import { useSelector } from "react-redux";
 import * as Yup from 'yup';
 import axios from "axios";
-import { useState } from "react";
+import Story from "../Story/Story";
 
 const Stories = (props) => {
 
     const token = useSelector((state) => state.auth.token);
-
-    // EDIT MODE - when on, all edit buttons disappear. On story being edited, show cancel and confirm buttons.
-    const [editMode, setEditMode] = useState(false);
-    // use story id
-    const [storyToEdit, setStoryToEdit] = useState(null);
-    // edited story new object
-    const [newStoryObj, setNewStoryObj] = useState({
-        title: "",
-        content: ""
-    });
 
     // CREATE STORY FUNCTION
     const handleCreateStory = (title, content, actions) => {
@@ -56,53 +46,6 @@ const Stories = (props) => {
         })
     });
 
-    // EDIT STORY FUNCTION
-    // Inputs 
-    const handleUpdateStoryObj = (field, value) => {
-        let newObj = {...newStoryObj};
-        newObj[field] = value;
-        setNewStoryObj(newObj);
-    }
-    // Confirm button
-    const handleEditStoryConfirm = () => {
-        const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Token ' + token
-        }
-        const data = newStoryObj;
-        const url = 'http://localhost:8000/api/v1/school/story-update/' + storyToEdit + '/';
-        axios.put(url, data, {headers: headers})
-            .then(res=>{
-                console.log(res);
-                props.getClassInfo();
-            })
-            .catch(err => {
-                console.log(err);
-            })
-            .finally(()=>{
-                toggleEditMode(null);
-                setNewStoryObj({
-                    title: "",
-                    content: ""
-                });
-            })
-    }
-    // Turn on/off edit mode
-    const toggleEditMode = (story) => {
-        if (editMode) {
-            setEditMode(false);
-            setStoryToEdit(null);
-            setNewStoryObj({
-                title: "",
-                content: ""
-            });
-        } else {
-            setEditMode(true);
-            setStoryToEdit(story.id);
-            setNewStoryObj(story);
-        }
-    }
-
     // STORIES
     let create_story_form = (
         <form onSubmit={story_formik.handleSubmit}>
@@ -134,29 +77,9 @@ const Stories = (props) => {
         </form>
     )
     let stories = props.stories.map((story)=>{
-        let editOnDiv = (
-            <div>
-                <h3>{story.title}</h3>
-                <input placeholder="New Title" value={newStoryObj.title} onChange={(e)=>handleUpdateStoryObj("title", e.target.value)}/>
-                <textarea placeholder="New Content" value={newStoryObj.content} onChange={(e)=>handleUpdateStoryObj("content", e.target.value)} rows="10"/> <br/>
-                <button onClick={()=>toggleEditMode(null)}>Cancel</button>
-                <button onClick={()=>handleEditStoryConfirm()}>Confirm</button>
-            </div>
-        )
-        let editOffDiv = (
-            <div>
-                <h3>{story.title}</h3>
-                <p>{story.content}</p>
-                <button onClick={()=>toggleEditMode(story)}>Edit</button> <br/>
-                <button onClick={()=>props.handleDelete(story.id, "story")}>Delete</button>
-            </div>
-        )
-        return (
-            <div className="list-div" key={story.id}>
-                {(editMode && storyToEdit === story.id) ? editOnDiv : editOffDiv}
-            </div>
-        )
+        return <Story story={story} handleDelete={props.handleDelete} key={story.id} getClassInfo={props.getClassInfo}/>
     });
+
     let stories_div = (
         <div className="list-div-wrapper">
             <h2>Stories</h2>
