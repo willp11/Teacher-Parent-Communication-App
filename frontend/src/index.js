@@ -16,6 +16,7 @@ import { Provider } from "react-redux";
 import Profile from './components/Profile/Profile';
 import Logout from './components/Logout/Logout';
 import SchoolClass from './components/SchoolClass/SchoolClass';
+import StudentProfile from './components/StudentProfile/StudentProfile';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -29,6 +30,7 @@ root.render(
           <Route path="/profile" element={<Profile />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/class/:id" element={<SchoolClass />} />
+          <Route path="/studentProfile/:id" element={<StudentProfile />} />
         </Routes>
       </BrowserRouter>
     </PersistGate>
