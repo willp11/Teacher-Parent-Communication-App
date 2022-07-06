@@ -199,6 +199,7 @@ class AssigneeInPortfolioUpdateSerializer(serializers.ModelSerializer):
         fields = ('pk', 'in_portfolio')
 
 class PortfolioItemSerializer(serializers.ModelSerializer):
+    assignment = AssignmentSerializer()
     assignment_media = AssignmentMediaSerializer(many=True)
     class Meta:
         model = Assignee

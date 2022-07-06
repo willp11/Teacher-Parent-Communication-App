@@ -613,3 +613,16 @@ class ChatGroupMessageList(ListAPIView):
         # check user is member of group
         get_object_or_404(GroupMember, group=group, user=self.request.user)
         return Message.objects.filter(group=group)
+
+class StickerCreateView(CreateAPIView):
+    serializer_class = StickerSerializer
+    permission_classes = [IsAuthenticated, IsEmailVerified]
+
+    def perform_create(self, serializer):
+        # get student
+        student = get_object_or_404(Student, pk=self.request.data['student'])
+        # check user is teacher of the student's class
+        if student.school_class.teacher.user != self.request.user:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        serializer.save()
