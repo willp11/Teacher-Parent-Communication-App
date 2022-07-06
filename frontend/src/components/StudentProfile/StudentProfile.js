@@ -4,12 +4,20 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Navigation from "../Navigation/Navigation";
 import axios from "axios";
+import starImg from '../../Assets/Images/star-sticker.jpg';
+import dinosaurImg from '../../Assets/Images/dinosaur-sticker.jpg';
+import catImg from '../../Assets/Images/cat-sticker.jpg';
 
 const StudentProfile = () => {
 
     const { id } = useParams();
     const token = useSelector((state)=>state.auth.token);
     const [studentProfile, setStudentProfile] = useState(null);
+    const [studentStickers, setStudentStickers] = useState({
+        star: 0,
+        dinosaur: 0,
+        cat: 0
+    });
 
     // GET STUDENT'S PROFILE DATA FUNCTION
     const getStudentData = useCallback(()=>{
@@ -22,6 +30,23 @@ const StudentProfile = () => {
             .then(res=>{
                 console.log(res);
                 setStudentProfile(res.data);
+
+                // count the student's stickers of each type
+                let stickers = {
+                    star: 0,
+                    dinosaur: 0,
+                    cat: 0
+                };
+                res.data.stickers.forEach(sticker=>{
+                    if (sticker.type === 1) {
+                        stickers.star += 1;
+                    } else if (sticker.type === 2) {
+                        stickers.dinosaur += 1;
+                    } else if (sticker.type === 3) {
+                        stickers.cat += 1;
+                    }
+                })
+                setStudentStickers(stickers);
             })
             .catch(err=>{
                 console.log(err);
@@ -87,11 +112,22 @@ const StudentProfile = () => {
         )
         
         // Stickers div
-        let stickers = studentProfile.stickers.map((sticker)=>{
-            return (
-                <p>Sticker</p>
-            )
-        })
+        let stickers = (
+            <div>
+                <div style={{display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
+                    <h3>{studentStickers.star}</h3>
+                    <img src={starImg} style={{height: "50px", width: "50px"}} alt="star" />
+                </div>
+                <div style={{display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
+                    <h3>{studentStickers.dinosaur}</h3>
+                    <img src={dinosaurImg} style={{height: "50px", width: "50px"}} alt="dinosaur" />
+                </div>
+                <div style={{display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
+                    <h3>{studentStickers.cat}</h3>
+                    <img src={catImg} style={{height: "50px", width: "50px"}} alt="cat" />
+                </div>
+            </div>
+        )
         let stickers_div = (
             <div className="student-profile-stickers-div">
                 <h2>Stickers</h2>

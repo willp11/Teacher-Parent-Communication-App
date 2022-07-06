@@ -1,7 +1,9 @@
+import './Student.css';
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import AwardSticker from '../AwardSticker/AwardSticker';
 
 const Student = (props) => {
     
@@ -60,6 +62,7 @@ const Student = (props) => {
             <Link to={"/studentProfile/"+props.student.id}><h3>{props.student.name}</h3></Link>
             <button onClick={()=>toggleEditMode(props.student.id)}>Edit</button> <br/>
             <button onClick={()=>props.handleDelete(props.student.id, "student")}>Delete</button>
+            <AwardSticker student={props.student} />
         </div>
     )
 

@@ -1,0 +1,20 @@
+.student-award-sticker-div {
+    box-sizing: border-box;
+    padding: 10px;
+    width: 250px;
+    margin: 20px auto;
+    border: 1px solid grey;
+    border-radius: 5px;
+}
+
+.student-award-sticker-div-inner {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px;
+}
+
+.student-award-sticker-div button {
+    margin: 10px;
+}
