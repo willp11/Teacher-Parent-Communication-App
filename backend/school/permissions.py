@@ -1,6 +1,6 @@
 from rest_framework.permissions import BasePermission
 from django.shortcuts import get_object_or_404
-from .models import Student
+from .models import ChatGroup, Student
 
 class IsEmailVerified(BasePermission):
     def has_permission(self, request, view):
@@ -19,6 +19,13 @@ class IsStudentParentOrTeacher(BasePermission):
         if student.parent != None:
             if student.parent.user == request.user:
                 user_is_parent = True
-        if user_is_parent == False and user_is_teacher == False:
-            return False
-        return True
+        if user_is_parent == True or user_is_teacher == True:
+            return True
+        return False
+
+class IsChatOwner(BasePermission):
+    def has_permission(self, request, view):
+        group = get_object_or_404(ChatGroup, pk=view.kwargs['pk'])
+        if group.group_owner == request.user:
+            return True
+        return False

@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from .serializers import *
 from .models import *
 from .utils import check_has_child_in_class, generate_invite_code
-from .permissions import IsEmailVerified, IsStudentParentOrTeacher
+from .permissions import IsEmailVerified, IsStudentParentOrTeacher, IsChatOwner
 
 class SchoolCreateView(ListCreateAPIView):
     serializer_class = SchoolSerializer
@@ -538,21 +538,26 @@ class ParentSettingsUpdateView(RetrieveUpdateAPIView):
         return settings
 
 class ChatGroupCreateView(CreateAPIView):
-    serializer_class = ChatGroupSerializer
+    serializer_class = ChatGroupCreateSerializer
     permission_classes = [IsAuthenticated, IsEmailVerified]
 
     def perform_create(self, serializer):
         serializer.save(group_owner=self.request.user)
 
-class ChatGroupAddMembersView(ListCreateAPIView):
-    serializer_class = GroupMemberSerializer
+# Get all a user's chat groups they own and are a member of
+class ChatGroupUserGetView(RetrieveAPIView):
+    serializer_class = UserChatGroupsSerializer
     permission_classes = [IsAuthenticated, IsEmailVerified]
 
+    def get_object(self):
+        return self.request.user
+
+class ChatGroupAddMembersView(ListCreateAPIView):
+    serializer_class = GroupMemberSerializer
+    permission_classes = [IsAuthenticated, IsEmailVerified, IsChatOwner]
+
     def get_queryset(self):
-        # check user is owner of the chat
         group = get_object_or_404(ChatGroup, pk=self.kwargs['pk'])
-        if group.group_owner != self.request.user:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
         return GroupMember.objects.filter(group=group)
 
     # override create so that we can pass a list
@@ -626,3 +631,11 @@ class StickerCreateView(CreateAPIView):
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         serializer.save()
+
+class TeacherContactsGetListView(RetrieveAPIView):
+    serializer_class = TeacherContactsSerializer
+    permission_classes = [IsAuthenticated, IsEmailVerified]
+
+    def get_object(self):
+        teacher = get_object_or_404(Teacher, user=self.request.user)
+        return teacher

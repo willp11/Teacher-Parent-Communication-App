@@ -242,16 +242,35 @@ class HelperSerializer(serializers.ModelSerializer):
         model = Helper
         fields = ('event',)
 
+# CHAT GROUPS
 class ChatGroupSerializer(serializers.ModelSerializer):
+    group_owner = UserNameOnlySerializer()
     class Meta:
         model = ChatGroup
-        fields = ('name',)
+        fields = ('id', 'name', 'group_owner',)
 
 class GroupMemberSerializer(serializers.ModelSerializer):
+    group = ChatGroupSerializer()
     class Meta:
         model = GroupMember
         fields = '__all__'
 
+# create group - don't need owner as request.user is owner
+class ChatGroupCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChatGroup
+        fields = ('id', 'name',)
+
+# Serializers to get a user's chat groups
+class UserChatGroupsSerializer(serializers.ModelSerializer):
+    chat_groups_owned = ChatGroupSerializer(many=True)
+    chat_group_member = GroupMemberSerializer(many=True)
+    class Meta:
+        model = CustomUser
+        fields = ('chat_groups_owned', 'chat_group_member')
+
+
+# MESSAGES
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
@@ -266,3 +285,28 @@ class InviteCodeCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = InviteCode
         fields = ('student', 'code', 'used')
+
+# Serializers to get all a teacher's classes with the list of students and parent's names
+class ParentNameSerializer(serializers.ModelSerializer):
+    user = UserNameOnlySerializer()
+    class Meta:
+        model = Parent
+        fields = ('user',)
+
+class StudentParentSerializer(serializers.ModelSerializer):
+    parent = ParentNameSerializer()
+    class Meta:
+        model = Student
+        fields = ('id', 'name', 'parent')
+
+class ClassStudentsSerializer(serializers.ModelSerializer):
+    students = StudentParentSerializer(many=True)
+    class Meta:
+        model = SchoolClass
+        fields = ('id', 'name', 'students',)
+
+class TeacherContactsSerializer(serializers.ModelSerializer):
+    school_classes = ClassStudentsSerializer(many=True)
+    class Meta:
+        model = Teacher
+        fields = ('school_classes',)

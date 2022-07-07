@@ -46,5 +46,7 @@ urlpatterns = [
     path('chat-message-create/', MessageCreateView.as_view(), name='chat_message_create'),
     path('chat-group-members-list/<int:pk>/', ChatGroupMembersList.as_view(), name='chat_group_members_list'),
     path('chat-group-message-list/<int:pk>/', ChatGroupMessageList.as_view(), name='chat_group_message_list'),
-    path('sticker-create/', StickerCreateView.as_view(), name='sticker_create')
+    path('sticker-create/', StickerCreateView.as_view(), name='sticker_create'),
+    path('teacher-contacts-get/', TeacherContactsGetListView.as_view(), name='teacher_contacts_get'),
+    path('chat-group-user-get/', ChatGroupUserGetView.as_view(), name='chat_group_user_get')
 ]
