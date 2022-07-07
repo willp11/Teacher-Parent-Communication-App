@@ -1,5 +1,5 @@
 import ChatContacts from "../ChatContacts/ChatContacts";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 
@@ -10,12 +10,48 @@ const AddMembers = (props) => {
     // list of parents to add to group
     const [parentList, setParentList] = useState([]);
 
+    // show contacts div
+    const [showContacts, setShowContacts] = useState(true);
+
+    // already member error message
+    const [message, setMessage] = useState("");
+    const [messageCount, setMessageCount] = useState(0);
+
+    // remove error message after 5 seconds
+    useEffect(()=>{
+        let resetMsg = setTimeout(()=>{
+            setMessage("");
+        }, [5000]);
+
+        return () => {
+            clearTimeout(resetMsg);
+        }
+    }, [messageCount])
+
+    // function to toggle showing contacts
+    const toggleShowContacts = () => {
+        setShowContacts(!showContacts);
+    }
+
     // function to handle adding new parents to list
     const addToListHandler = (parent) => {
         // check user isn't already in list
         let userFound = false;
         parentList.forEach(p=>{
-            if (p.user.id === parent.user.id) userFound = true;
+            if (p.user.id === parent.user.id) {
+                userFound = true;
+                setMessage(`${parent.user.first_name} ${parent.user.last_name} is already in the list`);
+                setMessageCount(messageCount + 1);
+            }
+        })
+
+        // check user isn't already a group member
+        props.members.forEach(member=>{
+            if (member.user.id === parent.user.id) {
+                userFound = true;
+                setMessage(`${parent.user.first_name} ${parent.user.last_name} is already in the group`);
+                setMessageCount(messageCount + 1);
+            } 
         })
 
         // add user to list
@@ -84,14 +120,20 @@ const AddMembers = (props) => {
             <h3>Users to add</h3>
             {(parentList.length > 0) ? user_list : <p>No users added to list</p>}
             {(parentList.length > 0) ? <button onClick={submitParentListHandler}>submit</button> : null}
+            <p style={{fontSize: "0.8rem"}}>{message}</p>
         </div>
+    )
+
+    let show_contacts_btn = (
+        <button style={{marginBottom: "10px"}} onClick={toggleShowContacts}>{showContacts ? "Hide Contacts" : "Show Contacts"}</button>
     )
 
     return (
         <div className="add-users-to-group-div">
             <h2>Add to group</h2>
             {user_list_div}
-            <ChatContacts from="add_members" addToListHandler={addToListHandler}/>
+            {show_contacts_btn}
+            {showContacts ? <ChatContacts from="add_members" addToListHandler={addToListHandler}/> : null }
         </div>
     )
 }
