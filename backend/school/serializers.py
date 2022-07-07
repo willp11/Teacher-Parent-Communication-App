@@ -255,6 +255,12 @@ class GroupMemberSerializer(serializers.ModelSerializer):
         model = GroupMember
         fields = '__all__'
 
+# add members to group
+class GroupMemberCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GroupMember
+        fields = ('user', 'group')
+
 # create group - don't need owner as request.user is owner
 class ChatGroupCreateSerializer(serializers.ModelSerializer):
     class Meta:

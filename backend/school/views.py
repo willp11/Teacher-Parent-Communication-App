@@ -553,7 +553,7 @@ class ChatGroupUserGetView(RetrieveAPIView):
         return self.request.user
 
 class ChatGroupAddMembersView(ListCreateAPIView):
-    serializer_class = GroupMemberSerializer
+    serializer_class = GroupMemberCreateSerializer
     permission_classes = [IsAuthenticated, IsEmailVerified, IsChatOwner]
 
     def get_queryset(self):
@@ -594,8 +594,9 @@ class ChatGroupMembersList(ListAPIView):
 
     def get_queryset(self):
         group = get_object_or_404(ChatGroup, pk=self.kwargs['pk'])
-        # check user is member of group
-        get_object_or_404(GroupMember, group=group, user=self.request.user)
+        # TO DO - MAKE PERMISSION TO ENSURE USER IS EITHER MEMBER OR OWNER OF THE GROUP
+        # # check user is member of group
+        # get_object_or_404(GroupMember, group=group, user=self.request.user)
         return GroupMember.objects.filter(group=group)
 
 class MessageCreateView(CreateAPIView):
@@ -615,8 +616,9 @@ class ChatGroupMessageList(ListAPIView):
 
     def get_queryset(self):
         group = get_object_or_404(ChatGroup, pk=self.kwargs['pk'])
-        # check user is member of group
-        get_object_or_404(GroupMember, group=group, user=self.request.user)
+        # TO DO - MAKE PERMISSION TO ENSURE USER IS EITHER MEMBER OR OWNER OF THE GROUP
+        # # check user is member of group
+        # get_object_or_404(GroupMember, group=group, user=self.request.user)
         return Message.objects.filter(group=group)
 
 class StickerCreateView(CreateAPIView):
