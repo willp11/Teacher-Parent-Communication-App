@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import CreateChatGroup from '../CreateChatGroup/CreateChatGroup';
+import { Link } from 'react-router-dom';
 
 const ChatGroups = () => {
 
@@ -39,7 +40,7 @@ const ChatGroups = () => {
     let groups_owned_list = groupsOwned.map(group=>{
         return (
             <div className="border" key={group.id}>
-                <h4>{group.name}</h4>
+                <Link to={`/chatGroup/${group.id}`}><h4>{group.name}</h4></Link>
                 <p style={{fontSize: "0.8rem"}}>Owned by: You</p>
             </div>
         )
@@ -49,7 +50,7 @@ const ChatGroups = () => {
     let groups_member_of_list = groupsMemberOf.map(group=>{
         return (
             <div className="border" key={group.group.id}>
-                <h4>{group.group.name}</h4>
+                <Link to={`/chatGroup/${group.group.id}`}><h4>{group.group.name}</h4></Link>
                 <p style={{fontSize: "0.8rem"}}>Owned by: {group.group.group_owner.first_name} {group.group.group_owner.last_name}</p>
             </div>
         )

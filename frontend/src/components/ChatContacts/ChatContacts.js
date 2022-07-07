@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
-const ChatContacts = () => {
+const ChatContacts = (props) => {
 
     const token = useSelector((state)=>state.auth.token);
 
@@ -51,7 +51,6 @@ const ChatContacts = () => {
         setStudentNameSearch("");
     }
 
-
     // FUNCTION GET ALL USER'S CONTACTS
     const getTeacherContacts = useCallback(() => {
         const headers = {
@@ -68,6 +67,9 @@ const ChatContacts = () => {
                 console.log(err);
             })
     }, [token])
+
+    // FUNCTION SELECT PARENTS TO ADD TO CHAT GROUP
+    // sends the p
 
     // ON COMPONENT MOUNT - GET CONTACTS
     useEffect(()=>{
@@ -92,7 +94,12 @@ const ChatContacts = () => {
     if (studentFound) {
         let parent = <p>This student has no parent account.</p>;
         if (studentFound.parent !== null) {
-            parent = <p><b>Parent:</b> {studentFound.parent.user.first_name} {studentFound.parent.user.last_name}</p>
+            parent = (
+                <div>
+                    <p><b>Parent:</b> {studentFound.parent.user.first_name} {studentFound.parent.user.last_name}</p>
+                    {props.from === "add_members" ? <button style={{marginBottom: "10px"}} onClick={()=>props.addToListHandler(studentFound.parent)}>Add to group</button> : null}
+                </div>
+            )
         }
     
         search_results_div = (
@@ -124,7 +131,12 @@ const ChatContacts = () => {
             let students = school_class.students.map(student => {
                 let parent = <p>This student has no parent account.</p>;
                 if (student.parent !== null) {
-                    parent = <p><b>Parent:</b> {student.parent.user.first_name} {student.parent.user.last_name}</p>
+                    parent = (
+                        <div>
+                            <p><b>Parent:</b> {student.parent.user.first_name} {student.parent.user.last_name}</p>
+                            {props.from === "add_members" ? <button style={{marginBottom: "10px"}} onClick={()=>props.addToListHandler(student.parent)}>Add to group</button> : null}
+                        </div>
+                    )
                 }
                 return (
                     <div style={{border: "1px solid grey"}} key={student.id} >

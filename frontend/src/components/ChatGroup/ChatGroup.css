@@ -1,0 +1,22 @@
+.ChatGroup {
+    padding: 10px;
+}
+
+.add-users-to-group-div {
+    border: 1px solid grey;
+    width: 800px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 10px;
+}
+
+.add-users-inner-div {
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid grey;
+    border-radius: 5px;
+    width: 600px;
+    margin: 0 auto 10px auto;
+}
