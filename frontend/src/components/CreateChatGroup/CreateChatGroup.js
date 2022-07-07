@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axios from 'axios';
 
-const CreateChatGroup = () => {
+const CreateChatGroup = (props) => {
     const token = useSelector((state)=>state.auth.token);
     const [newGroupName, setNewGroupName] = useState("");
     const [message, setMessage] = useState("");
@@ -33,6 +33,7 @@ const CreateChatGroup = () => {
                 setNewGroupName("");
                 setMessage("Group created successfully");
                 setCountMsgUpdates(countMsgUpdates+1);
+                props.getUserChatGroups()
             })
             .catch(err=>{
                 console.log(err);

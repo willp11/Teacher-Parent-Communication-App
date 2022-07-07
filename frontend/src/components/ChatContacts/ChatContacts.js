@@ -79,7 +79,8 @@ const ChatContacts = () => {
     let search_students_div = null;
     if (contactList) {
         search_students_div = (
-            <div>
+            <div className="search-contacts-div">
+                <h3>Search</h3>
                 <input placeholder="Class Name" onChange={(e)=>setClassNameSearch(e.target.value)} />
                 <input placeholder="Student Name" onChange={(e)=>setStudentNameSearch(e.target.value)} />
                 <button onClick={()=>searchStudents(classNameSearch, studentNameSearch)}>Submit</button>
