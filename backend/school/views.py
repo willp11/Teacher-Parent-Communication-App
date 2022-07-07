@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from .serializers import *
 from .models import *
 from .utils import check_has_child_in_class, generate_invite_code
-from .permissions import IsEmailVerified, IsStudentParentOrTeacher, IsChatOwner
+from .permissions import IsEmailVerified, IsStudentParentOrTeacher, IsChatOwner, IsChatOwnerOrMember
 
 class SchoolCreateView(ListCreateAPIView):
     serializer_class = SchoolSerializer
@@ -590,13 +590,10 @@ class ChatGroupDeleteMemberView(RetrieveDestroyAPIView):
 
 class ChatGroupMembersList(ListAPIView):
     serializer_class = GroupMemberSerializer
-    permission_classes = [IsAuthenticated, IsEmailVerified]
+    permission_classes = [IsAuthenticated, IsEmailVerified, IsChatOwnerOrMember]
 
     def get_queryset(self):
         group = get_object_or_404(ChatGroup, pk=self.kwargs['pk'])
-        # TO DO - MAKE PERMISSION TO ENSURE USER IS EITHER MEMBER OR OWNER OF THE GROUP
-        # # check user is member of group
-        # get_object_or_404(GroupMember, group=group, user=self.request.user)
         return GroupMember.objects.filter(group=group)
 
 class MessageCreateView(CreateAPIView):
@@ -612,13 +609,10 @@ class MessageCreateView(CreateAPIView):
 
 class ChatGroupMessageList(ListAPIView):
     serializer_class = MessageSerializer
-    permission_classes = [IsAuthenticated, IsEmailVerified]
+    permission_classes = [IsAuthenticated, IsEmailVerified, IsChatOwnerOrMember]
 
     def get_queryset(self):
         group = get_object_or_404(ChatGroup, pk=self.kwargs['pk'])
-        # TO DO - MAKE PERMISSION TO ENSURE USER IS EITHER MEMBER OR OWNER OF THE GROUP
-        # # check user is member of group
-        # get_object_or_404(GroupMember, group=group, user=self.request.user)
         return Message.objects.filter(group=group)
 
 class StickerCreateView(CreateAPIView):

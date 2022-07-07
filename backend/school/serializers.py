@@ -250,6 +250,7 @@ class ChatGroupSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'group_owner',)
 
 class GroupMemberSerializer(serializers.ModelSerializer):
+    user = UserNameOnlySerializer()
     group = ChatGroupSerializer()
     class Meta:
         model = GroupMember

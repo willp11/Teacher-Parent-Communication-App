@@ -1,6 +1,6 @@
 from rest_framework.permissions import BasePermission
 from django.shortcuts import get_object_or_404
-from .models import ChatGroup, Student
+from .models import ChatGroup, GroupMember, Student
 
 class IsEmailVerified(BasePermission):
     def has_permission(self, request, view):
@@ -29,3 +29,17 @@ class IsChatOwner(BasePermission):
         if group.group_owner == request.user:
             return True
         return False
+
+class IsChatOwnerOrMember(BasePermission):
+    def has_permission(self, request, view):
+        group = get_object_or_404(ChatGroup, pk=view.kwargs['pk'])
+        # check if user is owner of group
+        is_owner = False
+        if group.group_owner == request.user:
+            return True
+        # check if user is member of group
+        member_queryset = GroupMember.objects.filter(user=request.user, group=group)
+        if len(member_queryset) > 0:
+            return True
+        return False
+
