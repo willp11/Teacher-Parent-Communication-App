@@ -17,8 +17,8 @@ const Logout = () => {
     return (
         <div className="Logout">
             <Navigation />
-            <h3>Are you sure you want to Logout?</h3>
-            <button onClick={handleLogout}>Confirm logout</button>
+            <h3 className="m-4">Are you sure you want to Logout?</h3>
+            <button className="border-2 border-black rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-2 text-white font-bold" onClick={handleLogout}>Confirm</button>
         </div>
     );
 }

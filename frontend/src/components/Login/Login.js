@@ -74,9 +74,9 @@ const Login = () => {
         <div className="relative bg-white overflow-hidden min-h-screen">
             <div className="max-w-7xl mx-auto">
                 <Navigation />
-                <div className="w-full py-2 px-2 flex items-center justify-center md:px-4 lg:px-8">
-                    <div className="bg-white w-96 p-8 rounded-md border border-gray-300 shadow-sm  bg-slate-50">
-                        <h1 className="text-4xl tracking-tight font-extrabold text-center">Log in</h1>
+                <div className="w-full p-2 flex items-center justify-center md:px-4 lg:px-8">
+                    <div className="w-96 rounded-md border border-gray-300 shadow-sm bg-sky-50">
+                        <h1>Log in</h1>
 
                         <form onSubmit={formik.handleSubmit}>
                             <p className="text-base pt-6 pl-2 pb-2 font-bold">E-mail</p>
@@ -109,7 +109,7 @@ const Login = () => {
                             <button 
                                 disabled={loading}
                                 type="submit"
-                                className="w-full rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-3 text-white font-bold my-2"
+                                className="w-full rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-3 text-white font-bold my-2 border-2 border-black"
                             >
                                 LOGIN
                             </button>

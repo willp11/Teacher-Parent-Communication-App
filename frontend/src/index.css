@@ -15,3 +15,24 @@ code {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  h1 {
+    @apply text-4xl tracking-tight font-extrabold text-center;
+  }
+  h2 {
+    @apply text-2xl font-bold text-center;
+  }
+  h3 {
+    @apply text-xl font-bold text-center;
+  }
+  h4 {
+    @apply text-lg font-bold text-center
+  }
+  .selected {
+    @apply w-20 border-2 border-black rounded-md bg-sky-200 text-gray-800 font-bold p-1 m-1
+  }
+  .unselected {
+    @apply w-20 border-2 border-black rounded-md p-1 m-1
+  }
+}
