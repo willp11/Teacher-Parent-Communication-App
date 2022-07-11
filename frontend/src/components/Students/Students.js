@@ -39,29 +39,33 @@ const Students = (props) => {
             handleCreateStudent(values.name, actions);
         },
         validationSchema: Yup.object({
-            name: Yup.string().trim().required("name is required")
+            name: Yup.string().trim().required("Name is required")
         })
     });
 
     // STUDENTS
     let create_student_form = (
-        <form onSubmit={student_formik.handleSubmit}>
-            <div>
-                <input
-                    type="text"
-                    placeholder="Name"
-                    name="name"
-                    value={student_formik.values.name}
-                    onChange={student_formik.handleChange}
-                    onBlur={student_formik.handleBlur}
-                    style={{textAlign: "center"}}
-                /> <br/>
-                {student_formik.errors.name ? <div className="ErrorMsg">{student_formik.errors.name} </div> : null}
-            </div>
-            <div>
-                <button type="submit">Submit</button>
-            </div>
-        </form>
+        <div className="p-2 mt-2 mb-4 shadow-md bg-white">
+            <h3>Add Student</h3>
+            <form onSubmit={student_formik.handleSubmit}>
+                <div>
+                    <input
+                        type="text"
+                        placeholder="New student's name..."
+                        name="name"
+                        value={student_formik.values.name}
+                        onChange={student_formik.handleChange}
+                        onBlur={student_formik.handleBlur}
+                        style={{textAlign: "center"}}
+                        className="border border-gray-300 mt-2 h-10"
+                    /> <br/>
+                    {student_formik.errors.name ? <div className="text-sm pl-2 py-1">{student_formik.errors.name} </div> : null}
+                </div>
+                <div>
+                    <button type="submit" className="w-32 rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-2 my-2 text-white font-bold border-2 border-black">Submit</button>
+                </div>
+            </form>
+        </div>
     )
 
     let students = props.students.map((student)=>{
@@ -69,11 +73,13 @@ const Students = (props) => {
     });
 
     let students_div = (
-        <div className="list-div-wrapper">
-            <h2>Students</h2>
+        <div>
             {create_student_form}
             {props.students.length === 0 ? <p>There are no students</p> : null}
-            {students}
+            <div className="p-2 shadow-md bg-white">
+                <h3 className="m-2">Student List</h3>
+                {students}
+            </div>
         </div>
     )
 

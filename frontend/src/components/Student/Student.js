@@ -51,23 +51,48 @@ const Student = (props) => {
     // JSX
     let editOnDiv = (
         <div>
-            <h3>{props.student.name}</h3>
-            <input placeholder="New Name" value={newStudentName} onChange={(e)=>setNewStudentName(e.target.value)}/>
-            <button onClick={()=>toggleEditMode(null)}>Cancel</button>
-            <button onClick={()=>handleEditStudentConfirm()}>Confirm</button>
+            <h3 className="text-blue-700 underline">{props.student.name}</h3>
+            <input 
+                placeholder="Type new name..." 
+                value={newStudentName} 
+                onChange={(e)=>setNewStudentName(e.target.value)}
+                className="border border-gray-300 mt-2 h-10 mb-2"
+            /> <br/>
+            <button 
+                onClick={()=>toggleEditMode(null)}
+                className="w-32 rounded-full bg-red-500 hover:bg-red-600 px-2 py-1 my-1 mr-2 text-white font-bold border-2 border-black"
+            >
+                Cancel
+            </button>
+            <button 
+                onClick={()=>handleEditStudentConfirm()}
+                className="w-32 rounded-full bg-sky-500 hover:bg-indigo-500 px-2 py-1 my-1 text-white font-bold border-2 border-black"
+            >
+                Confirm
+            </button>
         </div>
     )
     let editOffDiv = (
         <div>
-            <Link to={"/studentProfile/"+props.student.id}><h3>{props.student.name}</h3></Link>
-            <button onClick={()=>toggleEditMode(props.student.id)}>Edit</button> <br/>
-            <button onClick={()=>props.handleDelete(props.student.id, "student")}>Delete</button>
+            <Link to={"/studentProfile/"+props.student.id}><h3 className="text-blue-700 underline">{props.student.name}</h3></Link>
+            <button 
+                onClick={()=>toggleEditMode(props.student.id)}
+                className="w-32 rounded-full bg-sky-500 hover:bg-indigo-500 px-2 py-1 mt-2 mb-1 text-white font-bold border-2 border-black"
+            >
+                Edit
+            </button> <br/>
+            <button 
+                onClick={()=>props.handleDelete(props.student.id, "student")}
+                className="w-32 rounded-full bg-red-500 hover:bg-red-600 px-2 py-1 my-1 text-white font-bold border-2 border-black"
+            >
+                Delete
+            </button>
             <AwardSticker student={props.student} />
         </div>
     )
 
     return (
-        <div className="list-div">
+        <div className="border border-gray-100 shadow w-96 max-w-full mx-auto mb-4 p-2 bg-sky-100">
             {(editMode) ? editOnDiv : editOffDiv}
         </div>
     )
