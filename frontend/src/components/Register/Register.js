@@ -7,10 +7,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import authSlice from "../../store/slices/auth";
 import Navigation from '../Navigation/Navigation';
+import { Link } from 'react-router-dom';
+import {extractErrors} from '../../Utils/utils';
 
 const Register = () => {
 
-    const [message, setMessage] = useState("");
+    const [errors, setErrors] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
@@ -45,7 +47,7 @@ const Register = () => {
             .catch((err) => {
                 console.log(err);
                 setLoading(false);
-                setMessage(err.response.data.msg.toString());
+                setErrors(extractErrors(err));
             })
     }
 
@@ -61,89 +63,112 @@ const Register = () => {
             handleRegister(values.email, values.firstName, values.lastName, values.password, values.passwordConfirmation);
         },
         validationSchema: Yup.object({
-            email: Yup.string().trim().required("email is required"),
-            firstName: Yup.string().trim().required("first name is required"),
+            email: Yup.string().trim().required("Email is required"),
+            firstName: Yup.string().trim().required("First name is required"),
             // lastName is not required as maybe people only have 1 name
-            password: Yup.string().trim().required("password is required"),
-            passwordConfirmation: Yup.string().required("password confirmation is required").oneOf([Yup.ref('password'), null], 'Passwords must match')
+            lastName: Yup.string().trim(),
+            password: Yup.string().trim().required("Password is required"),
+            passwordConfirmation: Yup.string().required("Password confirmation is required").oneOf([Yup.ref('password'), null], 'Passwords must match')
         })
     });
 
+    // Error messages
+    let errors_div = errors.map(err=>{
+        return (
+            <div className="text-sm pl-2 py-1 font-bold w-full text-center">{err}</div>
+        )
+    })
+
     return (
-        <div className="Register">
-            <Navigation />
-            <h1>Create Account</h1>
-            <form onSubmit={formik.handleSubmit}>
-                <div>
-                    <input
-                        id="email"
-                        type="text"
-                        placeholder="Email"
-                        name="email"
-                        value={formik.values.email}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className="RegisterInput"
-                    /> <br/>
-                    {formik.errors.email ? <div className="RegisterWarning">{formik.errors.email} </div> : null}
+        <div className="relative bg-white overflow-hidden min-h-screen">
+            <div className="max-w-7xl mx-auto">
+                <Navigation />
+                <div className="w-full py-2 px-2 flex items-center justify-center md:px-4 lg:px-8">
+                    <div className="bg-white w-96 p-8 rounded-md border border-gray-300 shadow-sm  bg-slate-50">
+                        <h1 className="text-4xl tracking-tight font-extrabold text-center">Register</h1>
 
-                    <input
-                        id="firstName"
-                        type="text"
-                        placeholder="First Name"
-                        name="firstName"
-                        value={formik.values.firstName}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className="RegisterInput"
-                    /> <br/>
-                    {formik.errors.firstName ? <div className="RegisterWarning">{formik.errors.firstName} </div> : null}
+                        <form onSubmit={formik.handleSubmit}>
+                            <p className="text-base pt-6 pl-2 pb-2 font-bold">E-mail</p>
+                            <input 
+                                type="text"
+                                name="email"
+                                placeholder="Type your e-mail" 
+                                className="p-2 border border-gray-300 w-full" 
+                                value={formik.values.email} 
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            />
+                            {formik.errors.email ? <div className="text-sm pl-2 py-1">{formik.errors.email} </div> : null}
 
-                    <input
-                        id="lastName"
-                        type="text"
-                        placeholder="Last Name"
-                        name="lastName"
-                        value={formik.values.lastName}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className="RegisterInput"
-                    /> <br/>
-                    {formik.errors.lastName ? <div style={{fontSize: "0.8rem"}}>{formik.errors.lastName} </div> : null}
+                            <p className="text-base p-2 font-bold">First Name</p>
+                            <input
+                                type="text"
+                                name="firstName"
+                                placeholder="Type your first name" 
+                                className="p-2 border border-gray-300 w-full" 
+                                value={formik.values.firstName} 
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            />
+                            {formik.errors.firstName ? <div className="text-sm pl-2 py-1">{formik.errors.firstName} </div> : null}
 
-                    <input
-                        id="password"
-                        type="password"
-                        placeholder="Password"
-                        name="password"
-                        value={formik.values.password}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className="RegisterInput"
-                    /> <br/>
-                    {formik.errors.password ? <div className="RegisterWarning">{formik.errors.password} </div> : null}
+                            <p className="text-base p-2 font-bold">Last Name</p>
+                            <input 
+                                type="text"
+                                name="lastName"
+                                placeholder="Type your last name (optional)" 
+                                className="p-2 border border-gray-300 w-full" 
+                                value={formik.values.lastName} 
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            />
 
-                    <input
-                        id="passwordConfirmation"
-                        type="password"
-                        placeholder="Password Confirmation"
-                        name="passwordConfirmation"
-                        value={formik.values.passwordConfirmation}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className="RegisterInput"
-                    />
-                    {formik.errors.passwordConfirmation ? <div className="RegisterWarning">{formik.errors.passwordConfirmation} </div> : null}
+                            <p className="text-base p-2 font-bold">Password</p>
+                            <input 
+                                type="password"
+                                name="password"
+                                placeholder="Type your password" 
+                                className="p-2 border border-gray-300 w-full"
+                                value={formik.values.password}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            />
+                            {formik.errors.password ? <div className="text-sm pl-2 py-1">{formik.errors.password} </div> : null}
+
+                            <p className="text-base p-2 font-bold">Password Confirmation</p>
+                            <input 
+                                type="password"
+                                name="passwordConfirmation"
+                                placeholder="Type your password again" 
+                                className="p-2 border border-gray-300 w-full"
+                                value={formik.values.passwordConfirmation}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            />
+                            {formik.errors.passwordConfirmation ? <div className="text-sm pl-2 py-1">{formik.errors.passwordConfirmation} </div> : null}
+
+                            <button 
+                                disabled={loading} 
+                                type="submit" 
+                                className="w-full rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-3 mt-4 mb-2 text-white font-bold"
+                            >
+                                SIGN UP
+                            </button>
+                        </form>
+
+                        {errors_div}
+                    
+                        <p className="text-sm pt-2">
+                            <span>Already have an account?</span>
+                            <span className="pl-2 font-bold text-indigo-600 hover:text-indigo-500 cursor-pointer">
+                                <Link to="/login">Log in</Link>
+                            </span>
+                        </p>
+                    </div>
                 </div>
-                <div hidden={false}>
-                    {message}
-                </div>
-                <div className="RegisterBtn">
-                    <button type="submit" disabled={loading}>Submit</button>
-                </div>
-            </form>
+            </div>
         </div>
-    );
+    )
 }
 
 export default Register;

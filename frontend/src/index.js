@@ -8,6 +8,8 @@ import {
   Route,
 } from "react-router-dom";
 import App from './App';
+import Home from './components/Home/Home';
+import Features from './components/Features/Features';
 import Login from './components/Login/Login';
 import Register from './components/Register/Register';
 import store, { persistor } from "./store";
@@ -26,7 +28,8 @@ root.render(
     <PersistGate persistor={persistor} loading={null}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<App />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/features" element={<Features />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
