@@ -7,14 +7,16 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
+import store, { persistor } from "./store";
+import { PersistGate } from "redux-persist/integration/react";
+import { Provider } from "react-redux";
+
 import App from './App';
 import Home from './components/Home/Home';
 import Features from './components/Features/Features';
 import Login from './components/Login/Login';
 import Register from './components/Register/Register';
-import store, { persistor } from "./store";
-import { PersistGate } from "redux-persist/integration/react";
-import { Provider } from "react-redux";
+import ForgotPassword from './components/ForgotPassword/ForgotPassword';
 import Profile from './components/Profile/Profile';
 import Logout from './components/Logout/Logout';
 import SchoolClass from './components/SchoolClass/SchoolClass';
@@ -32,6 +34,7 @@ root.render(
           <Route path="/features" element={<Features />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/resetPassword" element={<ForgotPassword/>} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/class/:id" element={<SchoolClass />} />

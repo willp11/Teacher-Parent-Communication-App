@@ -30,6 +30,7 @@ const Login = () => {
             email,
             password: password
         };
+        setLoading(true);
         axios.post('http://localhost:8000/api/v1/dj-rest-auth/login/', data)
             .then((res) => {
                 console.log(res.data);
@@ -103,7 +104,7 @@ const Login = () => {
                             {formik.errors.password ? <div className="text-sm pl-2 py-1">{formik.errors.password} </div> : null}
 
                             <div className="w-full flex justify-end align-center">
-                                <p className="text-sm p-2 cursor-pointer text-gray-500  text-gray-500 hover:text-gray-900">Forgot password?</p>
+                                <Link to="/resetPassword" className="text-sm p-2 cursor-pointer text-gray-500  text-gray-500 hover:text-gray-900">Forgot password?</Link>
                             </div>
                             <button 
                                 disabled={loading}
