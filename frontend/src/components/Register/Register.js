@@ -75,7 +75,7 @@ const Register = () => {
     // Error messages
     let errors_div = errors.map(err=>{
         return (
-            <div className="text-sm pl-2 py-1 font-bold w-full text-center">{err}</div>
+            <div key={err} className="text-sm pl-2 py-1 font-bold w-full text-center">{err}</div>
         )
     })
 
@@ -84,7 +84,7 @@ const Register = () => {
             <div className="max-w-7xl mx-auto">
                 <Navigation />
                 <div className="w-full p-2 flex items-center justify-center md:px-4 lg:px-8">
-                    <div className="w-96 p-8 rounded-md border border-gray-300 shadow-md  bg-sky-50">
+                    <div className="w-96 p-8 rounded-md border border-gray-300 shadow-md  bg-sky-200">
                         <h1>Register</h1>
 
                         <form onSubmit={formik.handleSubmit}>

@@ -47,7 +47,7 @@ const AwardSticker = (props) => {
                 <img src={dinosaurImg} alt="dinosaur" onClick={()=>setSelectedSticker(2)} className={selectedSticker === 2 ? selected_img_classname : img_classname} />
                 <img src={catImg} alt="cat" onClick={()=>setSelectedSticker(3)} className={selectedSticker === 3 ? selected_img_classname : img_classname} />
             </div>
-            <button className="w-24 rounded-full bg-sky-500 hover:bg-indigo-500 px-2 py-2 my-1 text-white font-bold border-2 border-black" onClick={awardSticker}>Submit</button>
+            <button className="w-24 rounded-full bg-sky-500 hover:bg-indigo-500 px-2 py-1 my-1 text-white font-bold border-2 border-black" onClick={awardSticker}>Submit</button>
             <p style={{margin: "5px", fontSize: "0.9rem"}}>{successMsg}</p>
         </div>
     )

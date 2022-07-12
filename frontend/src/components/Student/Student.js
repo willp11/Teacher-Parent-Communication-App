@@ -79,7 +79,7 @@ const Student = (props) => {
                 onClick={()=>toggleEditMode(props.student.id)}
                 className="w-32 rounded-full bg-sky-500 hover:bg-indigo-500 px-2 py-1 mt-2 mb-1 text-white font-bold border-2 border-black"
             >
-                Edit
+                Edit Name
             </button> <br/>
             <button 
                 onClick={()=>props.handleDelete(props.student.id, "student")}

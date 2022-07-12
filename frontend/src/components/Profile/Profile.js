@@ -310,7 +310,7 @@ const Profile = () => {
             // CLASS LIST
             let school_class_list = profile.teacher.school_classes.map((school_class) => {
                 return (
-                    <div key={school_class.id} className="p-2 border border-gray-300 w-64 m-auto shadow-md bg-gray-100 hover:bg-gray-200 font-bold">
+                    <div key={school_class.id} className="p-2 border border-gray-300 w-64 m-auto shadow-md bg-sky-50 hover:bg-sky-100 font-bold">
                         <Link to={"/class/"+school_class.id}><h4>{school_class.name}</h4></Link>
                     </div>
                 )
@@ -345,7 +345,7 @@ const Profile = () => {
             let children_list = profile.parent.children.map(child => {
                 return (
                     <div key={child.id} className="border border-gray-500 rounded-md shadow-md w-64 mx-auto my-2 bg-sky-50">
-                        <h4>{child.name}</h4>
+                        <Link to={"/studentProfile/"+child.id}><h4 className="text-blue-700 underline">{child.name}</h4></Link>
                         <p>{child.school_class.school.name}</p>
                         <p>{child.school_class.name}</p>
                     </div>
@@ -524,7 +524,7 @@ const Profile = () => {
         <div className="relative bg-white overflow-hidden min-h-screen">
             <Navigation />
             <div className="w-full p-2 flex items-center justify-center md:px-4 lg:px-8">
-                <div className="w-full sm:w-[600px] rounded-md border border-gray-300 shadow-sm bg-sky-50 text-center">
+                <div className="w-full sm:w-[600px] rounded-md border border-gray-300 shadow-sm bg-sky-200 text-center">
                     <h1 className="pb-4">Profile</h1>
                     <div className="border border-gray-500 shadow-md mb-2 bg-white">
                         <h2>Name</h2>

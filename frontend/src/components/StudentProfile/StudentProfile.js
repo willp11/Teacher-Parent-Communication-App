@@ -2,6 +2,7 @@ import './StudentProfile.css';
 import { useState, useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { Link } from 'react-router-dom';
 import Navigation from "../Navigation/Navigation";
 import axios from "axios";
 import starImg from '../../Assets/Images/star-sticker.jpg';
@@ -12,12 +13,14 @@ const StudentProfile = () => {
 
     const { id } = useParams();
     const token = useSelector((state)=>state.auth.token);
+
     const [studentProfile, setStudentProfile] = useState(null);
     const [studentStickers, setStudentStickers] = useState({
         star: 0,
         dinosaur: 0,
         cat: 0
     });
+    const [forbidden, setForbidden] = useState(false);
 
     // GET STUDENT'S PROFILE DATA FUNCTION
     const getStudentData = useCallback(()=>{
@@ -50,6 +53,7 @@ const StudentProfile = () => {
             })
             .catch(err=>{
                 console.log(err);
+                if (err.response.status === 403) setForbidden(true);
             })
     }, [token, id]);
 
@@ -62,22 +66,30 @@ const StudentProfile = () => {
     let student_profile_div = (
         <p>Loading...</p>
     )
+    if (forbidden) {
+        student_profile_div = (
+            <div className="w-full sm:w-[600px] rounded-md border border-gray-300 shadow-sm bg-sky-200 text-center">
+                <h1>Forbidden</h1>
+                <p className="m-2">You must be the student's parent or teacher to access their profile page.</p>
+            </div>
+        )
+    }
     if (studentProfile) {
         // Parent info div
         let no_parent_account_div = (
             <div>
-                <p>{studentProfile.name}'s parent has not made an account yet!</p>
-                <p><b>Invite Code: </b>{studentProfile.invite_code.code}</p>
+                <p className="my-2">{studentProfile.name}'s parent has not made an account yet!</p>
+                <p className="mb-2"><b>Invite Code: </b>{studentProfile.invite_code.code}</p>
             </div>
         )
         let has_parent_account_div = (
             <div>
-                <p><b>Parent: </b></p>
-                <p>Send message</p>
+                <p className="my-2">{studentProfile.parent.user.first_name} {studentProfile.parent.user.last_name}</p>
+                <button className="bg-sky-500 hover:bg-indigo-500 rounded-full text-white font-bold px-4 py-2 mb-2 border-2 border-black">Send Message</button>
             </div>
         )
         let parent_info_div = (
-            <div className="student-profile-parent-div">
+            <div className="bg-white rounded shadow p-2 my-2">
                 <h2>Parent</h2>
                 {studentProfile.parent === null ? no_parent_account_div : has_parent_account_div}
             </div>
@@ -85,28 +97,28 @@ const StudentProfile = () => {
 
         // School class info div
         let class_info_div = (
-            <div className="student-profile-class-div">
-                <h2>{studentProfile.school_class.name}</h2>
-                <p><b>Teacher: </b>{studentProfile.school_class.teacher.user.first_name} {studentProfile.school_class.teacher.user.last_name}</p>
-                <p><b>School: </b>{studentProfile.school_class.school.name}. {studentProfile.school_class.school.city}, {studentProfile.school_class.school.country}.</p>
+            <div className="bg-white rounded shadow p-2 my-2">
+                <Link to={`/class/${studentProfile.school_class.id}`}><h2 className="text-blue-700 underline">{studentProfile.school_class.name}</h2></Link>
+                <p className="my-2"><b>Teacher: </b>{studentProfile.school_class.teacher.user.first_name} {studentProfile.school_class.teacher.user.last_name}</p>
+                <p className="mb-2"><b>School: </b>{studentProfile.school_class.school.name}. {studentProfile.school_class.school.city}, {studentProfile.school_class.school.country}.</p>
             </div>
         )
 
         // Assignments div
         let assignments = studentProfile.portfolio.map((assignment)=>{
             return (
-                <div className="student-profile-assignment" key={assignment.assignment.id}>
-                    <h2>{assignment.assignment.title}</h2>
-                    <p>{assignment.assignment.description}</p>
-                    <p><b>Score: </b>{assignment.score === null ? "--" : assignment.score} / {assignment.assignment.maximum_score}</p>
-                    <p><b>Feedback: </b>{assignment.feedback === null ? "No feedback yet." : assignment.feedback}</p>
+                <div className="w-full sm:w-[300px] mx-auto border border-gray-300" key={assignment.assignment.id}>
+                    <h3 className="pb-2">{assignment.assignment.title}</h3>
+                    <p className="p-2 text-sm text-left">{assignment.assignment.description}</p>
+                    <p className="text-sm pt-2"><b>Score: </b>{assignment.score === null ? "--" : assignment.score} / {assignment.assignment.maximum_score}</p>
+                    <p className="text-sm pb-2"><b>Feedback: </b>{assignment.feedback === null ? "No feedback yet." : assignment.feedback}</p>
                 </div>
             );
         })
 
         let assignments_div = (
-            <div className="student-profile-assignments-div">
-                <h2>Assignments</h2>
+            <div className="bg-white rounded shadow px-2 py-4 my-2">
+                <h2 className="pb-2">Assignments</h2>
                 {assignments}
             </div>
         )
@@ -114,30 +126,30 @@ const StudentProfile = () => {
         // Stickers div
         let stickers = (
             <div>
-                <div style={{display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
-                    <h3>{studentStickers.star}</h3>
-                    <img src={starImg} style={{height: "50px", width: "50px"}} alt="star" />
+                <div className="flex justify-center items-center mx-auto my-2">
+                    <h3 className="mx-2">{studentStickers.star}</h3>
+                    <img src={starImg} className="h-[50px] w-[50px]" alt="star" />
                 </div>
-                <div style={{display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
-                    <h3>{studentStickers.dinosaur}</h3>
-                    <img src={dinosaurImg} style={{height: "50px", width: "50px"}} alt="dinosaur" />
+                <div className="flex justify-center items-center mx-auto my-2">
+                    <h3 className="mx-2">{studentStickers.dinosaur}</h3>
+                    <img src={dinosaurImg} className="h-[50px] w-[50px]" alt="dinosaur" />
                 </div>
-                <div style={{display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
-                    <h3>{studentStickers.cat}</h3>
-                    <img src={catImg} style={{height: "50px", width: "50px"}} alt="cat" />
+                <div className="flex justify-center items-center mx-auto my-2">
+                    <h3 className="mx-2">{studentStickers.cat}</h3>
+                    <img src={catImg} className="h-[50px] w-[50px]" alt="cat" />
                 </div>
             </div>
         )
         let stickers_div = (
-            <div className="student-profile-stickers-div">
+            <div className="block bg-white rounded shadow-md px-2 py-4 my-2">
                 <h2>Stickers</h2>
                 {studentProfile.stickers.length === 0 ? "No stickers." : stickers}
             </div>
         )
 
         student_profile_div = (
-            <div className="student-profile-div">
-                <h1>{studentProfile.name}</h1>
+            <div className="w-full sm:w-[600px] rounded-md border border-gray-300 shadow-sm bg-sky-200 text-center">
+                <h1 className="mb-2">{studentProfile.name}</h1>
                 {class_info_div}
                 {parent_info_div}
                 {assignments_div}
@@ -147,9 +159,11 @@ const StudentProfile = () => {
     } 
 
     return (
-        <div>
+        <div className="relative bg-white overflow-hidden min-h-screen">
             <Navigation />
-            {student_profile_div}
+            <div className="w-full p-2 flex items-center justify-center md:px-4 lg:px-8">
+                {student_profile_div}
+            </div>
         </div>
     )
 }
