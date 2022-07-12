@@ -65,8 +65,8 @@ const ChatGroups = () => {
     )
 
     let chat_groups_div = (
-        <div className="chat-groups-div">
-            <h2>Chat Groups</h2>
+        <div className="w-full sm:w-[600px] rounded-md border border-gray-300 shadow-sm bg-white text-center m-2">
+            <h2 className="pb-2">Chat Groups</h2>
             <CreateChatGroup getUserChatGroups={getUserChatGroups}/>
             {groups_div}
         </div>

@@ -81,11 +81,24 @@ const ChatContacts = (props) => {
     let search_students_div = null;
     if (contactList) {
         search_students_div = (
-            <div className="search-contacts-div">
-                <h3>Search</h3>
-                <input placeholder="Class Name" onChange={(e)=>setClassNameSearch(e.target.value)} />
-                <input placeholder="Student Name" onChange={(e)=>setStudentNameSearch(e.target.value)} />
-                <button onClick={()=>searchStudents(classNameSearch, studentNameSearch)}>Submit</button>
+            <div className="rounded shadow bg-sky-100 border border-gray-300 mb-4">
+                <h3 className="mb-2">Search</h3>
+                <input 
+                    placeholder="Type class name..." 
+                    onChange={(e)=>setClassNameSearch(e.target.value)}
+                    className="border border-gray-300 h-8 mb-2"
+                /> <br />
+                <input 
+                    placeholder="Type student name..." 
+                    onChange={(e)=>setStudentNameSearch(e.target.value)} 
+                    className="border border-gray-300 h-8 mb-2"
+                /> <br/>
+                <button
+                    onClick={()=>searchStudents(classNameSearch, studentNameSearch)}
+                    className="border-2 border-black bg-sky-500 hover:bg-indigo-500 text-white font-bold rounded-full px-4 py-1"
+                >
+                    Submit
+                </button>
             </div>
         )
     }
@@ -94,20 +107,27 @@ const ChatContacts = (props) => {
     if (studentFound) {
         let parent = <p>This student has no parent account.</p>;
         if (studentFound.parent !== null) {
+            let btn_style = "border-2 border-black bg-sky-500 hover:bg-indigo-500 text-white font-bold rounded-full px-4 py-1 my-2"
             parent = (
                 <div>
                     <p><b>Parent:</b> {studentFound.parent.user.first_name} {studentFound.parent.user.last_name}</p>
-                    {props.from === "add_members" ? <button style={{marginBottom: "10px"}} onClick={()=>props.addToListHandler(studentFound.parent)}>Add to group</button> : null}
+                    {props.from === "add_members" ? <button className={btn_style} onClick={()=>props.addToListHandler(studentFound.parent)}>Add to Group</button> : null}
+                    {props.from === "chat_hub" ? <button className={btn_style}>Send Message</button> : null}
                 </div>
             )
         }
     
         search_results_div = (
-            <div>
+            <div className="rounded shadow bg-sky-100 border border-gray-300">
                 <h3>Search Results</h3>
-                <button onClick={searchGoBack}>Go Back</button> <br/>
-                <div style={{border: "1px solid grey", marginTop: "10px"}} >
-                    <p><b>Student: </b><Link to={`/studentProfile/${studentFound.id}`}>{studentFound.name}</Link></p>
+                <button
+                    onClick={searchGoBack}
+                    className="border-2 border-black bg-sky-500 hover:bg-indigo-500 text-white font-bold rounded-full px-4 py-1 my-2"
+                >
+                    Go Back
+                </button> <br/>
+                <div className="w-full bg-white rounded border border-gray-300">
+                    <p><b>Student: </b><Link className="text-blue-700 underline" to={`/studentProfile/${studentFound.id}`}>{studentFound.name}</Link></p>
                     {parent}
                 </div>
             </div>
@@ -131,22 +151,24 @@ const ChatContacts = (props) => {
             let students = school_class.students.map(student => {
                 let parent = <p>This student has no parent account.</p>;
                 if (student.parent !== null) {
+                    let btn_style = "border-2 border-black bg-sky-500 hover:bg-indigo-500 text-white font-bold rounded-full px-4 py-1 my-2"
                     parent = (
                         <div>
                             <p><b>Parent:</b> {student.parent.user.first_name} {student.parent.user.last_name}</p>
-                            {props.from === "add_members" ? <button style={{marginBottom: "10px"}} onClick={()=>props.addToListHandler(student.parent)}>Add to group</button> : null}
+                            {props.from === "add_members" ? <button className={btn_style} onClick={()=>props.addToListHandler(student.parent)}>Add to group</button> : null}
+                            {props.from === "chat_hub" ? <button className={btn_style}>Send Message</button> : null}
                         </div>
                     )
                 }
                 return (
-                    <div style={{border: "1px solid grey"}} key={student.id} >
-                        <p><b>Student: </b><Link to={`/studentProfile/${student.id}`}>{student.name}</Link></p>
+                    <div className="w-full sm:w-96 mx-auto my-2 border border-gray-300 shadow bg-white" key={student.id} >
+                        <p><b>Student: </b><Link to={`/studentProfile/${student.id}`} className="text-blue-700 underline">{student.name}</Link></p>
                         {parent}
                     </div>
                 )
             })
             return (
-                <div key={school_class.id}>
+                <div key={school_class.id} className="rounded shadow bg-sky-100 border border-gray-300 mt-2">
                     <h3>{school_class.name}</h3>
                     {students}
                 </div>
@@ -163,8 +185,8 @@ const ChatContacts = (props) => {
     )
 
     return (
-        <div className="ChatContacts">
-            <h2>Contacts</h2>
+        <div className="w-full sm:w-[600px] rounded-md border border-gray-300 shadow-sm bg-white text-center m-2">
+            <h2 className="pb-2">Contacts</h2>
             {showSearchResults ? search_results_div : search_and_contacts_div}
         </div>
     )
