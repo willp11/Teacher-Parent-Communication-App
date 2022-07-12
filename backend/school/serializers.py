@@ -223,15 +223,6 @@ class StudentsClassInfoSerializer(serializers.ModelSerializer):
         model = SchoolClass
         fields = ('id', 'name', 'school', 'teacher')
 
-class StudentPortfolioSerializer(serializers.ModelSerializer):
-    portfolio = PortfolioItemSerializer(many=True)
-    stickers = StickerSerializer(many=True)
-    invite_code = InviteCodeOnlySerializer()
-    school_class = StudentsClassInfoSerializer()
-    class Meta:
-        model = Student
-        fields = ('pk', 'name', 'parent', 'school_class', 'portfolio', 'stickers', 'invite_code')
-
 class RequestHelpersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
@@ -317,3 +308,14 @@ class TeacherContactsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
         fields = ('school_classes',)
+
+# Get all student data
+class StudentPortfolioSerializer(serializers.ModelSerializer):
+    portfolio = PortfolioItemSerializer(many=True)
+    stickers = StickerSerializer(many=True)
+    invite_code = InviteCodeOnlySerializer()
+    school_class = StudentsClassInfoSerializer()
+    parent = ParentNameSerializer()
+    class Meta:
+        model = Student
+        fields = ('pk', 'name', 'parent', 'school_class', 'portfolio', 'stickers', 'invite_code')
