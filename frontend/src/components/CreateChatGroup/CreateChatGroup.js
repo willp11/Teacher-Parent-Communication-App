@@ -42,10 +42,20 @@ const CreateChatGroup = (props) => {
     }
 
     let create_group_div = (
-        <div className="create-group-div">
-            <h3>Create Chat Group</h3>
-            <input value={newGroupName} placeholder="Group name" onChange={(e)=>setNewGroupName(e.target.value)} />
-            <button onClick={handleCreateGroup}>Submit</button>
+        <div className="rounded bg-sky-100 shadow-md px-2 pt-2 pb-4 mb-4">
+            <h3 className="pb-2">Create Chat Group</h3>
+            <input
+                value={newGroupName} 
+                placeholder="Type group name..." 
+                onChange={(e)=>setNewGroupName(e.target.value)} 
+                className="border border-gray-300 h-8 mb-2"
+            /> <br/>
+            <button 
+                onClick={handleCreateGroup}
+                className="border-px shadow-md shadow-gray-500 bg-sky-500 hover:bg-indigo-500 text-white font-bold rounded-full px-4 py-1"
+            >
+                Submit
+            </button>
             <p style={{fontSize: "0.9rem"}}>{message}</p>
         </div>
     )

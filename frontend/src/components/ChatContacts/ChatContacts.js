@@ -81,7 +81,7 @@ const ChatContacts = (props) => {
     let search_students_div = null;
     if (contactList) {
         search_students_div = (
-            <div className="rounded shadow bg-sky-100 border border-gray-300 mb-4">
+            <div className="rounded bg-sky-100 shadow-md px-2 pt-2 pb-4 mb-4">
                 <h3 className="mb-2">Search</h3>
                 <input 
                     placeholder="Type class name..." 
@@ -95,7 +95,7 @@ const ChatContacts = (props) => {
                 /> <br/>
                 <button
                     onClick={()=>searchStudents(classNameSearch, studentNameSearch)}
-                    className="border-2 border-black bg-sky-500 hover:bg-indigo-500 text-white font-bold rounded-full px-4 py-1"
+                    className="border-px shadow-md shadow-gray-500 bg-sky-500 hover:bg-indigo-500 text-white font-bold rounded-full px-4 py-1"
                 >
                     Submit
                 </button>
@@ -107,7 +107,7 @@ const ChatContacts = (props) => {
     if (studentFound) {
         let parent = <p>This student has no parent account.</p>;
         if (studentFound.parent !== null) {
-            let btn_style = "border-2 border-black bg-sky-500 hover:bg-indigo-500 text-white font-bold rounded-full px-4 py-1 my-2"
+            let btn_style = "border-px shadow-md shadow-gray-500 bg-sky-500 hover:bg-indigo-500 text-white font-bold rounded-full px-4 py-1 my-2"
             parent = (
                 <div>
                     <p><b>Parent:</b> {studentFound.parent.user.first_name} {studentFound.parent.user.last_name}</p>
@@ -118,15 +118,15 @@ const ChatContacts = (props) => {
         }
     
         search_results_div = (
-            <div className="rounded shadow bg-sky-100 border border-gray-300">
+            <div className="rounded bg-sky-100 shadow-md p-2">
                 <h3>Search Results</h3>
                 <button
                     onClick={searchGoBack}
-                    className="border-2 border-black bg-sky-500 hover:bg-indigo-500 text-white font-bold rounded-full px-4 py-1 my-2"
+                    className="border-px shadow-md shadow-gray-500 bg-sky-500 hover:bg-indigo-500 text-white font-bold rounded-full px-4 py-1 my-2"
                 >
                     Go Back
                 </button> <br/>
-                <div className="w-full bg-white rounded border border-gray-300">
+                <div className="w-full bg-white rounded shadow-md p-2 my-2">
                     <p><b>Student: </b><Link className="text-blue-700 underline" to={`/studentProfile/${studentFound.id}`}>{studentFound.name}</Link></p>
                     {parent}
                 </div>
@@ -151,7 +151,7 @@ const ChatContacts = (props) => {
             let students = school_class.students.map(student => {
                 let parent = <p>This student has no parent account.</p>;
                 if (student.parent !== null) {
-                    let btn_style = "border-2 border-black bg-sky-500 hover:bg-indigo-500 text-white font-bold rounded-full px-4 py-1 my-2"
+                    let btn_style = "border-px shadow-md shadow-gray-500 bg-sky-500 hover:bg-indigo-500 text-white font-bold rounded-full px-4 py-1 my-2"
                     parent = (
                         <div>
                             <p><b>Parent:</b> {student.parent.user.first_name} {student.parent.user.last_name}</p>
@@ -161,14 +161,14 @@ const ChatContacts = (props) => {
                     )
                 }
                 return (
-                    <div className="w-full sm:w-96 mx-auto my-2 border border-gray-300 shadow bg-white" key={student.id} >
+                    <div className="w-full sm:w-96 mx-auto my-2 shadow-md bg-white rounded-lg p-2" key={student.id} >
                         <p><b>Student: </b><Link to={`/studentProfile/${student.id}`} className="text-blue-700 underline">{student.name}</Link></p>
                         {parent}
                     </div>
                 )
             })
             return (
-                <div key={school_class.id} className="rounded shadow bg-sky-100 border border-gray-300 mt-2">
+                <div key={school_class.id} className="rounded bg-sky-100 shadow-md p-2 mt-2">
                     <h3>{school_class.name}</h3>
                     {students}
                 </div>
@@ -185,7 +185,7 @@ const ChatContacts = (props) => {
     )
 
     return (
-        <div className="w-full sm:w-[600px] rounded-md border border-gray-300 shadow-sm bg-white text-center m-2">
+        <div className="w-full sm:w-[600px] max-h-screen overflow-auto rounded-md shadow-md bg-white text-center m-2 p-4">
             <h2 className="pb-2">Contacts</h2>
             {showSearchResults ? search_results_div : search_and_contacts_div}
         </div>
