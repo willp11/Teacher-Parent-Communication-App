@@ -537,6 +537,7 @@ class ParentSettingsUpdateView(RetrieveUpdateAPIView):
         settings = get_object_or_404(ParentSettings, parent=parent)
         return settings
 
+# Create a non-direct message group chat
 class ChatGroupCreateView(CreateAPIView):
     serializer_class = ChatGroupCreateSerializer
     permission_classes = [IsAuthenticated, IsEmailVerified]
@@ -545,6 +546,18 @@ class ChatGroupCreateView(CreateAPIView):
         group = serializer.save(group_owner=self.request.user)
         member = GroupMember(user=self.request.user, group=group)
         member.save()
+
+class ChatGroupDirectCreateView(CreateAPIView):
+    serializer_class = ChatGroupCreateDirectSerializer
+    permission_classes = [IsAuthenticated, IsEmailVerified]
+
+    def perform_create(self, serializer):
+        group = serializer.save(group_owner=self.request.user, direct_message=True)
+        member = GroupMember(user=self.request.user, group=group)
+        recipient_user = get_object_or_404(CustomUser, id=self.request.data['recipient'])
+        recipient_member = GroupMember(user=recipient_user, group=group)
+        member.save()
+        recipient_member.save()
 
 # Get all a user's chat groups they own and are a member of
 class ChatGroupUserGetView(RetrieveAPIView):

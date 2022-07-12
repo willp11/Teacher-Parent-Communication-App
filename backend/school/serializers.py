@@ -242,10 +242,11 @@ class ChatGroupMemberNameSerializer(serializers.ModelSerializer):
 
 class ChatGroupSerializer(serializers.ModelSerializer):
     group_owner = UserNameOnlySerializer()
+    recipient = UserNameOnlySerializer()
     chat_members = ChatGroupMemberNameSerializer(many=True)
     class Meta:
         model = ChatGroup
-        fields = ('id', 'name', 'group_owner', 'chat_members')
+        fields = ('id', 'name', 'direct_message', 'recipient', 'group_owner', 'chat_members')
 
 class GroupMemberSerializer(serializers.ModelSerializer):
     user = UserNameOnlySerializer()
@@ -260,11 +261,17 @@ class GroupMemberCreateSerializer(serializers.ModelSerializer):
         model = GroupMember
         fields = ('user', 'group')
 
-# create group - don't need owner as request.user is owner
+# create group - don't need owner as request.user is owner - non direct message group
 class ChatGroupCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChatGroup
         fields = ('id', 'name',)
+
+# create direct message group
+class ChatGroupCreateDirectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChatGroup
+        fields = ('id', 'name', 'recipient')
 
 # Serializers to get a user's chat groups
 # class UserChatGroupsSerializer(serializers.ModelSerializer):

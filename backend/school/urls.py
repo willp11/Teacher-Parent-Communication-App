@@ -41,6 +41,7 @@ urlpatterns = [
     path('story-comment-update/<int:pk>/', StoryCommentUpdateView.as_view(), name='story_comment_update'),
     path('parent-settings-update/', ParentSettingsUpdateView.as_view(), name='parent_settings_update'),
     path('chat-group-create/', ChatGroupCreateView.as_view(), name='chat_group_create'),
+    path('chat-group-create-direct/', ChatGroupDirectCreateView.as_view(), name='chat_group_create_direct'),
     path('chat-group-add-members/<int:pk>/', ChatGroupAddMembersView.as_view(), name='chat_group_add_members'),
     path('chat-group-delete-member/<int:pk>/', ChatGroupDeleteMemberView.as_view(), name='chat_group_delete_member'),
     path('chat-message-create/', MessageCreateView.as_view(), name='chat_message_create'),
