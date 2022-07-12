@@ -234,11 +234,18 @@ class HelperSerializer(serializers.ModelSerializer):
         fields = ('event',)
 
 # CHAT GROUPS
+class ChatGroupMemberNameSerializer(serializers.ModelSerializer):
+    user = UserNameOnlySerializer()
+    class Meta:
+        model = GroupMember
+        fields = ('user',)
+
 class ChatGroupSerializer(serializers.ModelSerializer):
     group_owner = UserNameOnlySerializer()
+    chat_members = ChatGroupMemberNameSerializer(many=True)
     class Meta:
         model = ChatGroup
-        fields = ('id', 'name', 'group_owner',)
+        fields = ('id', 'name', 'group_owner', 'chat_members')
 
 class GroupMemberSerializer(serializers.ModelSerializer):
     user = UserNameOnlySerializer()
@@ -260,13 +267,19 @@ class ChatGroupCreateSerializer(serializers.ModelSerializer):
         fields = ('id', 'name',)
 
 # Serializers to get a user's chat groups
+# class UserChatGroupsSerializer(serializers.ModelSerializer):
+#     chat_groups_owned = ChatGroupSerializer(many=True)
+#     chat_group_member = GroupMemberSerializer(many=True)
+#     class Meta:
+#         model = CustomUser
+#         fields = ('chat_groups_owned', 'chat_group_member')
+
+# Serializers to get a user's chat groups they are a member of
 class UserChatGroupsSerializer(serializers.ModelSerializer):
-    chat_groups_owned = ChatGroupSerializer(many=True)
     chat_group_member = GroupMemberSerializer(many=True)
     class Meta:
         model = CustomUser
-        fields = ('chat_groups_owned', 'chat_group_member')
-
+        fields = ('chat_group_member',)
 
 # MESSAGES
 class MessageSerializer(serializers.ModelSerializer):

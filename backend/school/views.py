@@ -542,7 +542,9 @@ class ChatGroupCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated, IsEmailVerified]
 
     def perform_create(self, serializer):
-        serializer.save(group_owner=self.request.user)
+        group = serializer.save(group_owner=self.request.user)
+        member = GroupMember(user=self.request.user, group=group)
+        member.save()
 
 # Get all a user's chat groups they own and are a member of
 class ChatGroupUserGetView(RetrieveAPIView):

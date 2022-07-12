@@ -9,7 +9,7 @@ class School(models.Model):
     city = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.name + self.city
+        return '{} in {}'.format(self.name, self.city)
 
 class Teacher(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='teacher')
@@ -58,7 +58,7 @@ class Assignee(models.Model):
     in_portfolio = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.student.name + self.assignment.title
+        return '{} assigned to {}'.format(self.student.name, self.assignment.title)
 
     class Meta:
         unique_together = ('student', 'assignment')
@@ -88,7 +88,7 @@ class StoryComment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.author.username + ' ' + self.story.title + ' ' + self.created_at
+        return '{} comment on {}'.format(self.author.username, self.story.title)
 
 class Announcement(models.Model):
     title = models.CharField(max_length=100)
@@ -152,6 +152,8 @@ class ParentSettings(models.Model):
 class ChatGroup(models.Model):
     name = models.CharField(max_length=100)
     group_owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='chat_groups_owned')
+    direct_message = models.BooleanField(default=False)
+    recipient = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='message_recipient', null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -163,14 +165,14 @@ class GroupMember(models.Model):
     class Meta:
         unique_together = ('user', 'group')
 
+    def __str__(self):
+        return '{} {} in {}'.format(self.user.first_name, self.user.last_name, self.group.name)
+
 class Message(models.Model):
     sender = models.ForeignKey(GroupMember, on_delete=models.SET_NULL, null=True)
     group = models.ForeignKey(ChatGroup, on_delete=models.CASCADE)
     content = models.CharField(max_length=1024)
     time = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.sender + ' ' + self.time
 
 class InviteCode(models.Model):
     student = models.OneToOneField(Student, on_delete=models.CASCADE, related_name='invite_code')
