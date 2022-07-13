@@ -240,13 +240,26 @@ class ChatGroupMemberNameSerializer(serializers.ModelSerializer):
         model = GroupMember
         fields = ('user',)
 
+# MESSAGES
+class MessageSerializer(serializers.ModelSerializer):
+    sender = ChatGroupMemberNameSerializer()
+    class Meta:
+        model = Message
+        fields = '__all__'
+
+class MessageCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = ('group', 'content')
+
 class ChatGroupSerializer(serializers.ModelSerializer):
     group_owner = UserNameOnlySerializer()
     recipient = UserNameOnlySerializer()
     chat_members = ChatGroupMemberNameSerializer(many=True)
+    chat_messages = MessageSerializer(many=True)
     class Meta:
         model = ChatGroup
-        fields = ('id', 'name', 'direct_message', 'recipient', 'group_owner', 'chat_members')
+        fields = ('id', 'name', 'direct_message', 'recipient', 'group_owner', 'chat_members', 'chat_messages')
 
 class GroupMemberSerializer(serializers.ModelSerializer):
     user = UserNameOnlySerializer()
@@ -287,17 +300,6 @@ class UserChatGroupsSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('chat_group_member',)
-
-# MESSAGES
-class MessageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Message
-        fields = '__all__'
-
-class MessageCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Message
-        fields = ('group', 'content')
 
 class InviteCodeCreateSerializer(serializers.ModelSerializer):
     class Meta:

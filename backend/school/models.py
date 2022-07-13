@@ -170,7 +170,7 @@ class GroupMember(models.Model):
 
 class Message(models.Model):
     sender = models.ForeignKey(GroupMember, on_delete=models.SET_NULL, null=True)
-    group = models.ForeignKey(ChatGroup, on_delete=models.CASCADE)
+    group = models.ForeignKey(ChatGroup, on_delete=models.CASCADE, related_name='chat_messages')
     content = models.CharField(max_length=1024)
     time = models.DateTimeField(auto_now=True)
 

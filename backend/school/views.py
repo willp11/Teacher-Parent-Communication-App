@@ -559,6 +559,14 @@ class ChatGroupDirectCreateView(CreateAPIView):
         member.save()
         recipient_member.save()
 
+# Get all data for a chat group
+class ChatGroupGetView(RetrieveAPIView):
+    serializer_class = ChatGroupSerializer
+    permission_classes = [IsAuthenticated, IsEmailVerified, IsChatOwnerOrMember]
+
+    def get_object(self):
+        return get_object_or_404(ChatGroup, pk=self.kwargs['pk'])
+
 # Get all a user's chat groups they own and are a member of
 class ChatGroupUserGetView(RetrieveAPIView):
     serializer_class = UserChatGroupsSerializer

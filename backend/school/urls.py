@@ -40,6 +40,8 @@ urlpatterns = [
     path('story-comment-list/<int:pk>/', StoryCommentListView.as_view(), name='story_comment_list'),
     path('story-comment-update/<int:pk>/', StoryCommentUpdateView.as_view(), name='story_comment_update'),
     path('parent-settings-update/', ParentSettingsUpdateView.as_view(), name='parent_settings_update'),
+    path('chat-group-get/<int:pk>/', ChatGroupGetView.as_view(), name='chat_group_get'),
+    path('chat-group-user-get/', ChatGroupUserGetView.as_view(), name='chat_group_user_get'),
     path('chat-group-create/', ChatGroupCreateView.as_view(), name='chat_group_create'),
     path('chat-group-create-direct/', ChatGroupDirectCreateView.as_view(), name='chat_group_create_direct'),
     path('chat-group-add-members/<int:pk>/', ChatGroupAddMembersView.as_view(), name='chat_group_add_members'),
@@ -49,5 +51,4 @@ urlpatterns = [
     path('chat-group-messages-list/<int:pk>/', ChatGroupMessageList.as_view(), name='chat_group_message_list'),
     path('sticker-create/', StickerCreateView.as_view(), name='sticker_create'),
     path('teacher-contacts-get/', TeacherContactsGetListView.as_view(), name='teacher_contacts_get'),
-    path('chat-group-user-get/', ChatGroupUserGetView.as_view(), name='chat_group_user_get')
 ]

@@ -34,7 +34,6 @@ class IsChatOwnerOrMember(BasePermission):
     def has_permission(self, request, view):
         group = get_object_or_404(ChatGroup, pk=view.kwargs['pk'])
         # check if user is owner of group
-        is_owner = False
         if group.group_owner == request.user:
             return True
         # check if user is member of group
