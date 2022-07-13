@@ -178,7 +178,12 @@ const ChatContacts = (props) => {
         search_results_div = (
             <div>
                 <h3>Search Results</h3>
-                <button onClick={searchGoBack}>Go Back</button> <br/>
+                <button 
+                    className="border-px shadow-md shadow-gray-500 bg-sky-500 hover:bg-indigo-500 text-white font-bold rounded-full px-4 py-1 my-2" 
+                    onClick={searchGoBack}
+                >
+                    Go Back
+                </button> <br/>
                 <div style={{border: "1px solid grey", marginTop: "10px"}} >
                     <p>No student found.</p>
                 </div>
@@ -226,8 +231,11 @@ const ChatContacts = (props) => {
         </div>
     )
 
+    let div_style_from_hub = "w-full sm:w-[600px] h-full overflow-auto rounded-md shadow-md shadow-gray-500 bg-sky-200 text-center mt-2 mb-4 sm:m-4 mx-auto p-4";
+    let div_style_from_add = "w-full sm:w-[600px] h-[300px] overflow-auto rounded-md shadow-md shadow-gray-500 bg-sky-200 text-center mt-2 mb-4 sm:m-4 mx-auto p-4";
+
     return (
-        <div className="w-full sm:w-[600px] max-h-screen overflow-auto rounded-md shadow-md shadow-gray-500 bg-sky-200 text-center m-2 mb-4 sm:m-4 p-4">
+        <div className={props.from === "add_members" ? div_style_from_add : div_style_from_hub}>
             <h2 className="pb-2">Contacts</h2>
             {showSearchResults ? search_results_div : search_and_contacts_div}
         </div>

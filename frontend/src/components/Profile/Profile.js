@@ -522,23 +522,25 @@ const Profile = () => {
 
     return (
         <div className="relative bg-white overflow-hidden min-h-screen">
-            <Navigation />
-            <div className="w-full p-2 flex items-center justify-center md:px-4 lg:px-8">
-                <div className="w-full sm:w-[600px] bg-white text-center">
-                    <h1 className="pb-4">Profile</h1>
-                    <div className="rounded-md shadow-md shadow-gray-500 bg-sky-200 mt-2 mb-4 p-2">
-                        <h2>Name</h2>
-                        <p className="pb-2">{profile.first_name} {profile.last_name}</p>
-                        <h2>Email</h2>
-                        <p className="pb-2">{profile.email}</p>
-                        {account_type_info}
+            <div className="max-w-7xl mx-auto">
+                <Navigation />
+                <div className="w-full p-2 flex items-center justify-center md:px-4 lg:px-8">
+                    <div className="w-full sm:w-[600px] bg-white text-center">
+                        <h1 className="pb-4">Profile</h1>
+                        <div className="rounded-md shadow-md shadow-gray-500 bg-sky-200 mt-2 mb-4 p-2">
+                            <h2>Name</h2>
+                            <p className="pb-2">{profile.first_name} {profile.last_name}</p>
+                            <h2>Email</h2>
+                            <p className="pb-2">{profile.email}</p>
+                            {account_type_info}
+                        </div>
+                        
+                        {email_verified_div}
+                        {select_account_type_div}
+                        {account_type_div}
+                        {inviteCodeInputDiv}
+                        {change_password_div}
                     </div>
-                    
-                    {email_verified_div}
-                    {select_account_type_div}
-                    {account_type_div}
-                    {inviteCodeInputDiv}
-                    {change_password_div}
                 </div>
             </div>
         </div>

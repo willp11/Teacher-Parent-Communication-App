@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
-import AddMembers from './AddMembers';
 import MemberList from './MemberList';
 import Navigation from '../Navigation/Navigation';
 
@@ -25,7 +24,6 @@ const ChatGroup = () => {
             .then(res=>{
                 console.log(res);
                 setGroup(res.data);
-                // setGroupMembers(res.data);
             })
             .catch(err=>{
                 console.log(err);
@@ -41,21 +39,20 @@ const ChatGroup = () => {
     let group_div = <p>Loading...</p>
     if (group !== null) {
         group_div = (
-            <div className="w-full flex items-start justify-center flex-wrap">
-                <MemberList members={group.chat_members} />
-                <AddMembers groupId={id} members={group.chat_messages} />
+            <div className="w-full bg-white text-center p-2">
+                <h1 className="pb-2">{group.direct_message ? "Direct Message" : group.name}</h1>
+                <div className="w-full flex items-start justify-center flex-wrap">
+                    <MemberList groupId={id} members={group.chat_members} direct={group.direct_message} />
+                </div>
             </div>
         )
     }
 
     return (
-        <div className="relative bg-white overflow-hidden min-h-screen">
+        <div className="relative bg-white overflow-hidden h-screen">
             <Navigation />
             <div className="w-full px-2 flex items-center justify-center md:px-4 lg:px-8">
-                <div className="w-full bg-white text-center p-2">
-                    <h1 className="pb-2">Chat</h1>
-                    {group_div}
-                </div>
+                {group_div}
             </div>
         </div>
     )

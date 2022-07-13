@@ -2,6 +2,8 @@ import ChatContacts from "../ChatContacts/ChatContacts";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { Popover } from '@headlessui/react';
+import { XIcon } from '@heroicons/react/outline';
 
 const AddMembers = (props) => {
 
@@ -116,7 +118,7 @@ const AddMembers = (props) => {
         )
     })
     let user_list_div = (
-        <div className="add-users-inner-div">
+        <div className="w-full sm:w-[500px] max-h-[300px] overflow-auto bg-white rounded border border-gray-600 shadow-md p-2 mx-auto my-4">
             <h3>Users to add</h3>
             {(parentList.length > 0) ? user_list : <p>No users added to list</p>}
             {(parentList.length > 0) ? <button onClick={submitParentListHandler}>submit</button> : null}
@@ -125,12 +127,21 @@ const AddMembers = (props) => {
     )
 
     let show_contacts_btn = (
-        <button style={{marginBottom: "10px"}} onClick={toggleShowContacts}>{showContacts ? "Hide Contacts" : "Show Contacts"}</button>
+        <button 
+            className="border-px shadow-md shadow-gray-500 bg-sky-500 hover:bg-indigo-500 text-white font-bold rounded-full px-4 py-1 my-2"
+            onClick={toggleShowContacts}
+        >
+            {showContacts ? "Hide Contacts" : "Show Contacts"}
+        </button>
     )
 
     return (
-        <div className="add-users-to-group-div">
-            <h2>Add to group</h2>
+        <div className="w-full sm:w-[650px] h-fit overflow-auto mx-auto bg-sky-50 rounded border border-gray-600 shadow-lg p-2">
+            <Popover.Button className="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 border border-gray-600 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+                <span className="sr-only">Close main menu</span>
+                <XIcon className="h-6 w-6" aria-hidden="true" />
+            </Popover.Button>
+            <h2 className="pt-2">Add to group</h2>
             {user_list_div}
             {show_contacts_btn}
             {showContacts ? <ChatContacts from="add_members" addToListHandler={addToListHandler}/> : null }
