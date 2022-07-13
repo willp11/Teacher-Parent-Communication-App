@@ -1,15 +1,21 @@
 import { useSelector } from "react-redux";
+import { useState, useEffect, useRef } from "react";
 
 const Messages = (props) => {
 
     const account = useSelector((state)=>state.auth.account.account);
 
-    console.log(account);
+    // new message
+    const [msg, setMsg] = useState("");
 
-    // fill chat with the original messages
+    // message div
+    const messagesRef = useRef()
+    const inputRef = useRef()
+
+    // create messages JSX
     let last_msg_sender = null;
     let show_name = true;
-    let messages = props.messages.map((msg)=>{
+    let messages_div = props.messages.map((msg)=>{
         // check if message was sent by same - determines whether to show name
         if (last_msg_sender === msg.sender.user.id) {
             show_name = false;
@@ -25,22 +31,41 @@ const Messages = (props) => {
             last_sender = <div className="flex align-center justify-start pl-2"><p className="text-sm text-gray-500 mb-1">You</p></div>
             msg_content = <div className="w-2/3 rounded-lg bg-sky-500 text-white p-2 flex align-center justify-start text-left">{msg.content}</div>
         }
-
         return (
-            <div className="my-2">
+            <div className="my-2" key={msg.id}>
                 {show_name ? last_sender : null}
                 {msg_content}
             </div>
         )
     })
 
+    // On component mount - scroll to bottom
+    useEffect(()=>{
+        messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+    }, [])
+
+    // Everytime receive new message - scroll more and clear input and focus on input again
+    useEffect(()=>{
+        messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+        inputRef.current.focus()
+    }, [props.newMessage])
+
+    // reset message input and send message
+    const sendMessageHandler = (event) => {
+        event.preventDefault();
+        setMsg("");
+        props.sendMessage(msg);
+    }
+
     return (
         <div className="relative h-[400px] w-full sm:w-[500px] bg-white rounded-sm border border-gray-600 shadow-md my-2">
-            <div className="h-[calc(100%-2rem)] overflow-auto">
-                {messages}
+            <div className="h-[calc(100%-2rem)] overflow-auto" ref={messagesRef}>
+                {messages_div}
             </div>
-            <input placeholder="Type message..." className="w-3/4 absolute bottom-0 left-0 border border-gray-600" />
-            <button className="w-1/4 absolute bottom-0 right-0 border border-black bg-sky-500 hover:bg-indigo-500 text-white font-bold">Send</button>
+            <form>
+                <input ref={inputRef} value={msg} onChange={(e)=>setMsg(e.target.value)} placeholder="Type message..." className="w-3/4 absolute bottom-0 left-0 border border-gray-600" />
+                <button type="submit" onClick={(e)=>sendMessageHandler(e)} className="w-1/4 absolute bottom-0 right-0 border border-black bg-sky-500 hover:bg-indigo-500 text-white font-bold">Send</button>
+            </form>
         </div> 
     )
 }
