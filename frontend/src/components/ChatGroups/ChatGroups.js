@@ -50,8 +50,8 @@ const ChatGroups = (props) => {
     )
 
     let chat_groups_div = (
-        <div className="w-full sm:w-[600px] rounded-md shadow-md shadow-gray-500 bg-sky-200 text-center m-2 sm:m-4 p-4">
-            <h2 className="pb-2">Chats</h2>
+        <div className="w-full sm:w-[600px] rounded-md shadow-md shadow-gray-500 bg-sky-200 text-center mt-2 mb-4 sm:m-4 p-4">
+            <h2 className="pb-2">Chat Groups</h2>
             <CreateChatGroup getUserChatGroups={props.getUserChatGroups}/>
             {groups_div}
         </div>

@@ -37,7 +37,7 @@ const MemberList = (props) => {
     )
 
     let member_list_div = (
-        <div className="w-full sm:w-[500px] max-h-[500px] overflow-auto bg-sky-100 p-2 m-2 border border-gray-600 shadow-lg">
+        <div className="w-full sm:w-[500px] max-h-[200px] overflow-auto bg-sky-100 p-2 my-2 border border-gray-600 shadow-lg">
             <h2>Group Members</h2>
             {props.direct ? null : add_member_popover}
             {member_list}

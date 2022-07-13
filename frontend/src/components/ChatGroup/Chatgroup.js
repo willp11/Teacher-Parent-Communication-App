@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import MemberList from './MemberList';
 import Navigation from '../Navigation/Navigation';
+import Messages from './Messages';
 
 const ChatGroup = () => {
 
@@ -39,17 +40,18 @@ const ChatGroup = () => {
     let group_div = <p>Loading...</p>
     if (group !== null) {
         group_div = (
-            <div className="w-full bg-white text-center p-2">
+            <div className="w-full bg-white text-center">
                 <h1 className="pb-2">{group.direct_message ? "Direct Message" : group.name}</h1>
-                <div className="w-full flex items-start justify-center flex-wrap">
+                <div className="w-full flex flex-col items-center">
                     <MemberList groupId={id} members={group.chat_members} direct={group.direct_message} />
+                    <Messages messages={group.chat_messages}/>
                 </div>
             </div>
         )
     }
 
     return (
-        <div className="relative bg-white overflow-hidden h-screen">
+        <div className="relative bg-white overflow-auto h-screen">
             <Navigation />
             <div className="w-full px-2 flex items-center justify-center md:px-4 lg:px-8">
                 {group_div}
