@@ -41,7 +41,7 @@ const ChatHub = () => {
                 <div className="w-full bg-white text-center p-2">
                     <h1 className="pb-2">Chat</h1>
                     <div className="w-full flex items-start justify-center flex-wrap">
-                        <ChatContacts from="chat_hub"/>
+                        <ChatContacts from="chat_hub" groupsMemberOf={groupsMemberOf}/>
                         <ChatGroups getUserChatGroups={getUserChatGroups} groupsMemberOf={groupsMemberOf}/>
                     </div>
                 </div>

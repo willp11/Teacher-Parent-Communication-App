@@ -5,58 +5,57 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import AddMembers from './AddMembers';
 import MemberList from './MemberList';
+import Navigation from '../Navigation/Navigation';
 
 const ChatGroup = () => {
 
     const { id } = useParams();
     const token = useSelector((state)=>state.auth.token);
 
-    const [groupMembers, setGroupMembers] = useState([]);
+    const [group, setGroup] = useState(null);
 
-    // Get all members and messages for this chat group
-    const getGroupMessages = useCallback(()=>{
+    // Get all data for this chat group
+    const getGroupData = useCallback(()=>{
         const headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
         }
-        const url = `http://localhost:8000/api/v1/school/chat-group-messages-list/${id}/`;
+        const url = `http://localhost:8000/api/v1/school/chat-group-get/${id}/`;
         axios.get(url, {headers: headers})
             .then(res=>{
                 console.log(res);
+                setGroup(res.data);
+                // setGroupMembers(res.data);
             })
             .catch(err=>{
                 console.log(err);
             })
     }, [token, id])
 
-    const getGroupMembers = useCallback(()=>{
-        const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Token ' + token
-        }
-        const url = `http://localhost:8000/api/v1/school/chat-group-members-list/${id}/`;
-        axios.get(url, {headers: headers})
-            .then(res=>{
-                console.log(res);
-                setGroupMembers(res.data);
-            })
-            .catch(err=>{
-                console.log(err);
-            })
-    }, [token, id])
-
-    // On Mount - get all group members and messages
+    // On Mount - get group data
     useEffect(()=>{
-        getGroupMembers()
-        getGroupMessages()
-    }, [getGroupMembers, getGroupMessages])
+        getGroupData()
+    }, [getGroupData])
+
+    // show loading if not retrieved data
+    let group_div = <p>Loading...</p>
+    if (group !== null) {
+        group_div = (
+            <div className="w-full flex items-start justify-center flex-wrap">
+                <MemberList members={group.chat_members} />
+                <AddMembers groupId={id} members={group.chat_messages} />
+            </div>
+        )
+    }
 
     return (
-        <div className="ChatGroup">
-            <h1>Group: {id}</h1>
-            <div style={{display: "flex", flexDirection: "row"}}>
-                <MemberList members={groupMembers} />
-                <AddMembers groupId={id} members={groupMembers} />
+        <div className="relative bg-white overflow-hidden min-h-screen">
+            <Navigation />
+            <div className="w-full px-2 flex items-center justify-center md:px-4 lg:px-8">
+                <div className="w-full bg-white text-center p-2">
+                    <h1 className="pb-2">Chat</h1>
+                    {group_div}
+                </div>
             </div>
         </div>
     )

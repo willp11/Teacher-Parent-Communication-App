@@ -2,11 +2,12 @@ import './ChatContacts.css';
 import {useState, useEffect, useCallback} from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const ChatContacts = (props) => {
 
     const token = useSelector((state)=>state.auth.token);
+    const navigate = useNavigate();
 
     // list of all classes with student lists nested inside that contain parent info
     const [contactList, setContactList] = useState(null);
@@ -68,8 +69,49 @@ const ChatContacts = (props) => {
             })
     }, [token])
 
-    // FUNCTION SELECT PARENTS TO ADD TO CHAT GROUP
-    // sends the p
+    // FUNCTION SEND MESSAGE TO USER
+    const sendDirectMessageHandler = (parent) => {
+        let chat_group = null;
+        // Check if we already have a direct message group with that user
+        props.groupsMemberOf.every((g)=>{
+            let group = g.group;
+            if (group.direct_message) {
+                // found chat
+                if (group.group_owner.id === parent.user.id || group.recipient.id === parent.user.id) {
+                    chat_group = g;
+                    return false;
+                }
+            }
+            return true;
+        })
+        // If not, call API to create one
+        if (chat_group === null) {
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + token
+            }
+            const data = {
+                name: "direct",
+                recipient: parent.user.id
+            }
+            const url = 'http://localhost:8000/api/v1/school/chat-group-create-direct/';
+            axios.post(url, data, {headers: headers})
+                .then(res=>{
+                    console.log(res);
+                    let chat_id = res.data.id;
+                    return navigate(`/chatGroup/${chat_id}`);
+                })
+                .catch(err=>{
+                    console.log(err);
+                    // display error message
+                    // TO DO
+                })
+        } else {
+            // navigate to chat group
+            let chat_id = chat_group.group.id;
+            return navigate(`/chatGroup/${chat_id}`);
+        }
+    }
 
     // ON COMPONENT MOUNT - GET CONTACTS
     useEffect(()=>{
@@ -156,7 +198,7 @@ const ChatContacts = (props) => {
                         <div>
                             <p><b>Parent:</b> {student.parent.user.first_name} {student.parent.user.last_name}</p>
                             {props.from === "add_members" ? <button className={btn_style} onClick={()=>props.addToListHandler(student.parent)}>Add to group</button> : null}
-                            {props.from === "chat_hub" ? <button className={btn_style}>Send Message</button> : null}
+                            {props.from === "chat_hub" ? <button className={btn_style} onClick={()=>sendDirectMessageHandler(student.parent)}>Send Message</button> : null}
                         </div>
                     )
                 }
