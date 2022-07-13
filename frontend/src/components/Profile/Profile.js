@@ -270,7 +270,7 @@ const Profile = () => {
         <div className="pb-2">
             <h4 className="pb-1">Change School</h4>
             {schoolListDropdown}
-            <button className="border-2 border-black rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-2 text-white font-bold" onClick={submitSelectSchoolHandler}>Submit</button>
+            <button className="border-px shadow-md shadow-gray-500 rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-2 text-white font-bold" onClick={submitSelectSchoolHandler}>Submit</button>
         </div>
     )
 
@@ -285,7 +285,7 @@ const Profile = () => {
                     <h2 className="pt-4 pb-2">Email Not Verified</h2>
                     <p>Check your email and click the link to verify your account.</p>
                     <p className="pb-4">Once verified, refresh the page to continue.</p>
-                    <button className="border-2 border-black rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-2 text-white font-bold" onClick={handleLogout}>Logout</button>
+                    <button className="border-px shadow-md shadow-gray-500 rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-2 text-white font-bold" onClick={handleLogout}>Logout</button>
                 </div>
             </div>
         )
@@ -302,7 +302,7 @@ const Profile = () => {
                             className={selectedAccountType === 'parent' ? "selected" : "unselected cursor-pointer hover:bg-sky-100"}
                             onClick={()=>setSelectedAccountType('parent')}>Parent</div>
                     </div>
-                    <button className="w-32 border-2 border-black rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-2 text-white font-bold" onClick={handleSelectAccountType}>Submit</button>
+                    <button className="w-32 border-px shadow-md shadow-gray-500 rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-2 text-white font-bold" onClick={handleSelectAccountType}>Submit</button>
                 </div>
             )
         } // TEACHER ACCOUNT
@@ -325,17 +325,17 @@ const Profile = () => {
 
             account_type_div = (
                 <div>
-                    <div className="border border-gray-500 shadow-md mb-2 bg-white">
+                    <div className="rounded-md shadow-md shadow-gray-500 bg-sky-200 mt-2 mb-4 p-2">
                         <h2>School</h2>
                         <p className="pb-2">{profile.teacher.school === null ? "You do not have a school yet!" : profile.teacher.school.name}</p>
                         {selectSchoolDiv}
                     </div>
-                    <div className="border border-gray-500 shadow-md mb-2 bg-white">
+                    <div className="rounded-md shadow-md shadow-gray-500 bg-sky-200 mt-2 mb-4 p-2 pb-4">
                         <h2 className="pb-1">Classes</h2>
                         {school_class_list}
                         <h4 className="pt-2">Create Class</h4>
                         <input className="p-2 border border-gray-300 w-48 sm:w-64 mr-2" value={newClassName} onChange={(e)=>setNewClassName(e.target.value)} placeholder="Type class name..."/>
-                        <button className="border-2 border-black rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-2 text-white font-bold" onClick={createClassHandler}>Create</button>
+                        <button className="border-px shadow-md shadow-gray-500 rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-2 text-white font-bold" onClick={createClassHandler}>Create</button>
                     </div>   
                 </div>
             )
@@ -353,7 +353,7 @@ const Profile = () => {
             })
             // PARENT SETTINGS
             let parent_settings = (
-                <div className="border border-gray-500 shadow-md mb-2 bg-white">
+                <div className="rounded-md shadow-md shadow-gray-500 bg-sky-200 mt-2 mb-4 p-2 pb-4">
                     <h2 className="pb-2">Settings</h2>
                     <h4>Notification Mode</h4>
                     <div className="parent-settings">
@@ -381,12 +381,12 @@ const Profile = () => {
                         <button className={profile.parent.settings.new_event_notification === true ? "selected" : "unselected"}>Yes</button>
                         <button className={profile.parent.settings.new_event_notification === false ? "selected" : "unselected"}>No</button>
                     </div>
-                    <button className="w-32 rounded-full bg-sky-500 hover:bg-indigo-500 px-2 py-2 text-white font-bold m-2 border-2 border-black" onClick={()=>setEditSettingsMode(true)}>Edit Settings</button>
+                    <button className="w-32 rounded-full bg-sky-500 hover:bg-indigo-500 px-2 py-2 text-white font-bold m-2 border-px shadow-md shadow-gray-500" onClick={()=>setEditSettingsMode(true)}>Edit Settings</button>
                 </div>
             )
             if (editSettingsMode) {
                 parent_settings = (
-                    <div className="border border-gray-500 shadow-md mb-2 bg-white">
+                    <div className="rounded-md shadow-md shadow-gray-500 bg-sky-200 mt-2 mb-4 p-2 pb-4">
                         <h2 className="pb-2">Settings</h2>
                         <h4>Notification Mode</h4>
                         <div className="parent-settings-edit-mode">
@@ -436,8 +436,8 @@ const Profile = () => {
                                 onClick={()=>editParentSettingsHandler("new_event_notification", false)}
                                 className={editedParentSettings.new_event_notification === false ? "selected" : "unselected"}>No</button>
                         </div>
-                        <button className="w-24 rounded-full bg-red-600 hover:bg-red-700 py-2 text-white font-bold m-2 border-2 border-black" onClick={cancelEditParentSettings}>Cancel</button>
-                        <button className="w-24 rounded-full bg-sky-500 hover:bg-indigo-500 py-2 text-white font-bold m-2 border-2 border-black" onClick={submitEditParentSettings}>Submit</button>
+                        <button className="w-24 rounded-full bg-red-600 hover:bg-red-700 py-2 text-white font-bold m-2 border-px shadow-md shadow-gray-500" onClick={cancelEditParentSettings}>Cancel</button>
+                        <button className="w-24 rounded-full bg-sky-500 hover:bg-indigo-500 py-2 text-white font-bold m-2 border-px shadow-md shadow-gray-500" onClick={submitEditParentSettings}>Submit</button>
                     </div>
                 );
             }
@@ -452,7 +452,7 @@ const Profile = () => {
             account_type_div = (
                 <div>
                     {parent_settings}
-                    <div className="border border-gray-500 shadow-md mb-2 bg-white">
+                    <div className="rounded-md shadow-md shadow-gray-500 bg-sky-200 mt-2 mb-4 p-2">
                         <h2 className="pb-2">Children</h2>
                         {children_list}
                     </div>
@@ -484,7 +484,7 @@ const Profile = () => {
     })
 
     let change_password_div = (
-        <div className="border border-gray-500 shadow my-2 bg-white">
+        <div className="rounded-md shadow-md shadow-gray-500 bg-sky-200 mt-2 mb-4 p-2 pb-4">
             <h2 className="mb-4">Change Password</h2>
             <form onSubmit={formik.handleSubmit}>
                 <div>
@@ -513,7 +513,7 @@ const Profile = () => {
                     {formik.errors.passwordConfirmation ? <div className="text-sm pl-2 py-1">{formik.errors.passwordConfirmation} </div> : null}
                 </div>
                 <div className="RegisterBtn">
-                    <button className="w-32 border-2 border-black rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-2 text-white font-bold" type="submit" disabled={loading}>Submit</button>
+                    <button className="w-32 border-px shadow-md shadow-gray-500 rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-2 text-white font-bold" type="submit" disabled={loading}>Submit</button>
                 </div>
             </form>
             {errors_div}
@@ -524,9 +524,9 @@ const Profile = () => {
         <div className="relative bg-white overflow-hidden min-h-screen">
             <Navigation />
             <div className="w-full p-2 flex items-center justify-center md:px-4 lg:px-8">
-                <div className="w-full sm:w-[600px] rounded-md border border-gray-300 shadow-sm bg-sky-200 text-center">
+                <div className="w-full sm:w-[600px] bg-white text-center">
                     <h1 className="pb-4">Profile</h1>
-                    <div className="border border-gray-500 shadow-md mb-2 bg-white">
+                    <div className="rounded-md shadow-md shadow-gray-500 bg-sky-200 mt-2 mb-4 p-2">
                         <h2>Name</h2>
                         <p className="pb-2">{profile.first_name} {profile.last_name}</p>
                         <h2>Email</h2>

@@ -185,7 +185,7 @@ const ChatContacts = (props) => {
     )
 
     return (
-        <div className="w-full sm:w-[600px] max-h-screen overflow-auto rounded-md shadow-md bg-white text-center m-2 p-4">
+        <div className="w-full sm:w-[600px] max-h-screen overflow-auto rounded-md shadow-md shadow-gray-500 bg-sky-200 text-center m-2 mb-4 sm:m-4 p-4">
             <h2 className="pb-2">Contacts</h2>
             {showSearchResults ? search_results_div : search_and_contacts_div}
         </div>

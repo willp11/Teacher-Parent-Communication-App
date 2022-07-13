@@ -38,7 +38,7 @@ const ChatHub = () => {
         <div className="relative bg-white overflow-hidden min-h-screen">
             <Navigation />
             <div className="w-full px-2 flex items-center justify-center md:px-4 lg:px-8">
-                <div className="w-full rounded-md border border-gray-300 shadow-sm bg-sky-200 text-center">
+                <div className="w-full bg-white text-center p-2">
                     <h1 className="pb-2">Chat</h1>
                     <div className="w-full flex items-start justify-center flex-wrap">
                         <ChatContacts from="chat_hub"/>

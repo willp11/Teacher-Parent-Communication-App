@@ -23,6 +23,7 @@ const ChatGroups = (props) => {
                 group_members_string += "..."
                 return false;
             }
+            return true;
         })
         // if direct message change group name to the other member of the group
         let group_name = group.group.name;
@@ -49,7 +50,7 @@ const ChatGroups = (props) => {
     )
 
     let chat_groups_div = (
-        <div className="w-full sm:w-[600px] rounded-md shadow-md bg-white text-center m-2 p-4">
+        <div className="w-full sm:w-[600px] rounded-md shadow-md shadow-gray-500 bg-sky-200 text-center m-2 sm:m-4 p-4">
             <h2 className="pb-2">Chats</h2>
             <CreateChatGroup getUserChatGroups={props.getUserChatGroups}/>
             {groups_div}
