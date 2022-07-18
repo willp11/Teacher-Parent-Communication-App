@@ -102,6 +102,7 @@ const AddMembers = (props) => {
             .then(res=>{
                 console.log(res)
                 setParentList([]);
+                props.getGroupMembers();
             })
             .catch(err=>{
                 console.log(err)
@@ -111,17 +112,25 @@ const AddMembers = (props) => {
     // list of users to add to group
     let user_list = parentList.map(parent=>{
         return (
-            <div key={parent.user.id} style={{margin: "10px", border: "1px solid grey", padding: "10px"}}>
-                <p>{parent.user.first_name} {parent.user.last_name}</p>
-                <button onClick={()=>removeFromListHandler(parent)}>remove</button>
+            <div key={parent.user.id} className="bg-white rounded-md shadow-md p-2 my-4 border border-gray-500">
+                <p className="pt-2 pb-4 font-bold">{parent.user.first_name} {parent.user.last_name}</p>
+                <button 
+                    className="border-px shadow-md shadow-gray-500 bg-red-500 hover:bg-red-600 text-white font-bold rounded-full px-4 py-1" 
+                    onClick={()=>removeFromListHandler(parent)}
+                >   
+                    remove
+                </button>
             </div>
         )
     })
     let user_list_div = (
-        <div className="w-full sm:w-[500px] max-h-[300px] overflow-auto bg-white rounded border border-gray-600 shadow-md p-2 mx-auto my-4">
+        <div className="w-full sm:w-[500px] max-h-[300px] overflow-auto bg-sky-100 rounded border border-gray-600 shadow-md p-2 mx-auto my-4">
             <h3>Users to add</h3>
             {(parentList.length > 0) ? user_list : <p>No users added to list</p>}
-            {(parentList.length > 0) ? <button onClick={submitParentListHandler}>submit</button> : null}
+            {(parentList.length > 0) ? <button 
+                                            className="border-px shadow-md shadow-gray-500 bg-sky-500 hover:bg-indigo-500 text-white font-bold rounded-full px-4 py-1" 
+                                            onClick={submitParentListHandler}>submit
+                                        </button> : null}
             <p style={{fontSize: "0.8rem"}}>{message}</p>
         </div>
     )
@@ -136,9 +145,9 @@ const AddMembers = (props) => {
     )
 
     return (
-        <div className="w-full sm:w-[650px] h-fit overflow-auto mx-auto bg-sky-50 rounded border border-gray-600 shadow-lg p-2">
+        <div className="w-full sm:w-[650px] h-fit overflow-auto mx-auto bg-sky-200 rounded border border-gray-600 shadow-lg p-2">
             <Popover.Button className="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 border border-gray-600 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
-                <span className="sr-only">Close main menu</span>
+                <span className="sr-only">Close Add Members</span>
                 <XIcon className="h-6 w-6" aria-hidden="true" />
             </Popover.Button>
             <h2 className="pt-2">Add to group</h2>

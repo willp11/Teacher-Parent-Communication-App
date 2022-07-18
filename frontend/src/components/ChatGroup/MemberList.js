@@ -30,7 +30,7 @@ const MemberList = (props) => {
                     focus
                     className="absolute z-10 top-[80px] inset-x-0 p-2 transition transform origin-top-right"
                 >
-                    <AddMembers groupId={props.groupId} members={props.members}/>
+                    <AddMembers groupId={props.groupId} members={props.members} getGroupMembers={props.getGroupMembers} />
                 </Popover.Panel>
             </Transition>
         </Popover>

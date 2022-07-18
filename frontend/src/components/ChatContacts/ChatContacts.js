@@ -232,7 +232,7 @@ const ChatContacts = (props) => {
     )
 
     let div_style_from_hub = "w-full sm:w-[600px] h-full overflow-auto rounded-md shadow-md shadow-gray-500 bg-sky-200 text-center mt-2 mb-4 sm:m-4 mx-auto p-4";
-    let div_style_from_add = "w-full sm:w-[600px] h-[300px] overflow-auto rounded-md shadow-md shadow-gray-500 bg-sky-200 text-center mt-2 mb-4 sm:m-4 mx-auto p-4";
+    let div_style_from_add = "w-full sm:w-[600px] h-[300px] overflow-auto border-2 border-gray-600 rounded-md shadow-md shadow-gray-500 bg-sky-200 text-center mt-2 mb-4 sm:m-4 mx-auto p-4";
 
     return (
         <div className={props.from === "add_members" ? div_style_from_add : div_style_from_hub}>

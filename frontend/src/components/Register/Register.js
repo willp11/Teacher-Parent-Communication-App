@@ -84,7 +84,7 @@ const Register = () => {
             <div className="max-w-7xl mx-auto">
                 <Navigation />
                 <div className="w-full p-2 flex items-center justify-center md:px-4 lg:px-8">
-                    <div className="w-96 p-8 rounded-md border border-gray-300 shadow-md  bg-sky-200">
+                    <div className="w-96 p-8 rounded-md p-8 shadow-lg bg-sky-100">
                         <h1>Register</h1>
 
                         <form onSubmit={formik.handleSubmit}>
@@ -93,7 +93,7 @@ const Register = () => {
                                 type="text"
                                 name="email"
                                 placeholder="Type your e-mail" 
-                                className="p-2 border border-gray-300 w-full" 
+                                className="p-2 border border-gray-300 w-full h-10" 
                                 value={formik.values.email} 
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -105,7 +105,7 @@ const Register = () => {
                                 type="text"
                                 name="firstName"
                                 placeholder="Type your first name" 
-                                className="p-2 border border-gray-300 w-full" 
+                                className="p-2 border border-gray-300 w-full h-10" 
                                 value={formik.values.firstName} 
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -117,7 +117,7 @@ const Register = () => {
                                 type="text"
                                 name="lastName"
                                 placeholder="Type your last name (optional)" 
-                                className="p-2 border border-gray-300 w-full" 
+                                className="p-2 border border-gray-300 w-full h-10" 
                                 value={formik.values.lastName} 
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -128,7 +128,7 @@ const Register = () => {
                                 type="password"
                                 name="password"
                                 placeholder="Type your password" 
-                                className="p-2 border border-gray-300 w-full"
+                                className="p-2 border border-gray-300 w-full h-10"
                                 value={formik.values.password}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -140,7 +140,7 @@ const Register = () => {
                                 type="password"
                                 name="passwordConfirmation"
                                 placeholder="Type your password again" 
-                                className="p-2 border border-gray-300 w-full"
+                                className="p-2 border border-gray-300 w-full h-10"
                                 value={formik.values.passwordConfirmation}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}

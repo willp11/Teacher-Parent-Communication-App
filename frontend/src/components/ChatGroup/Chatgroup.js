@@ -14,9 +14,10 @@ const ChatGroup = () => {
 
     const [group, setGroup] = useState(null);
     const [messages, setMessages] = useState([]);
+    const [groupMembers, setGroupMembers] = useState([]);
     const [socket, setSocket] = useState(null);
 
-    // receive new messages, we update the refs and pass to messages component so it can re-rended new messages and scroll down
+    // receive new messages, we update the refs and pass to messages component so it can render new messages and scroll down
     const messagesRef = useRef();
     const messageCountRef = useRef(0)
 
@@ -49,6 +50,8 @@ const ChatGroup = () => {
                 console.log(res);
                 setGroup(res.data);
                 setMessages(res.data.chat_messages);
+                setGroupMembers(res.data.chat_members);
+                console.log(res.data.chat_members)
                 messagesRef.current = res.data.chat_messages;
                 connectSocket();
             })
@@ -56,6 +59,29 @@ const ChatGroup = () => {
                 console.log(err);
             })
     }, [token, id, connectSocket])
+
+    // Get list of members for this chat group (doesn't need to connect to sockets again)
+    // called from AddMembers, through MemberList (via props)
+    const getGroupMembers = useCallback(()=>{
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token
+        }
+        const url = `http://localhost:8000/api/v1/school/chat-group-members-list/${id}/`;
+        axios.get(url, {headers: headers})
+            .then(res=>{
+                console.log(res);
+                setGroupMembers(res.data);
+            })
+            .catch(err=>{
+                console.log(err);
+            })
+    }, [token, id])
+
+    // need to update 
+    useEffect(()=>{
+        getGroupMembers()
+    }, [getGroupMembers])
 
     // Function to send chat socket message
     const sendMessage = (message) => {
@@ -97,7 +123,7 @@ const ChatGroup = () => {
             <div className="w-full bg-white text-center">
                 <h1 className="pb-2">{group.direct_message ? "Direct Message" : group.name}</h1>
                 <div className="w-full flex flex-col items-center">
-                    <MemberList groupId={id} members={group.chat_members} direct={group.direct_message} />
+                    <MemberList groupId={id} members={groupMembers} direct={group.direct_message} getGroupMembers={getGroupMembers} />
                     <Messages groupId={id} messages={messages} sendMessage={sendMessage} newMessage={messageCountRef.current}/>
                 </div>
             </div>

@@ -74,8 +74,8 @@ const Login = () => {
         <div className="relative bg-white overflow-hidden min-h-screen">
             <div className="max-w-7xl mx-auto">
                 <Navigation />
-                <div className="w-full p-2 flex items-center justify-center md:px-4 lg:px-8">
-                    <div className="w-96 rounded-md border border-gray-300 shadow-sm bg-sky-200">
+                <div className="w-full p-2 flex items-center justify-center">
+                    <div className="w-96 rounded-md p-8 shadow-lg bg-sky-100">
                         <h1>Log in</h1>
 
                         <form onSubmit={formik.handleSubmit}>
