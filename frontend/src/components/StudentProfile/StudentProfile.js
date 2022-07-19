@@ -76,22 +76,27 @@ const StudentProfile = () => {
     }
     if (studentProfile) {
         // Parent info div
-        let no_parent_account_div = (
-            <div>
-                <p className="my-2">{studentProfile.name}'s parent has not made an account yet!</p>
-                <p className="mb-2"><b>Invite Code: </b>{studentProfile.invite_code.code}</p>
-            </div>
-        )
-        let has_parent_account_div = (
-            <div>
-                <p className="my-2">{studentProfile.parent.user.first_name} {studentProfile.parent.user.last_name}</p>
-                <button className="bg-sky-500 hover:bg-indigo-500 rounded-full text-white font-bold px-4 py-2 mb-2 border-2 border-black">Send Message</button>
-            </div>
-        )
+        let parent_info = null;
+        if (studentProfile.parent !== null) {
+            parent_info = (
+                <div>
+                    <p className="my-2">{studentProfile.parent.user.first_name} {studentProfile.parent.user.last_name}</p>
+                    <button className="bg-sky-500 hover:bg-indigo-500 rounded-full text-white font-bold px-4 py-2 mb-2 border-2 border-black">Send Message</button>
+                </div>
+            )
+        } else {
+            parent_info = (
+                <div>
+                    <p className="my-2">{studentProfile.name}'s parent has not made an account yet!</p>
+                    <p className="mb-2"><b>Invite Code: </b>{studentProfile.invite_code.code}</p>
+                </div>
+            )
+        }
+        
         let parent_info_div = (
             <div className="bg-white rounded shadow p-2 my-2">
                 <h2>Parent</h2>
-                {studentProfile.parent === null ? no_parent_account_div : has_parent_account_div}
+                {parent_info}
             </div>
         )
 
