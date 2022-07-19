@@ -35,4 +35,10 @@ code {
   .unselected {
     @apply w-20 border-2 border-black rounded-md p-1 m-1 bg-white text-sm
   }
+  .classMenuSelected {
+    @apply text-indigo-700 border-b-2 border-indigo-700 font-bold mx-4
+  }
+  .classMenuUnselected {
+    @apply mx-4 cursor-pointer
+  }
 }

@@ -1,4 +1,3 @@
-import './AwardSticker.css';
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import axios from 'axios';
@@ -19,7 +18,7 @@ const AwardSticker = (props) => {
             'Authorization': 'Token ' + token
         }
         const data = {
-            student: props.student.id,
+            student: props.studentId,
             type: selectedSticker
         }
         const url = 'http://localhost:8000/api/v1/school/sticker-create/';
@@ -27,7 +26,7 @@ const AwardSticker = (props) => {
             .then(res=>{
                 console.log(res);
                 setSelectedSticker(null);
-                setSuccessMsg(`Sticker awarded to ${props.student.name}`);
+                setSuccessMsg(`Sticker awarded to ${props.name}`);
             })
             .catch(err=>{
                 console.log(err);
@@ -35,14 +34,14 @@ const AwardSticker = (props) => {
     }
 
     // Sticker image styles
-    const img_classname = "h-[50px] w-[50px] p-1";
-    const selected_img_classname = "h-[50px] w-[50px] border-2 border-black rounded-full p-1"
+    const img_classname = "h-[50px] w-[50px] p-1 mx-2 cursor-pointer";
+    const selected_img_classname = "h-[50px] w-[50px] border-2 border-black rounded-full p-1 mx-2"
 
 
     return (
-        <div className="w-64 max-w-full bg-white mx-auto my-2 p-2 rounded-lg">
-            <h4>Award Sticker</h4>
-            <div className="student-award-sticker-div-inner">
+        <div className="w-64 max-w-full mx-auto my-2 p-2 text-center">
+            <h4>Feedback</h4>
+            <div className="flex align-center justify-center my-2">
                 <img src={starImg} alt="star" onClick={()=>setSelectedSticker(1)} className={selectedSticker === 1 ? selected_img_classname : img_classname} />
                 <img src={dinosaurImg} alt="dinosaur" onClick={()=>setSelectedSticker(2)} className={selectedSticker === 2 ? selected_img_classname : img_classname} />
                 <img src={catImg} alt="cat" onClick={()=>setSelectedSticker(3)} className={selectedSticker === 3 ? selected_img_classname : img_classname} />

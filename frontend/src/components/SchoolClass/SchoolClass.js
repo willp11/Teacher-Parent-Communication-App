@@ -59,20 +59,30 @@ const SchoolClass = () => {
     let school_class_div = null;
     if (schoolClass !== null) {
         school_class_div = (
-            <div className="w-full p-2 flex items-center justify-center md:px-4 lg:px-8">
-                <div className="w-full sm:w-[600px] rounded-md border border-gray-300 shadow-sm bg-sky-200 text-center">
+            <div className="w-full flex flex-col items-center justify-center">
+                <div className="w-full bg-sky-200 text-center py-2">
                     <h1>{schoolClass.name}</h1>
-                    <h2>{schoolClass.school.name}</h2>
+                    {/* <h2>{schoolClass.school.name}</h2> */}
                     <p className="text-lg pb-2"><b>Teacher: </b>{schoolClass.teacher.user.first_name + " " + schoolClass.teacher.user.last_name}</p>
-                    <div className="FlexRowCentered">
-                        {/* <Events getClassInfo={getClassInfo} events={schoolClass.events} handleDelete={handleDelete} classId={schoolClass.id}/>
-                        <Announcements getClassInfo={getClassInfo} announcements={schoolClass.announcements} handleDelete={handleDelete} classId={schoolClass.id}/> 
-                        <Stories getClassInfo={getClassInfo} stories={schoolClass.stories} handleDelete={handleDelete} classId={schoolClass.id} /> */}
-                        <Students getClassInfo={getClassInfo} students={schoolClass.students} handleDelete={handleDelete} classId={schoolClass.id} />
-                        {/* <Assignments getClassInfo={getClassInfo} assignments={schoolClass.assignments} students={schoolClass.students} handleDelete={handleDelete} 
-                            classId={schoolClass.id} /> */}
-                    </div>
                 </div>
+                <div className="py-2">
+                    <span className="classMenuSelected">Classroom</span>
+                    <span className="classMenuUnselected">Stories</span>
+                    <span className="classMenuUnselected">Events</span>
+                    <span className="classMenuUnselected">Announcements</span>
+                </div>
+
+                <Students getClassInfo={getClassInfo} students={schoolClass.students} handleDelete={handleDelete} classId={schoolClass.id} />
+                
+                {/* <div className="FlexRowCentered">
+                    <Events getClassInfo={getClassInfo} events={schoolClass.events} handleDelete={handleDelete} classId={schoolClass.id}/>
+                    <Announcements getClassInfo={getClassInfo} announcements={schoolClass.announcements} handleDelete={handleDelete} classId={schoolClass.id}/> 
+                    <Stories getClassInfo={getClassInfo} stories={schoolClass.stories} handleDelete={handleDelete} classId={schoolClass.id} />
+                    <Students getClassInfo={getClassInfo} students={schoolClass.students} handleDelete={handleDelete} classId={schoolClass.id} />
+                    <Assignments getClassInfo={getClassInfo} assignments={schoolClass.assignments} students={schoolClass.students} handleDelete={handleDelete} 
+                        classId={schoolClass.id} />
+                </div> */}
+                
             </div>
         )
     }

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import AwardSticker from '../AwardSticker/AwardSticker';
+import AwardSticker from '../Students/AwardSticker';
 
 const Student = (props) => {
     
@@ -92,7 +92,7 @@ const Student = (props) => {
     )
 
     return (
-        <div className="border border-gray-100 shadow w-96 max-w-full mx-auto mb-4 p-2 bg-sky-100">
+        <div className="border border-gray-100 shadow w-96 max-w-full mx-auto mb-4 p-2 bg-sky-100 text-center">
             {(editMode) ? editOnDiv : editOffDiv}
         </div>
     )

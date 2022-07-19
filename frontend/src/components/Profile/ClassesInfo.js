@@ -42,7 +42,7 @@ const ClassesInfo = (props) => {
 
     let classes_info_div = (
         <div className="rounded-md bg-sky-50 shadow-md mt-2 mb-4 p-2 pb-4">
-            <h2 className="pb-1 text-gray-600 text-md">Classes</h2>
+            <h2 className="pb-2 text-gray-600 text-md">Classes</h2>
             <div className="mb-4">
                 <input 
                     className="p-2 border border-gray-300 w-48 sm:w-64 mr-2 h-10" 
