@@ -83,9 +83,6 @@ const Students = (props) => {
         </div>
     )
 
-    // let students = props.students.map((student)=>{
-    //     return <Student key={student.id} student={student} handleDelete={props.handleDelete} getClassInfo={props.getClassInfo} />
-    // });
     let students = props.students.map((student)=>{
         return (
             <div 

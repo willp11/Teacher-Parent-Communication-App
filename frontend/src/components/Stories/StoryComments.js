@@ -1,4 +1,3 @@
-import './StoryComments.css';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { useFormik } from 'formik';
@@ -44,33 +43,35 @@ const StoryComments = (props) => {
     });
 
     const create_comment_form = (
-        <form className="create-comment" onSubmit={comment_formik.handleSubmit}>
-            <input
-                type="text"
-                placeholder="Write a comment..."
-                name="comment"
-                value={comment_formik.values.comment}
-                onChange={comment_formik.handleChange}
-                onBlur={comment_formik.handleBlur}
-                style={{textAlign: "center"}}
-            />
-            <button type="submit">Submit</button>
-        </form>
+        <div className="w-full">
+            <form onSubmit={comment_formik.handleSubmit}>
+                <input
+                    type="text"
+                    placeholder="Write a comment..."
+                    name="comment"
+                    value={comment_formik.values.comment}
+                    onChange={comment_formik.handleChange}
+                    onBlur={comment_formik.handleBlur}
+                    className="border border-gray-300 w-[calc(100%-6rem)] h-12"
+                />
+                <button type="submit" className="w-24 rounded-md bg-sky-500 hover:bg-indigo-500 p-2 my-2 text-white font-bold border-2 border-black">Post</button>
+            </form>
+        </div>
     )
 
     // LIST OF COMMENTS
     const comments_list_div = props.comments.map((comment)=>{
         return (
-            <div className="story-comment" key={comment.id}>
+            <div className="w-full bg-white border-b-2 border-gray-300 p-2" key={comment.id}>
                 <p><b>{comment.author.username}: </b>{comment.content}</p>
             </div>
         )
     })
 
     return (
-        <div className="story-comments-div">
-            {comments_list_div}
-            {create_comment_form}
+        <div className="mt-2">
+            {props.showComments ? comments_list_div : null}
+            {props.writeComment ? create_comment_form : null}
         </div>
     )
 }

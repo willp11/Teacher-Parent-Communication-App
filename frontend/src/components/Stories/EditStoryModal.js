@@ -1,44 +1,46 @@
-import { useFormik } from "formik";
 import { useSelector } from "react-redux";
-import * as Yup from 'yup';
+import { useState } from "react";
 import axios from "axios";
-import Story from "./Story";
+import { useFormik } from "formik";
+import * as Yup from 'yup';
+import { XIcon } from "@heroicons/react/outline";
 
-const Stories = (props) => {
+const EditStoryModal = (props) => {
 
-    const token = useSelector((state) => state.auth.token);
+    const token = useSelector((state)=>state.auth.token);
 
-    // CREATE STORY FUNCTION
-    const handleCreateStory = (title, content, actions) => {
+    // Confirm button
+    const handleEditStory = (title, content) => {
         const headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
         }
         const data = {
             title, 
-            content,
-            school_class: props.classId
+            content
         }
-        const url = 'http://localhost:8000/api/v1/school/story-create/';
-        axios.post(url, data, {headers: headers})
+        const url = 'http://localhost:8000/api/v1/school/story-update/' + props.story.id + '/';
+        axios.put(url, data, {headers: headers})
             .then(res=>{
                 console.log(res);
                 props.getClassInfo();
-                actions.resetForm();
+                props.toggleEditMode();
             })
             .catch(err => {
                 console.log(err);
+
+                // TO DO - display error messages
             })
     }
 
-    // CREATE STORY FORM
+    // EDIT STORY FORM
     const story_formik = useFormik({
         initialValues: {
-            title: "",
-            content: "",
+            title: props.story.title,
+            content: props.story.content,
         },
         onSubmit: (values, actions) =>  {
-            handleCreateStory(values.title, values.content, actions);
+            handleEditStory(values.title, values.content, actions);
         },
         validationSchema: Yup.object({
             title: Yup.string().trim().required("Title is required"),
@@ -46,11 +48,14 @@ const Stories = (props) => {
         })
     });
 
-    // STORIES
-    let create_story_form = (
-        <div className="w-full sm:w-[500px] p-4 mx-auto mt-2 rounded-md shadow-md bg-slate-100 text-center">
+    let edit_story_form = (
+        <div className="relative w-full sm:w-[500px] p-4 mx-auto mt-2 rounded-md shadow-md bg-slate-100 text-center">
+            <XIcon 
+                className="absolute top-2 right-2 h-[24px] w-[24px] hover:border hover:border-gray-300 cursor-pointer"
+                onClick={props.toggleEditMode}
+            />
             <form onSubmit={story_formik.handleSubmit}>
-                <h3>Create Story</h3>
+                <h3>Edit Story</h3>
                 <input
                     type="text"
                     placeholder="Type a title..."
@@ -77,22 +82,13 @@ const Stories = (props) => {
         </div>
     )
 
-    let stories = props.stories.map((story)=>{
-        return <Story story={story} handleDelete={props.handleDelete} key={story.id} getClassInfo={props.getClassInfo}/>
-    });
-
-    let stories_div = (
-        <div>
-            {create_story_form}
-            
-            <div className="mt-8">
-                {stories}
-            </div>
-            
+    let edit_modal = (
+        <div className="fixed top-0 left-0 bg-[rgba(0,0,0,0.7)] z-20 w-screen h-screen flex items-center justify-center">
+            {edit_story_form}
         </div>
     )
 
-    return stories_div;
+    return edit_modal;
 }
 
-export default Stories;
+export default EditStoryModal;

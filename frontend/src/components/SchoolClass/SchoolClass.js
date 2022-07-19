@@ -15,6 +15,7 @@ const SchoolClass = () => {
     const { id } = useParams();
     const token = useSelector((state) => state.auth.token);
     const [schoolClass, setSchoolClass] = useState(null);
+    const [componentToShow, setComponentToShow] = useState("classroom")
 
     // GET CLASS DATA FUNCTION
     const getClassInfo = useCallback(() => {
@@ -62,18 +63,29 @@ const SchoolClass = () => {
             <div className="w-full flex flex-col items-center justify-center">
                 <div className="w-full bg-sky-200 text-center py-2">
                     <h1>{schoolClass.name}</h1>
-                    {/* <h2>{schoolClass.school.name}</h2> */}
                     <p className="text-lg pb-2"><b>Teacher: </b>{schoolClass.teacher.user.first_name + " " + schoolClass.teacher.user.last_name}</p>
                 </div>
                 <div className="py-2">
-                    <span className="classMenuSelected">Classroom</span>
-                    <span className="classMenuUnselected">Stories</span>
+                    <span 
+                        className={componentToShow === "classroom" ? "classMenuSelected": "classMenuUnselected"}
+                        onClick={()=>setComponentToShow("classroom")}
+                    >
+                        Classroom
+                    </span>
+                    <span 
+                        className={componentToShow === "stories" ? "classMenuSelected": "classMenuUnselected"}
+                        onClick={()=>setComponentToShow("stories")}
+                    >
+                        Stories
+                    </span>
                     <span className="classMenuUnselected">Events</span>
                     <span className="classMenuUnselected">Announcements</span>
                 </div>
 
-                <Students getClassInfo={getClassInfo} students={schoolClass.students} handleDelete={handleDelete} classId={schoolClass.id} />
-                
+                <div className="w-full">
+                    {componentToShow === "classroom" ? <Students getClassInfo={getClassInfo} students={schoolClass.students} handleDelete={handleDelete} classId={schoolClass.id} /> : null}
+                    {componentToShow === "stories" ? <Stories getClassInfo={getClassInfo} stories={schoolClass.stories} handleDelete={handleDelete} classId={schoolClass.id} /> : null}
+                </div>
                 {/* <div className="FlexRowCentered">
                     <Events getClassInfo={getClassInfo} events={schoolClass.events} handleDelete={handleDelete} classId={schoolClass.id}/>
                     <Announcements getClassInfo={getClassInfo} announcements={schoolClass.announcements} handleDelete={handleDelete} classId={schoolClass.id}/> 
