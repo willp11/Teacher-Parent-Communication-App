@@ -31,7 +31,7 @@ const Announcement = (props) => {
         </div> 
     )
     
-    let editOffDiv = (
+    let announcement_div = (
         <div className="w-full sm:w-[500px] p-4 mx-auto bg-sky-100 rounded-md shadow-md" >
             <div className="bg-white p-2 rounded-md">
                 <div className="flex justify-between">
@@ -51,9 +51,10 @@ const Announcement = (props) => {
             </div>
         </div>
     )
+    
     return (
         <div className="mb-4">
-            {editOffDiv}
+            {announcement_div}
             {(editMode) ? <EditAnnouncementModal announcement={props.announcement} getClassInfo={props.getClassInfo} toggleEditMode={toggleEditMode} /> : null}
         </div>
     )

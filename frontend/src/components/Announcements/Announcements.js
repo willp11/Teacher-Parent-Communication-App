@@ -53,7 +53,7 @@ const Announcements = (props) => {
                 <h3>Create Announcement</h3>
                 <input
                     type="text"
-                    placeholder="Type the title..."
+                    placeholder="Type title..."
                     name="title"
                     value={announcement_formik.values.title}
                     onChange={announcement_formik.handleChange}
@@ -68,7 +68,7 @@ const Announcements = (props) => {
                     value={announcement_formik.values.content}
                     onChange={announcement_formik.handleChange}
                     onBlur={announcement_formik.handleBlur}
-                    placeholder="Write the content..."
+                    placeholder="Type content..."
                     className="border border-gray-300 mt-2 w-full"
                 /> <br/>
                 {announcement_formik.errors.content ? <div className="text-sm w-full text-left pl-2 mt-1">{announcement_formik.errors.content} </div> : null}

@@ -53,7 +53,7 @@ const Stories = (props) => {
                 <h3>Create Story</h3>
                 <input
                     type="text"
-                    placeholder="Type a title..."
+                    placeholder="Type title..."
                     name="title"
                     value={story_formik.values.title}
                     onChange={story_formik.handleChange}
@@ -65,7 +65,7 @@ const Stories = (props) => {
                 <textarea
                     rows="3"
                     name="content"
-                    placeholder="Write your story..."
+                    placeholder="Type content..."
                     value={story_formik.values.content}
                     onChange={story_formik.handleChange}
                     onBlur={story_formik.handleBlur}

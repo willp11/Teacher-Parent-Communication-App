@@ -1,51 +1,50 @@
-import { useFormik } from "formik";
-import * as Yup from 'yup';
 import { useSelector } from "react-redux";
 import axios from "axios";
-import Event from "./Event";
+import { useFormik } from "formik";
+import * as Yup from 'yup';
+import { XIcon } from "@heroicons/react/outline";
 
-const Events = (props) => {
+const EditEventsModal = (props) => {
 
-    const token = useSelector((state) => state.auth.token);
+    const token = useSelector((state)=>state.auth.token);
 
-    // CREATE EVENT FUNCTION
-    const handleCreateEvent = (name, date, description, helpers_required, actions) => {
+    // Confirm button
+    const handleEditEvent = (name, date, description, helpers_required) => {
         const headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
         }
         const data = {
-            name, 
-            date, 
-            description, 
-            helpers_required,
-            school_class: props.classId
-        }
-        const url = 'http://localhost:8000/api/v1/school/event-create/';
-        axios.post(url, data, {headers: headers})
+            name,
+            date,
+            description,
+            helpers_required
+        };
+        const url = 'http://localhost:8000/api/v1/school/event-update/' + props.event.id + '/';
+        axios.put(url, data, {headers: headers})
             .then(res=>{
                 console.log(res);
                 props.getClassInfo();
-                actions.resetForm();
+                props.toggleEditMode();
             })
             .catch(err => {
                 console.log(err);
             })
     }
 
-    // CREATE EVENT FORM
+    // EDIT EVENT FORM
     const formatDate = () => {
         return new Date().toLocaleDateString()
     }
     const event_formik = useFormik({
         initialValues: {
-            name: "",
-            date: "",
-            description: "",
-            helpers: ""
+            name: props.event.name,
+            date: props.event.date,
+            description: props.event.description,
+            helpers: props.event.helpers_required,
         },
-        onSubmit: (values, actions) => {
-            handleCreateEvent(values.name, values.date, values.description, values.helpers, actions);
+        onSubmit: (values) => {
+            handleEditEvent(values.name, values.date, values.description, values.helpers);
         },
         validationSchema: Yup.object({
             name: Yup.string().trim().required("name is required"),
@@ -56,11 +55,15 @@ const Events = (props) => {
             description: Yup.string().trim().required("description is required")
         })
     });
-
-    let create_event_form = (
-        <div className="w-full sm:w-[500px] p-4 mx-auto mt-2 rounded-md shadow-md bg-slate-100 text-center">
+    
+    let edit_form = (
+        <div className="relative w-full sm:w-[500px] p-4 mx-auto mt-2 rounded-md shadow-md bg-slate-100 text-center">
+            <XIcon 
+                className="absolute top-2 right-2 h-[24px] w-[24px] hover:border hover:border-gray-300 cursor-pointer"
+                onClick={props.toggleEditMode}
+            />
             <form onSubmit={event_formik.handleSubmit}>
-                <h3>Create Event</h3>
+                <h3>Edit Event</h3>
                 <input
                     type="text"
                     placeholder="Type event name..."
@@ -109,23 +112,13 @@ const Events = (props) => {
         </div>
     )
 
-    let events = props.events.map((event)=>{
-        return <Event key={event.id} event={event} handleDelete={props.handleDelete} getClassInfo={props.getClassInfo} />
-    });
-
-    let events_div = (
-        <div>
-            {create_event_form}
-            <div className="mt-8 mb-16">
-                <h3 className="mb-4">Upcoming Events</h3>
-                {events.length === 0 ? <p className="text-center">There are no upcoming events.</p> : null}
-                {events}
-            </div>
-
+    let edit_modal = (
+        <div className="fixed top-0 left-0 bg-[rgba(0,0,0,0.7)] z-20 w-screen h-screen flex items-center justify-center">
+            {edit_form}
         </div>
     )
 
-    return events_div;
+    return edit_modal;
 }
 
-export default Events;
+export default EditEventsModal;
