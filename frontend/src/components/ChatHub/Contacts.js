@@ -33,7 +33,7 @@ const Contacts = (props) => {
     const sendDirectMessageHandler = (parent) => {
         let chat_group = null;
         // Check if we already have a direct message group with that user
-        props.groupsMemberOf.every((g)=>{
+        props.directChats.every((g)=>{
             let group = g.group;
             if (group.direct_message) {
                 // found chat
@@ -122,6 +122,13 @@ const Contacts = (props) => {
         })
     }
 
+    let parent_div_message = (
+        <div>
+            <p className="text-sm pl-1">Select class to show parents list.</p>
+            <p className="text-sm pl-1 pt-1">Click icon to direct message or video call.</p>
+        </div>
+    )
+
     return (
         <div className="w-full md:w-1/3 h-1/2 md:h-full border-b-2 border-gray-300 md:border-0">
             <div className="h-[2.5rem] border-b-2 border-gray-300">
@@ -134,7 +141,7 @@ const Contacts = (props) => {
                 </div>
                 <div className="w-1/2 h-full md:w-full md:h-1/2 p-1 overflow-x-auto">
                     <h3 className="text-left text-gray-500 text-base font-semibold pl-1">Parents</h3>
-                    {selectedClass ? parents_list : <p className="text-sm pl-1">Select class to show parents list.</p>}
+                    {selectedClass ? parents_list : parent_div_message}
                 </div>
             </div>
         </div>

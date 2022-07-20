@@ -1,9 +1,8 @@
-import './CreateChatGroup.css';
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axios from 'axios';
 
-const CreateChatGroup = (props) => {
+const CreateGroupChat = (props) => {
     const token = useSelector((state)=>state.auth.token);
     const [newGroupName, setNewGroupName] = useState("");
     const [message, setMessage] = useState("");
@@ -42,17 +41,17 @@ const CreateChatGroup = (props) => {
     }
 
     let create_group_div = (
-        <div className="rounded bg-sky-100 shadow-md px-2 pt-2 pb-4 mb-4">
-            <h3 className="pb-2">Create Chat Group</h3>
+        <div className="rounded-md bg-slate-100 p-1 mt-1 mb-2">
+            <h3 className="pl-1 text-base text-left font-semibold truncate">Create Group</h3>
             <input
                 value={newGroupName} 
                 placeholder="Type group name..." 
                 onChange={(e)=>setNewGroupName(e.target.value)} 
-                className="border border-gray-300 h-8 mb-2"
-            /> <br/>
+                className="border border-gray-300 h-10 my-2 pl-1 mr-1"
+            />
             <button 
                 onClick={handleCreateGroup}
-                className="border-px shadow-md shadow-gray-500 bg-sky-500 hover:bg-indigo-500 text-white font-bold rounded-full px-4 py-1"
+                className="bg-sky-500 hover:bg-indigo-500 text-white font-bold rounded-full px-4 py-1 border-2 border-black"
             >
                 Submit
             </button>
@@ -63,4 +62,4 @@ const CreateChatGroup = (props) => {
     return create_group_div;
 }
 
-export default CreateChatGroup;
+export default CreateGroupChat;
