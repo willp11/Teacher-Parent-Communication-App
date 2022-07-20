@@ -40,7 +40,7 @@ const AwardSticker = (props) => {
 
     return (
         <div className="w-64 max-w-full mx-auto my-2 p-2 text-center">
-            <h4>Feedback</h4>
+            <h4>Award student sticker</h4>
             <div className="flex align-center justify-center my-2">
                 <img src={starImg} alt="star" onClick={()=>setSelectedSticker(1)} className={selectedSticker === 1 ? selected_img_classname : img_classname} />
                 <img src={dinosaurImg} alt="dinosaur" onClick={()=>setSelectedSticker(2)} className={selectedSticker === 2 ? selected_img_classname : img_classname} />

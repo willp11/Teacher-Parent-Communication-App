@@ -71,8 +71,8 @@ const StudentModal = (props) => {
 
     // JSX
     let edit_on_div = (
-        <div className="text-center">
-            <h2 className="mr-2">{studentName}</h2>
+        <div className="text-center pt-6">
+            <h2 className="mr-2 truncate">{studentName}</h2>
             <div className="flex items-center justify-center">
                 <input 
                     placeholder="Type new name..." 
@@ -86,8 +86,8 @@ const StudentModal = (props) => {
         </div>
     )
     let edit_off_div = (
-        <div className="flex items-center justify-center">
-            <h2 className="mr-2">{studentName}</h2>
+        <div className="flex items-center justify-center pt-6">
+            <h2 className="mr-2 truncate">{studentName}</h2>
             <PencilAltIcon className="h-[24px] w-[24px] cursor-pointer" onClick={toggleEditMode}/>
         </div>
     )

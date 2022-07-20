@@ -90,7 +90,7 @@ const Students = (props) => {
                 className="bg-sky-100 rounded-md shadow-md p-2 w-32 text-center m-2 cursor-pointer"
                 onClick={()=>showStudentModalHandler(student)}
             >
-                <h3 className="text-gray-600 pb-2">{student.name}</h3>
+                <h3 className="text-gray-600 pb-2 truncate">{student.name}</h3>
                 <img src={ProfileImg} className="h-[100px] w-[100px] mx-auto rounded-full"/>
             </div>
         )
@@ -99,7 +99,6 @@ const Students = (props) => {
     let students_div = (
         <div>
             {create_student_form}
-            {props.students.length === 0 ? <p>There are no students</p> : null}
             <div className="p-2 w-full flex items-center justify-center flex-wrap">
                 {students}
             </div>

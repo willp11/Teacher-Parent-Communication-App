@@ -65,7 +65,7 @@ const SchoolClass = () => {
                     <h1>{schoolClass.name}</h1>
                     <p className="text-lg pb-2"><b>Teacher: </b>{schoolClass.teacher.user.first_name + " " + schoolClass.teacher.user.last_name}</p>
                 </div>
-                <div className="py-2">
+                <div className="w-full sm:flex sm:justify-center py-2 overflow-y-auto">
                     <span 
                         className={componentToShow === "classroom" ? "classMenuSelected": "classMenuUnselected"}
                         onClick={()=>setComponentToShow("classroom")}
@@ -89,6 +89,12 @@ const SchoolClass = () => {
                         onClick={()=>setComponentToShow("events")}
                     >
                         Events
+                    </span>
+                    <span 
+                        className={componentToShow === "assignments" ? "classMenuSelected": "classMenuUnselected"}
+                        onClick={()=>setComponentToShow("assignments")}
+                    >
+                        Assignments
                     </span>
                 </div>
 
