@@ -1,4 +1,3 @@
-import './Profile.css';
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
@@ -13,6 +12,9 @@ import ClassesInfo from './ClassesInfo';
 import ChildrenInfo from './ChildrenInfo';
 import SelectAccountType from './SelectAccountType';
 import VerifyEmail from './VerifyEmail';
+
+const teacher_menu_items = ["User Details", "Change Password", "School", "Classes"]
+const parent_menu_items = ["User Details", "Change Password", "Notifications", "Children"]
 
 const Profile = () => {
 
@@ -32,6 +34,9 @@ const Profile = () => {
         teacher: null
     });
     const [notificationSettings, setNotificationSettings] = useState(null);
+
+    // menu - which component to show
+    const [componentToShow, setComponentToShow] = useState("User Details");
 
     // GET USER PROFILE REQUEST
     const getUserProfile = useCallback(() => {
@@ -69,6 +74,28 @@ const Profile = () => {
             })
     }, [token])
 
+    // FUNCTION TO CREATE MENU
+    const createMenuDiv = (arr) => {
+        let menu_div_items = arr.map(item=>{
+            return (
+                <span 
+                    className={componentToShow === item ? "classMenuSelected": "classMenuUnselected"}
+                    onClick={()=>setComponentToShow(item)}
+                >
+                    {item}
+                </span>
+            )
+        })
+
+        menu_div = (
+            <div className="w-full text-center text-center py-2 overflow-y-auto">
+                {menu_div_items}
+            </div>
+        )
+
+        return menu_div;
+    }
+
     // ON COMPONENT MOUNT, GET USER'S PROFILE DATA FROM API, GET LIST OF SCHOOLS
     useEffect(()=>{
         getUserProfile()
@@ -78,6 +105,7 @@ const Profile = () => {
 
     // JSX
     let profile_div = null;
+    let menu_div = null;
     // USER MUST VERIFY EMAIL TO SEE PROFILE
     if (profile.email_verified === false) {
         profile_div = <VerifyEmail />
@@ -87,7 +115,6 @@ const Profile = () => {
         if (profile.teacher === null && profile.parent === null) {
             profile_div = (
                 <div>
-                    <h1 className="mb-4">Profile</h1>
                     <SelectAccountType getUserProfile={getUserProfile} />
                 </div>
             )
@@ -95,39 +122,45 @@ const Profile = () => {
 
         // TEACHER ACCOUNT
         else if (profile.teacher !== null) {
+
+            menu_div = createMenuDiv(teacher_menu_items)
+
             profile_div = (
                 <div>
-                    <h1>Profile</h1>
-                    <UserInfo profile={profile} />
-                    <ChangePassword />
-                    <SchoolInfo profile={profile} schools={schoolList} getUserProfile={getUserProfile} />
-                    <ClassesInfo profile={profile} getUserProfile={getUserProfile} />
+                    {componentToShow === "User Details" ? <UserInfo profile={profile} /> : null}
+                    {componentToShow === "Change Password" ? <ChangePassword /> : null}
+                    {componentToShow === "School" ? <SchoolInfo profile={profile} schools={schoolList} getUserProfile={getUserProfile} /> : null}
+                    {componentToShow === "Classes" ? <ClassesInfo profile={profile} getUserProfile={getUserProfile} /> : null}
                 </div>
             )
         } 
 
         // PARENT ACCOUNT 
         else if (profile.parent !== null) {
+
+            menu_div = createMenuDiv(parent_menu_items)
+
             profile_div = (
                 <div>
-                    <h1>Profile</h1>
-                    <UserInfo profile={profile} />
-                    <ChangePassword />
-                    <NotificationSettings profile={profile} settings={notificationSettings} getUserProfile={getUserProfile} />
-                    <ChildrenInfo profile={profile} />
+                    {componentToShow === "User Details" ? <UserInfo profile={profile} /> : null}
+                    {componentToShow === "Change Password" ? <ChangePassword /> : null}
+                    {componentToShow === "Notifications" ? <NotificationSettings profile={profile} settings={notificationSettings} getUserProfile={getUserProfile} /> : null}
+                    {componentToShow === "Children" ? <ChildrenInfo profile={profile} /> : null}
                 </div>
             )
         }
     }
 
     return (
-        <div className="relative bg-white overflow-hidden min-h-screen">
-            <div className="max-w-7xl mx-auto">
-                <Navigation />
-                <div className="w-full flex items-center justify-center p-2">
-                    <div className="w-full sm:w-[600px] bg-sky-100 text-center rounded-md p-2 md:p-4 lg:p-8">
-                        {profile_div}
-                    </div>
+        <div className="relative bg-white overflow-auto min-h-screen">
+            <Navigation />
+            <div className="w-full flex flex-col items-center justify-center p-2">
+                <div className="w-full bg-sky-200 text-center py-2 mb-2">
+                    <h1>Profile</h1>
+                </div>
+                {menu_div}
+                <div className="w-full sm:w-[600px] bg-white text-center">
+                    {profile_div}
                 </div>
             </div>
         </div>

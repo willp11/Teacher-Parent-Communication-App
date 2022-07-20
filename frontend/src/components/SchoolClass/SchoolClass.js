@@ -118,7 +118,7 @@ const SchoolClass = () => {
     }
 
     return (
-        <div className="relative bg-white overflow-hidden min-h-screen">
+        <div className="relative bg-white overflow-auto min-h-screen">
             <Navigation />
             {school_class_div}
         </div>
