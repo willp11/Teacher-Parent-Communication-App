@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import Navigation from '../Navigation/Navigation';
-import Announcements from '../Announcements/Announcement';
+import Announcements from '../Announcements/Announcements';
 import Events from '../Events/Events';
 import Stories from '../Stories/Stories';
 import Students from '../Students/Students';
@@ -78,13 +78,25 @@ const SchoolClass = () => {
                     >
                         Stories
                     </span>
-                    <span className="classMenuUnselected">Events</span>
-                    <span className="classMenuUnselected">Announcements</span>
+                    <span 
+                        className={componentToShow === "announcements" ? "classMenuSelected": "classMenuUnselected"}
+                        onClick={()=>setComponentToShow("announcements")}
+                    >
+                        Announcements
+                    </span>
+                    <span 
+                        className={componentToShow === "events" ? "classMenuSelected": "classMenuUnselected"}
+                        onClick={()=>setComponentToShow("events")}
+                    >
+                        Events
+                    </span>
                 </div>
 
                 <div className="w-full">
                     {componentToShow === "classroom" ? <Students getClassInfo={getClassInfo} students={schoolClass.students} handleDelete={handleDelete} classId={schoolClass.id} /> : null}
                     {componentToShow === "stories" ? <Stories getClassInfo={getClassInfo} stories={schoolClass.stories} handleDelete={handleDelete} classId={schoolClass.id} /> : null}
+                    {componentToShow === "announcements" ? <Announcements getClassInfo={getClassInfo} announcements={schoolClass.announcements} handleDelete={handleDelete} classId={schoolClass.id}/> : null}
+                    {componentToShow === "events" ? <Events getClassInfo={getClassInfo} events={schoolClass.events} handleDelete={handleDelete} classId={schoolClass.id}/> : null}
                 </div>
                 {/* <div className="FlexRowCentered">
                     <Events getClassInfo={getClassInfo} events={schoolClass.events} handleDelete={handleDelete} classId={schoolClass.id}/>

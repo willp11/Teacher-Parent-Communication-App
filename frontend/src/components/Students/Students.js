@@ -100,7 +100,7 @@ const Students = (props) => {
         <div>
             {create_student_form}
             {props.students.length === 0 ? <p>There are no students</p> : null}
-            <div className="p-2 w-full flex items-center flex-wrap">
+            <div className="p-2 w-full flex items-center justify-center flex-wrap">
                 {students}
             </div>
 

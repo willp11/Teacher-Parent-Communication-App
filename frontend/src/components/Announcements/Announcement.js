@@ -1,97 +1,63 @@
-import { useFormik } from "formik";
-import * as Yup from 'yup';
-import axios from "axios";
-import { useSelector } from "react-redux";
-import Announcement from "../Announcement/Announcement";
+import { useState } from "react";
+import { DotsHorizontalIcon } from "@heroicons/react/outline";
+import EditAnnouncementModal from "./EditAnnouncementModal";
 
-const Announcements = (props) => {
+const Announcement = (props) => {
 
-    const token = useSelector((state) => state.auth.token);
+    const [showEditDelMenu, setShowEditDelMenu] = useState(false);
+    const [editMode, setEditMode] = useState(false);
 
-    // CREATE ANNOUNCEMENT FUNCTION
-    const handleCreateAnnouncement = (title, content, actions) => {
-        const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Token ' + token
-        }
-        const data = {
-            title,
-            content,
-            school_class: props.classId
-        }
-        const url = 'http://localhost:8000/api/v1/school/announcement-create/';
-        axios.post(url, data, {headers: headers})
-            .then(res=>{
-                console.log(res);
-                props.getClassInfo();
-                actions.resetForm();
-            })
-            .catch(err => {
-                console.log(err);
-            })
+    // Turn on and off edit model to display edit modal
+    const toggleEditMode = () => {
+        setEditMode(!editMode)
+        if (showEditDelMenu) toggleShowEditDelMenu()
     }
 
-    // CREATE ANNOUNCEMENT FORM
-    const announcement_formik = useFormik({
-        initialValues: {
-            title: "",
-            content: "",
-        },
-        onSubmit: (values, actions) =>  {
-            handleCreateAnnouncement(values.title, values.content, actions);
-        },
-        validationSchema: Yup.object({
-            title: Yup.string().trim().required("title is required"),
-            content: Yup.string().trim().required("content is required")
-        })
-    });
+    // Toggle edit and delete menu
+    const toggleShowEditDelMenu = () => {
+        setShowEditDelMenu(!showEditDelMenu)
+    }
 
-    // CREATE ANNOUNCEMENT FORM
-    let create_announcement_form = (
-        <form onSubmit={announcement_formik.handleSubmit}>
-            <div>
-                <input
-                    type="text"
-                    placeholder="Title"
-                    name="title"
-                    value={announcement_formik.values.title}
-                    onChange={announcement_formik.handleChange}
-                    onBlur={announcement_formik.handleBlur}
-                    style={{textAlign: "center"}}
-                /> <br/>
-                {announcement_formik.errors.title ? <div className="ErrorMsg">{announcement_formik.errors.title} </div> : null}
-
-                <textarea
-                    rows="10"
-                    name="content"
-                    value={announcement_formik.values.content}
-                    onChange={announcement_formik.handleChange}
-                    onBlur={announcement_formik.handleBlur}
-                    placeholder="Content"
-                /> <br/>
-                {announcement_formik.errors.content ? <div className="ErrorMsg">{announcement_formik.errors.content} </div> : null}
+    // JSX
+    // Edit and delete menu
+    let edit_del_menu = (
+        <div className="absolute right-0 top-11 w-28 z-10 bg-white rounded-md shadow-md shadow-gray-400">
+            <div className="border-b-2 border-gray-300 w-full p-2 cursor-pointer" onClick={toggleEditMode}>
+                Edit
             </div>
-            <div>
-                <button type="submit">Submit</button>
+            <div className="w-full p-2 text-red-600 cursor-pointer" onClick={()=>props.handleDelete(props.announcement.id, "announcement")}>
+                Delete
             </div>
-        </form>
+        </div> 
     )
-
-    // ANNOUNCEMENTS
-    let announcements = props.announcements.map((announcement)=>{
-        return <Announcement announcement={announcement} key={announcement.id} handleDelete={props.handleDelete} getClassInfo={props.getClassInfo} />
-    });
-
-    let announcements_div = (
-        <div className="list-div-wrapper">
-            <h2>Announcements</h2>
-            {create_announcement_form}
-            {announcements.length === 0 ? <p>There are no announcements</p> : null}
-            {announcements}
+    
+    let editOffDiv = (
+        <div className="w-full sm:w-[500px] p-4 mx-auto bg-sky-100 rounded-md shadow-md" >
+            <div className="bg-white p-2 rounded-md">
+                <div className="flex justify-between">
+                    <h3 className="text-left pb-2">{props.announcement.title}</h3>
+                    <p className="pb-2">{new Date(props.announcement.date).toLocaleDateString()}</p>
+                </div>
+                <div className="relative flex justify-between">
+                    <p className="pb-2">{props.announcement.content}</p>
+                    <div 
+                        className="w-12 p-2 border-2 border-gray-300 bg-white cursor-pointer rounded-md flex items-center justify-center"
+                        onClick={toggleShowEditDelMenu}
+                    >
+                        <span><DotsHorizontalIcon className="h-[24px] w-[24px]" /></span>
+                    </div>
+                    {showEditDelMenu ? edit_del_menu : null}
+                </div>
+            </div>
+        </div>
+    )
+    return (
+        <div className="mb-4">
+            {editOffDiv}
+            {(editMode) ? <EditAnnouncementModal announcement={props.announcement} getClassInfo={props.getClassInfo} toggleEditMode={toggleEditMode} /> : null}
         </div>
     )
 
-    return announcements_div;
 }
 
-export default Announcements;
+export default Announcement;

@@ -85,7 +85,7 @@ const Stories = (props) => {
         <div>
             {create_story_form}
             
-            <div className="mt-8">
+            <div className="mt-8 mb-16">
                 {stories}
             </div>
             

@@ -104,7 +104,7 @@ const Story = (props) => {
         </div>
     )
     return (
-        <div>
+        <div className="mb-4">
             {story_div}
             {(editMode) ? <EditStoryModal story={props.story} getClassInfo={props.getClassInfo} toggleEditMode={toggleEditMode} /> : null}
         </div>
