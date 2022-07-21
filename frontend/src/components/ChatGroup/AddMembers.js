@@ -7,6 +7,7 @@ import Contacts from "./Contacts";
 const AddMembers = (props) => {
 
     const token = useSelector((state)=>state.auth.token);
+    const accountType = useSelector((state)=>state.auth.accountType);
 
     // list of parents to add to group
     const [parentList, setParentList] = useState([]);
@@ -130,7 +131,7 @@ const AddMembers = (props) => {
                 />
                 <h2 className="pt-2">Add to group</h2>
                 {user_list_div}
-                <Contacts addToListHandler={addToListHandler}/>
+                <Contacts addToListHandler={addToListHandler} accountType={accountType}/>
             </div>
         </div>
     )

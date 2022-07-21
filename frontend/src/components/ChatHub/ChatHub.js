@@ -9,8 +9,7 @@ const ChatHub = () => {
 
     const token = useSelector((state)=>state.auth.token);
     const accountType = useSelector((state)=>state.auth.accountType);
-    console.log(accountType)
-    // const [groupsMemberOf, setGroupsMemberOf] = useState([]);
+
     const [directChats, setDirectChats] = useState([]);
     const [groupChats, setGroupChats] = useState([]);
 
@@ -24,7 +23,6 @@ const ChatHub = () => {
         axios.get(url, {headers: headers})
             .then(res=>{
                 console.log(res);
-                // setGroupsMemberOf(res.data.chat_group_member);
                 // sort groups into list of group chats and direct messages
                 let direct_chats = [];
                 let group_chats = [];

@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 
 const Messages = (props) => {
 
-    const account = useSelector((state)=>state.auth.account.account);
+    const account = useSelector((state)=>state.auth.account);
 
     // new message
     const [msg, setMsg] = useState("");

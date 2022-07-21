@@ -12,7 +12,7 @@ const Contacts = (props) => {
     const [selectedClass, setSelectedClass] = useState(null);
     const [studentSearchTerm, setStudentSearchTerm] = useState("");
 
-    // List of teacher's classes
+    // List of classes
     let classes_list = null;
     if (contactList !== null) {
         classes_list = contactList.map((school_class) => {
@@ -20,15 +20,37 @@ const Contacts = (props) => {
             if (selectedClass !== null) {
                 if (selectedClass.id === school_class.id) style = "p-1 my-1 w-full border-2 border-gray-200 bg-sky-500 text-white rounded-md"
             }
-            return (
-                <div
-                    key={school_class.id}
-                    className={style}
-                    onClick={()=>setSelectedClass(school_class)}
-                >
-                    <h4 className="text-base text-left font-semibold truncate">{school_class.name}</h4>
-                </div>
-            )
+            if (props.accountType === "teacher") {
+                return (
+                    <div
+                        key={school_class.id}
+                        className={style}
+                        onClick={()=>setSelectedClass(school_class)}
+                    >
+                        <h4 className="text-base text-left font-semibold truncate">{school_class.name}</h4>
+                    </div>
+                )
+            } else if (props.accountType === "parent") {
+                return (
+                    <div
+                        key={school_class.id}
+                        className={style}
+                        onClick={()=>setSelectedClass(school_class)}
+                    >
+                        <h4 className="text-base text-left font-semibold truncate">{school_class.name}</h4>
+                        <h4 className="text-sm text-left font-semibold truncate">{school_class.child}'s class</h4>
+                        <div className="bg-white rounded-md p-1 mt-1 cursor-default">
+                            <h4 className="text-xs text-left text-gray-500 font-semibold truncate">Teacher</h4>
+                            <div className="flex justify-between items-center text-black">
+                                <h4 className="text-sm text-left font-semibold truncate">{school_class.teacher.user.first_name} {school_class.teacher.user.last_name}</h4>
+                                {/* <ChatIcon className="h-[24px] w-[24px] fill-white cursor-pointer ml-2" onClick={()=>sendDirectMessageHandler(school_class.teacher)} /> */}
+                            </div>
+                        </div>
+                    </div>
+                )
+            } else {
+                return null;
+            }
         })
     }
 

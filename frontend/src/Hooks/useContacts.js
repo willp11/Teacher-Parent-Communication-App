@@ -32,7 +32,9 @@ export const useContacts = (token, accountType) => {
                 console.log(res);
                 let school_classes = [];
                 res.data.children.forEach((child)=>{
-                    school_classes.push(child.school_class);
+                    let class_obj = {...child.school_class};
+                    class_obj.child = child.name;
+                    school_classes.push(class_obj);
                 })
                 setContactList(school_classes);
             })
