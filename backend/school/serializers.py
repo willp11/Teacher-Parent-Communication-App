@@ -331,6 +331,27 @@ class TeacherContactsSerializer(serializers.ModelSerializer):
         model = Teacher
         fields = ('school_classes',)
 
+# Parent contacts - need their children, with each child's school class. 
+# The school class must provide the teacher and list of all students with their parent
+class ParentContactsClassStudentsSerializer(serializers.ModelSerializer):
+    teacher = TeacherNameSerializer()
+    students = StudentParentSerializer(many=True)
+    class Meta:
+        model = SchoolClass
+        fields = ('id', 'name', 'teacher', 'students',)
+
+class ParentContactsStudentSerializer(serializers.ModelSerializer):
+    school_class = ParentContactsClassStudentsSerializer()
+    class Meta:
+        model = Student
+        fields = ('id', 'school_class')
+
+class ParentContactsSerializer(serializers.ModelSerializer):
+    children = ParentContactsStudentSerializer(many=True)
+    class Meta:
+        model = Parent
+        fields = ('id', 'children')
+
 # Get all student data
 class StudentPortfolioSerializer(serializers.ModelSerializer):
     portfolio = PortfolioItemSerializer(many=True)
