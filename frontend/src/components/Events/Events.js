@@ -116,7 +116,7 @@ const Events = (props) => {
 
     let events_div = (
         <div>
-            {accountType === "teacher" ? {create_event_form} : null}
+            {accountType === "teacher" ? create_event_form : null}
             
             <div className="mt-4 mb-16">
                 <h3 className="mb-4">Upcoming Events</h3>

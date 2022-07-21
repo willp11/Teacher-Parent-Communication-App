@@ -85,7 +85,7 @@ const Announcements = (props) => {
 
     let announcements_div = (
         <div>
-            {accountType === "teacher" ? {create_announcement_form} : null}
+            {accountType === "teacher" ? create_announcement_form : null}
 
             <div className="mt-8 mb-16">
                 {announcements}

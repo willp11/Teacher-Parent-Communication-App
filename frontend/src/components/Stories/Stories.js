@@ -84,7 +84,7 @@ const Stories = (props) => {
 
     let stories_div = (
         <div>
-            {accountType === "teacher" ? {create_story_form} : null}
+            {accountType === "teacher" ? create_story_form : null}
             
             <div className="mt-8 mb-16">
                 {stories}
