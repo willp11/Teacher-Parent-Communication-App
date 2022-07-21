@@ -34,9 +34,9 @@ const Announcement = (props) => {
     let announcement_div = (
         <div className="w-full sm:w-[500px] p-4 mx-auto bg-sky-100 rounded-md shadow-md" >
             <div className="bg-white p-2 rounded-md">
-                <div className="flex justify-between">
-                    <h3 className="text-left pb-2">{props.announcement.title}</h3>
-                    <p className="pb-2">{new Date(props.announcement.date).toLocaleDateString()}</p>
+                <div className="flex justify-between pb-2">
+                    <h3 className="text-left">{props.announcement.title}</h3>
+                    <p className="text-sm">{new Date(props.announcement.date).toLocaleDateString()}</p>
                 </div>
                 <div className="relative flex justify-between">
                     <p className="pb-2">{props.announcement.content}</p>

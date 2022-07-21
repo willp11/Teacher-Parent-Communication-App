@@ -63,6 +63,10 @@ const StoryComments = (props) => {
     const comments_list_div = props.comments.map((comment)=>{
         return (
             <div className="w-full bg-white border-b-2 border-gray-300 p-2" key={comment.id}>
+                <div className="flex justify-between">
+                    <p className="text-sm">{new Date(comment.created_at).toLocaleTimeString()}</p>
+                    <p className="text-sm">{new Date(comment.created_at).toLocaleDateString()}</p>
+                </div>
                 <p><b>{comment.author.username}: </b>{comment.content}</p>
             </div>
         )
