@@ -10,7 +10,7 @@ const Contacts = (props) => {
 
     const navigate = useNavigate();
     const token = useSelector((state)=>state.auth.token);
-    const account = useSelector((state)=>state.auth.token);
+    const account = useSelector((state)=>state.auth.account);
     const contactList = useContacts(token, props.accountType);
 
     const [selectedClass, setSelectedClass] = useState(null);
