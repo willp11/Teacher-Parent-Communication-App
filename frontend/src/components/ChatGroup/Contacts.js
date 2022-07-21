@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useSelector } from "react-redux"
-import {useTeacherContacts} from '../../Hooks/useContacts';
+import {useContacts} from '../../Hooks/useContacts';
 import { PlusIcon } from "@heroicons/react/outline";
 import { filterStudents } from "../../Utils/utils";
 
 const Contacts = (props) => {
 
     let token = useSelector((state)=>state.auth.token);
-    const contactList = useTeacherContacts(token);
+    const contactList = useContacts(token, props.userType);
 
     const [selectedClass, setSelectedClass] = useState(null);
     const [studentSearchTerm, setStudentSearchTerm] = useState("");

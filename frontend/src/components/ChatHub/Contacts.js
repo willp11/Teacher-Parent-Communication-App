@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { ChatIcon, VideoCameraIcon } from '@heroicons/react/outline';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useTeacherContacts } from "../../Hooks/useContacts";
+import { useContacts } from "../../Hooks/useContacts";
 import { filterStudents } from "../../Utils/utils";
 
 const Contacts = (props) => {
@@ -11,7 +11,7 @@ const Contacts = (props) => {
     const token = useSelector((state)=>state.auth.token);
     const navigate = useNavigate();
 
-    const contactList = useTeacherContacts(token);
+    const contactList = useContacts(token, props.accountType);
     const [selectedClass, setSelectedClass] = useState(null);
     const [studentSearchTerm, setStudentSearchTerm] = useState("");
 

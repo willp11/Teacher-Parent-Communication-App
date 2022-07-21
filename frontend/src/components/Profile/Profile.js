@@ -48,7 +48,14 @@ const Profile = () => {
         axios.get('http://localhost:8000/api/v1/dj-rest-auth/user/', {headers: headers})
             .then(res=>{
                 setProfile(res.data);
-                dispatch(authSlice.actions.setAccount({account: res.data}));
+                // determine account type (teacher or parent)
+                let accountType = null;
+                 if (res.data.teacher !== null) {
+                    accountType = "teacher"
+                } else if (res.data.parent !== null) {
+                    accountType = "parent"
+                }
+                dispatch(authSlice.actions.setAccount({account: res.data, accountType}));
                 if (res.data.parent !== null) {
                     setNotificationSettings(res.data.parent.settings);
                 }

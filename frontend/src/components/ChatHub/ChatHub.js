@@ -8,6 +8,8 @@ import GroupChats from './GroupChats';
 const ChatHub = () => {
 
     const token = useSelector((state)=>state.auth.token);
+    const accountType = useSelector((state)=>state.auth.accountType);
+    console.log(accountType)
     // const [groupsMemberOf, setGroupsMemberOf] = useState([]);
     const [directChats, setDirectChats] = useState([]);
     const [groupChats, setGroupChats] = useState([]);
@@ -48,7 +50,7 @@ const ChatHub = () => {
             <div className="w-full max-h-screen h-[750px] px-2 flex flex-col items-center justify-start md:px-4 lg:px-8">
                 <h1 className="pb-2">Chat</h1>
                 <div className="h-full w-full md:w-[750px] lg:w-[800px] border-2 border-gray-300 flex flex-col md:flex-row rounded-md shadow-md">
-                    <Contacts directChats={directChats} />
+                    <Contacts directChats={directChats} accountType={accountType}/>
                     <GroupChats groupChats={groupChats} getUserChatGroups={getUserChatGroups} />
                 </div>
             </div>

@@ -1,11 +1,10 @@
 import {useState, useEffect, useCallback} from 'react';
 import axios from 'axios';
 
-export const useTeacherContacts = (token) => {
+export const useContacts = (token, accountType) => {
 
     const [contactList, setContactList] = useState(null);
 
-    // Get a teacher's chat contacts
     const getTeacherContacts = useCallback(() => {
         const headers = {
             'Content-Type': 'application/json',
@@ -22,9 +21,30 @@ export const useTeacherContacts = (token) => {
             })
     }, [token]);
 
+    const getParentContacts = useCallback(() => {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token
+        }
+        const url = 'http://localhost:8000/api/v1/school/parent-contacts-get/';
+        axios.get(url, {headers: headers})
+            .then(res=>{
+                console.log(res);
+                let school_classes = [];
+                res.data.children.forEach((child)=>{
+                    school_classes.push(child.school_class);
+                })
+                setContactList(school_classes);
+            })
+            .catch(err=>{
+                console.log(err);
+            })
+    }, [token])
+
     useEffect(()=>{
-        getTeacherContacts()
-    }, [getTeacherContacts])
+        if (accountType === "teacher") getTeacherContacts()
+        if (accountType === "parent") getParentContacts()
+    }, [getTeacherContacts, getParentContacts, accountType])
     
     return contactList;
 }
