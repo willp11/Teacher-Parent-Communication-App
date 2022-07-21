@@ -7,6 +7,7 @@ import Story from "./Story";
 const Stories = (props) => {
 
     const token = useSelector((state) => state.auth.token);
+    const accountType = useSelector((state)=> state.auth.accountType);
 
     // CREATE STORY FUNCTION
     const handleCreateStory = (title, content, actions) => {
@@ -83,7 +84,7 @@ const Stories = (props) => {
 
     let stories_div = (
         <div>
-            {create_story_form}
+            {accountType === "teacher" ? {create_story_form} : null}
             
             <div className="mt-8 mb-16">
                 {stories}

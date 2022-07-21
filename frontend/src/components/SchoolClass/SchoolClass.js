@@ -9,13 +9,19 @@ import Events from '../Events/Events';
 import Stories from '../Stories/Stories';
 import Students from '../Students/Students';
 import Assignments from '../Assignments/Assignments';
+import { createMenuDiv } from '../../Utils/utils';
+
+const teacher_menu_items = ["Classroom", "Stories", "Announcements", "Events", "Assignments"]
+const parent_menu_items = ["Stories", "Announcements", "Events"]
 
 const SchoolClass = () => {
 
     const { id } = useParams();
     const token = useSelector((state) => state.auth.token);
+    const accountType = useSelector((state) => state.auth.accountType);
+
     const [schoolClass, setSchoolClass] = useState(null);
-    const [componentToShow, setComponentToShow] = useState("classroom")
+    const [componentToShow, setComponentToShow] = useState("Stories")
 
     // GET CLASS DATA FUNCTION
     const getClassInfo = useCallback(() => {
@@ -59,60 +65,33 @@ const SchoolClass = () => {
     // JSX
     let school_class_div = null;
     if (schoolClass !== null) {
+
+        // create menu - depends on if teacher or parent account
+        let menu_items = [];
+        if (accountType === "teacher") {
+            menu_items = teacher_menu_items;
+        } else if (accountType === "parent") {
+            menu_items = parent_menu_items;
+        }
+        let menu_div = createMenuDiv(menu_items, componentToShow, setComponentToShow)
+
         school_class_div = (
             <div className="w-full flex flex-col items-center justify-center">
                 <div className="w-full bg-sky-200 text-center py-2">
                     <h1>{schoolClass.name}</h1>
                     <p className="text-lg pb-2"><b>Teacher: </b>{schoolClass.teacher.user.first_name + " " + schoolClass.teacher.user.last_name}</p>
                 </div>
-                <div className="w-full sm:flex sm:justify-center py-2 overflow-y-auto">
-                    <span 
-                        className={componentToShow === "classroom" ? "classMenuSelected": "classMenuUnselected"}
-                        onClick={()=>setComponentToShow("classroom")}
-                    >
-                        Classroom
-                    </span>
-                    <span 
-                        className={componentToShow === "stories" ? "classMenuSelected": "classMenuUnselected"}
-                        onClick={()=>setComponentToShow("stories")}
-                    >
-                        Stories
-                    </span>
-                    <span 
-                        className={componentToShow === "announcements" ? "classMenuSelected": "classMenuUnselected"}
-                        onClick={()=>setComponentToShow("announcements")}
-                    >
-                        Announcements
-                    </span>
-                    <span 
-                        className={componentToShow === "events" ? "classMenuSelected": "classMenuUnselected"}
-                        onClick={()=>setComponentToShow("events")}
-                    >
-                        Events
-                    </span>
-                    <span 
-                        className={componentToShow === "assignments" ? "classMenuSelected": "classMenuUnselected"}
-                        onClick={()=>setComponentToShow("assignments")}
-                    >
-                        Assignments
-                    </span>
-                </div>
+
+                {menu_div}
 
                 <div className="w-full">
-                    {componentToShow === "classroom" ? <Students getClassInfo={getClassInfo} students={schoolClass.students} handleDelete={handleDelete} classId={schoolClass.id} /> : null}
-                    {componentToShow === "stories" ? <Stories getClassInfo={getClassInfo} stories={schoolClass.stories} handleDelete={handleDelete} classId={schoolClass.id} /> : null}
-                    {componentToShow === "announcements" ? <Announcements getClassInfo={getClassInfo} announcements={schoolClass.announcements} handleDelete={handleDelete} classId={schoolClass.id}/> : null}
-                    {componentToShow === "events" ? <Events getClassInfo={getClassInfo} events={schoolClass.events} handleDelete={handleDelete} classId={schoolClass.id}/> : null}
+                    {componentToShow === "Classroom" ? <Students getClassInfo={getClassInfo} students={schoolClass.students} handleDelete={handleDelete} classId={schoolClass.id} /> : null}
+                    {componentToShow === "Stories" ? <Stories getClassInfo={getClassInfo} stories={schoolClass.stories} handleDelete={handleDelete} classId={schoolClass.id} /> : null}
+                    {componentToShow === "Announcements" ? <Announcements getClassInfo={getClassInfo} announcements={schoolClass.announcements} handleDelete={handleDelete} classId={schoolClass.id}/> : null}
+                    {componentToShow === "Events" ? <Events getClassInfo={getClassInfo} events={schoolClass.events} handleDelete={handleDelete} classId={schoolClass.id}/> : null}
+                    {componentToShow === "Assignments" ? <Assignments getClassInfo={getClassInfo} assignments={schoolClass.assignments} students={schoolClass.students} handleDelete={handleDelete} classId={schoolClass.id} /> : null}
                 </div>
-                {/* <div className="FlexRowCentered">
-                    <Events getClassInfo={getClassInfo} events={schoolClass.events} handleDelete={handleDelete} classId={schoolClass.id}/>
-                    <Announcements getClassInfo={getClassInfo} announcements={schoolClass.announcements} handleDelete={handleDelete} classId={schoolClass.id}/> 
-                    <Stories getClassInfo={getClassInfo} stories={schoolClass.stories} handleDelete={handleDelete} classId={schoolClass.id} />
-                    <Students getClassInfo={getClassInfo} students={schoolClass.students} handleDelete={handleDelete} classId={schoolClass.id} />
-                    <Assignments getClassInfo={getClassInfo} assignments={schoolClass.assignments} students={schoolClass.students} handleDelete={handleDelete} 
-                        classId={schoolClass.id} />
-                </div> */}
-                
+
             </div>
         )
     }

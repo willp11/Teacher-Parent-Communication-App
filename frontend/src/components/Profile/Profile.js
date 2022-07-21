@@ -12,6 +12,7 @@ import ClassesInfo from './ClassesInfo';
 import ChildrenInfo from './ChildrenInfo';
 import SelectAccountType from './SelectAccountType';
 import VerifyEmail from './VerifyEmail';
+import {createMenuDiv} from '../../Utils/utils';
 
 const teacher_menu_items = ["User Details", "Change Password", "School", "Classes"]
 const parent_menu_items = ["User Details", "Change Password", "Notifications", "Children"]
@@ -81,28 +82,6 @@ const Profile = () => {
             })
     }, [token])
 
-    // FUNCTION TO CREATE MENU
-    const createMenuDiv = (arr) => {
-        let menu_div_items = arr.map(item=>{
-            return (
-                <span 
-                    className={componentToShow === item ? "classMenuSelected": "classMenuUnselected"}
-                    onClick={()=>setComponentToShow(item)}
-                >
-                    {item}
-                </span>
-            )
-        })
-
-        menu_div = (
-            <div className="w-full text-center text-center py-2 overflow-y-auto">
-                {menu_div_items}
-            </div>
-        )
-
-        return menu_div;
-    }
-
     // ON COMPONENT MOUNT, GET USER'S PROFILE DATA FROM API, GET LIST OF SCHOOLS
     useEffect(()=>{
         getUserProfile()
@@ -130,7 +109,7 @@ const Profile = () => {
         // TEACHER ACCOUNT
         else if (profile.teacher !== null) {
 
-            menu_div = createMenuDiv(teacher_menu_items)
+            menu_div = createMenuDiv(teacher_menu_items, componentToShow, setComponentToShow)
 
             profile_div = (
                 <div>
@@ -145,7 +124,7 @@ const Profile = () => {
         // PARENT ACCOUNT 
         else if (profile.parent !== null) {
 
-            menu_div = createMenuDiv(parent_menu_items)
+            menu_div = createMenuDiv(parent_menu_items, componentToShow, setComponentToShow)
 
             profile_div = (
                 <div>

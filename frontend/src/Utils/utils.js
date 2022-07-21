@@ -25,3 +25,26 @@ export const filterStudents = (value, array) => {
 
     return students;
 }
+
+// Function to create a menu - given array of menu items and callback function to set the currently selected item
+export const createMenuDiv = (arr, componentToShow, setComponentToShow) => {
+    let menu_div_items = arr.map(item=>{
+        return (
+            <span 
+                className={componentToShow === item ? "classMenuSelected": "classMenuUnselected"}
+                onClick={()=>setComponentToShow(item)}
+                key={item}
+            >
+                {item}
+            </span>
+        )
+    })
+
+    let menu_div = (
+        <div className="w-full text-center text-center py-2 overflow-y-auto">
+            {menu_div_items}
+        </div>
+    )
+
+    return menu_div;
+}

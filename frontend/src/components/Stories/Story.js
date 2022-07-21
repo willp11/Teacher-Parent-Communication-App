@@ -8,6 +8,7 @@ import EditStoryModal from "./EditStoryModal";
 const Story = (props) => {
 
     const token = useSelector((state) => state.auth.token);
+    const accountType = useSelector((state) => state.auth.accountType);
 
     // COMMENTS LIST
     const [comments, setComments] = useState([]);
@@ -72,6 +73,15 @@ const Story = (props) => {
         </div> 
     )
 
+    let edit_del_btn = (
+        <div 
+            className="w-12 p-2 border-2 border-gray-300 bg-white cursor-pointer rounded-md flex items-center justify-center"
+            onClick={toggleShowEditDelMenu}
+        >
+            <span><DotsHorizontalIcon className="h-[24px] w-[24px]" /></span>
+        </div>
+    )
+
     // Main story div
     let story_div = (
         <div className="w-full sm:w-[500px] p-4 mx-auto bg-sky-100 rounded-md shadow-md ">
@@ -94,12 +104,7 @@ const Story = (props) => {
                     <span className="pr-2"><ChatIcon className="h-[24px] w-[24px]" /></span>
                     <span>Comment</span>
                 </div>
-                <div 
-                    className="w-12 p-2 border-2 border-gray-300 bg-white cursor-pointer rounded-md flex items-center justify-center"
-                    onClick={toggleShowEditDelMenu}
-                >
-                    <span><DotsHorizontalIcon className="h-[24px] w-[24px]" /></span>
-                </div>
+                {accountType === "teacher" ? edit_del_btn : null}
                 {showEditDelMenu ? edit_del_menu : null}
             </div>
             

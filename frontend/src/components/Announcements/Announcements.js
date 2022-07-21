@@ -7,6 +7,7 @@ import Announcement from "./Announcement";
 const Announcements = (props) => {
 
     const token = useSelector((state) => state.auth.token);
+    const accountType = useSelector((state)=> state.auth.accountType);
 
     // CREATE ANNOUNCEMENT FUNCTION
     const handleCreateAnnouncement = (title, content, actions) => {
@@ -84,7 +85,7 @@ const Announcements = (props) => {
 
     let announcements_div = (
         <div>
-            {create_announcement_form}
+            {accountType === "teacher" ? {create_announcement_form} : null}
 
             <div className="mt-8 mb-16">
                 {announcements}

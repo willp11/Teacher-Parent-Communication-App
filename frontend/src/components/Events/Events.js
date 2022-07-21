@@ -7,6 +7,7 @@ import Event from "./Event";
 const Events = (props) => {
 
     const token = useSelector((state) => state.auth.token);
+    const accountType = useSelector((state)=> state.auth.accountType);
 
     // CREATE EVENT FUNCTION
     const handleCreateEvent = (name, date, description, helpers_required, actions) => {
@@ -115,8 +116,9 @@ const Events = (props) => {
 
     let events_div = (
         <div>
-            {create_event_form}
-            <div className="mt-8 mb-16">
+            {accountType === "teacher" ? {create_event_form} : null}
+            
+            <div className="mt-4 mb-16">
                 <h3 className="mb-4">Upcoming Events</h3>
                 {events.length === 0 ? <p className="text-center">There are no upcoming events.</p> : null}
                 {events}

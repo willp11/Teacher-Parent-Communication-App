@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { DotsHorizontalIcon } from "@heroicons/react/outline";
 import EditEventsModal from "./EditEventsModal";
 
 const Event = (props) => {
+
+    const accountType = useSelector((state)=>state.auth.accountType);
 
     const [showEditDelMenu, setShowEditDelMenu] = useState(false);
     const [editMode, setEditMode] = useState(false);
@@ -31,6 +34,15 @@ const Event = (props) => {
         </div> 
     )
 
+    let edit_del_btn = (
+        <div 
+            className="w-12 p-2 border-2 border-gray-300 bg-white cursor-pointer rounded-md flex items-center justify-center"
+            onClick={toggleShowEditDelMenu}
+        >
+            <span><DotsHorizontalIcon className="h-[24px] w-[24px]" /></span>
+        </div>
+    )
+
     let event_div = (
         <div className="w-full sm:w-[500px] p-4 mx-auto bg-sky-100 rounded-md shadow-md" >
             <div className="bg-white p-2 rounded-md">
@@ -45,12 +57,7 @@ const Event = (props) => {
             </div>
             <div className="relative flex justify-between">
                 <p className="text-gray-600 text-sm pl-2 pt-2 cursor-pointer w-fit">{props.event.helpers_required} helpers required</p>
-                <div 
-                    className="w-12 p-2 border-2 border-gray-300 bg-white cursor-pointer rounded-md flex items-center justify-center"
-                    onClick={toggleShowEditDelMenu}
-                >
-                    <span><DotsHorizontalIcon className="h-[24px] w-[24px]" /></span>
-                </div>
+                {accountType === "teacher" ? edit_del_btn : null}
                 {showEditDelMenu ? edit_del_menu : null}
             </div>
         </div>
