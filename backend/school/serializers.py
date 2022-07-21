@@ -344,7 +344,7 @@ class ParentContactsStudentSerializer(serializers.ModelSerializer):
     school_class = ParentContactsClassStudentsSerializer()
     class Meta:
         model = Student
-        fields = ('id', 'school_class')
+        fields = ('id', 'name', 'school_class')
 
 class ParentContactsSerializer(serializers.ModelSerializer):
     children = ParentContactsStudentSerializer(many=True)
