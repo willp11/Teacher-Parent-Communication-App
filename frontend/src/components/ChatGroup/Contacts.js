@@ -6,8 +6,9 @@ import { filterStudents } from "../../Utils/utils";
 
 const Contacts = (props) => {
 
-    let token = useSelector((state)=>state.auth.token);
-    const contactList = useContacts(token, props.userType);
+    const token = useSelector((state)=>state.auth.token);
+    const account = useSelector((state)=>state.auth.account);
+    const contactList = useContacts(token, props.accountType);
 
     const [selectedClass, setSelectedClass] = useState(null);
     const [studentSearchTerm, setStudentSearchTerm] = useState("");
@@ -65,6 +66,8 @@ const Contacts = (props) => {
         
         parents_list = array.map((student) => {
             if (student.parent !== null) {
+                // remove user from list (as can't message themselves)
+                if (student.parent.user.id === account.id) return null;
                 return (
                     <div 
                         key={student.id}
