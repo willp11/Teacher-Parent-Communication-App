@@ -22,7 +22,7 @@ import Logout from './components/Logout/Logout';
 import SchoolClass from './components/SchoolClass/SchoolClass';
 import StudentProfile from './components/StudentProfile/StudentProfile';
 import ChatHub from './components/ChatHub/ChatHub';
-import ChatGroup from './components/ChatGroup/Chatgroup';
+import ChatGroup from './components/ChatGroup/ChatGroup';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

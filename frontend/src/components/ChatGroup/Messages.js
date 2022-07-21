@@ -79,12 +79,12 @@ const Messages = (props) => {
 
     return (
         <div className="relative h-[400px] w-full sm:w-[500px] bg-white rounded-sm border border-gray-600 shadow-md my-2">
-            <div className="h-[calc(100%-2rem)] overflow-auto" ref={messagesRef}>
+            <div className="h-[calc(100%-2.5rem)] overflow-auto" ref={messagesRef}>
                 {messages_div}
             </div>
             <form>
-                <input ref={inputRef} value={msg} onChange={(e)=>setMsg(e.target.value)} placeholder="Type message..." className="w-3/4 absolute bottom-0 left-0 border border-gray-600" />
-                <button type="submit" onClick={(e)=>sendMessageHandler(e)} className="w-1/4 absolute bottom-0 right-0 border border-black bg-sky-500 hover:bg-indigo-500 text-white font-bold">Send</button>
+                <input ref={inputRef} value={msg} onChange={(e)=>setMsg(e.target.value)} placeholder="Type message..." className="w-3/4 absolute bottom-0 left-0 border border-gray-600 h-10 pl-1" />
+                <button type="submit" onClick={(e)=>sendMessageHandler(e)} className="w-1/4 absolute bottom-0 right-0 border border-black bg-sky-500 hover:bg-indigo-500 text-white font-bold h-10 rounded">Send</button>
             </form>
         </div> 
     )

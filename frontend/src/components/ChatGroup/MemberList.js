@@ -1,8 +1,10 @@
 import AddMembers from './AddMembers';
 import { Popover, Transition } from '@headlessui/react';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 
 const MemberList = (props) => {
+
+    const [showAddMembers, setShowAddMembers] = useState(false);
 
     let member_list = props.members.map((member)=>{
         return (
@@ -11,36 +13,22 @@ const MemberList = (props) => {
             </div>
         )
     })
-
-    let add_member_popover = (
-        <Popover>
-            <Popover.Button className="border-px shadow-md shadow-gray-500 bg-sky-500 hover:bg-indigo-500 text-white font-bold rounded-full px-4 py-1 my-2">
-                Add Members
-            </Popover.Button>
-            <Transition
-                as={Fragment}
-                enter="duration-150 ease-out"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="duration-100 ease-in"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-            >
-                <Popover.Panel
-                    focus
-                    className="absolute z-10 top-[80px] inset-x-0 p-2 transition transform origin-top-right"
-                >
-                    <AddMembers groupId={props.groupId} members={props.members} getGroupMembers={props.getGroupMembers} />
-                </Popover.Panel>
-            </Transition>
-        </Popover>
+    
+    let add_member_btn = (
+        <button 
+            onClick={()=>setShowAddMembers(true)} 
+            className="border-2 border-black bg-sky-500 hover:bg-indigo-500 text-white font-bold rounded-full px-4 py-1 my-2"
+        >
+            Add Members
+        </button>
     )
 
     let member_list_div = (
         <div className="w-full sm:w-[500px] max-h-[200px] overflow-auto bg-sky-100 p-2 my-2 border border-gray-600 shadow-lg">
             <h2>Group Members</h2>
-            {props.direct ? null : add_member_popover}
+            {props.direct ? null : add_member_btn}
             {member_list}
+            {showAddMembers ? <AddMembers groupId={props.groupId} members={props.members} getGroupMembers={props.getGroupMembers} hide={()=>setShowAddMembers(false)} /> : null}
         </div>
     )
 

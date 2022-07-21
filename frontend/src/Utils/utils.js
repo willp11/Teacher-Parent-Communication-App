@@ -14,3 +14,14 @@ export const extractErrors = (err) => {
     }
     return err_list
 }
+
+// Function to filter array of students given the first letters of their name
+export const filterStudents = (value, array) => {
+    let students = []
+
+    array.forEach((student)=>{
+        if (student.name.slice(0, value.length) === value) students.push(student)
+    })
+
+    return students;
+}
