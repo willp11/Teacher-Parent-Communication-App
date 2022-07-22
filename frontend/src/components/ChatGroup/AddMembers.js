@@ -111,7 +111,7 @@ const AddMembers = (props) => {
         )
     })
     let user_list_div = (
-        <div className="w-full sm:w-[500px] max-h-[300px] overflow-auto bg-sky-100 rounded shadow-md p-2 mx-auto my-4">
+        <div className="w-full sm:w-[500px] max-h-[300px] overflow-auto bg-sky-200 rounded shadow-md p-2 mx-auto my-4">
             <h3>New Users</h3>
             {(parentList.length > 0) ? user_list : <p>No users added to list</p>}
             {(parentList.length > 0) ? <button 

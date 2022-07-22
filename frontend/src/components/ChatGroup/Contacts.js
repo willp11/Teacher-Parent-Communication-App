@@ -17,7 +17,7 @@ const Contacts = (props) => {
     let classes_list = null;
     if (contactList !== null) {
         classes_list = contactList.map((school_class) => {
-            let style = "p-1 my-1 w-full border-2 border-gray-200 bg-sky-100 cursor-pointer hover:bg-indigo-500 hover:text-white rounded-md";
+            let style = "p-1 my-1 w-full border-2 border-gray-200 bg-sky-200 cursor-pointer hover:bg-indigo-500 hover:text-white rounded-md";
             if (selectedClass !== null) {
                 if (selectedClass.id === school_class.id) style = "p-1 my-1 w-full border-2 border-gray-200 bg-sky-500 text-white rounded-md"
             }
@@ -44,6 +44,7 @@ const Contacts = (props) => {
                             <h4 className="text-xs text-left text-gray-500 font-semibold truncate">Teacher</h4>
                             <div className="flex justify-between items-center text-black">
                                 <h4 className="text-sm text-left font-semibold truncate">{school_class.teacher.user.first_name} {school_class.teacher.user.last_name}</h4>
+                                <PlusIcon className="h-[24px] w-[24px] fill-white cursor-pointer ml-2 hover:stroke-indigo-500" onClick={()=>props.addToListHandler(school_class.teacher)} />
                                 {/* <ChatIcon className="h-[24px] w-[24px] fill-white cursor-pointer ml-2" onClick={()=>sendDirectMessageHandler(school_class.teacher)} /> */}
                             </div>
                         </div>
@@ -71,14 +72,14 @@ const Contacts = (props) => {
                 return (
                     <div 
                         key={student.id}
-                        className="p-1 my-1 w-full border-2 border-gray-200 bg-sky-100 rounded-md flex flex-wrap justify-between"
+                        className="p-1 my-1 w-full border-2 border-gray-200 bg-sky-200 rounded-md flex flex-wrap justify-between"
                     >
                         <div>
                             <h4 className="text-base text-left font-semibold truncate">{student.name}'s parent</h4>
-                            <p className="text-xs text-left text-gray-500 truncate">{student.parent.user.first_name} {student.parent.user.last_name}</p>
+                            <p className="text-xs text-left text-gray-600 font-semibold truncate">{student.parent.user.first_name} {student.parent.user.last_name}</p>
                         </div>
                         <div className="flex items-center">
-                            <PlusIcon className="h-[24px] w-[24px] fill-white cursor-pointer ml-2 hover:stroke-sky-500" onClick={()=>props.addToListHandler(student.parent)} />
+                            <PlusIcon className="h-[24px] w-[24px] fill-white cursor-pointer ml-2 hover:stroke-indigo-500" onClick={()=>props.addToListHandler(student.parent)} />
                         </div>
                     </div>
                 )

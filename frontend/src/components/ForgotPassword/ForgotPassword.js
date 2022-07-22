@@ -3,13 +3,22 @@ import { useFormik } from "formik";
 import axios from "axios";
 import { extractErrors } from "../../Utils/utils";
 import Navigation from "../Navigation/Navigation";
+import { useNavigate } from "react-router-dom";
 import * as Yup from 'yup';
+import { ArrowLeftIcon } from "@heroicons/react/outline";
 
 const ForgotPassword = () => {
+
+    const navigate = useNavigate();
 
     const [errors, setErrors] = useState([]);
     const [loading, setLoading] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+
+    // Function to go back
+    const goBack = () => {
+        return navigate("/login")
+    }
 
     // Function send handle reset request
     const handleResetPassword = (email) => {
@@ -54,6 +63,7 @@ const ForgotPassword = () => {
     // Input form div
     let form_div = (
         <div>
+            <ArrowLeftIcon className="h-[24px] w-[24px] pl-1 cursor-pointer hover:stroke-indigo-500" onClick={goBack} />
             <form onSubmit={formik.handleSubmit}>
                 <p className="text-base pt-6 pl-2 pb-2 font-bold">E-mail</p>
                 <input 
@@ -71,7 +81,7 @@ const ForgotPassword = () => {
                     type="submit"
                     className="w-full rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-3 text-white font-bold my-4"
                 >
-                    RESET PASSWORD
+                    SUBMIT
                 </button>
             </form>
             {errors_div}
@@ -94,16 +104,19 @@ const ForgotPassword = () => {
     )
 
     return (
-        <div className="relative bg-white overflow-hidden min-h-screen">
-            <div className="max-w-7xl mx-auto">
+        <div className="relative bg-slate-200 overflow-auto min-h-screen">
+
                 <Navigation />
-                <div className="w-full py-2 px-2 flex items-center justify-center md:px-4 lg:px-8">
+                <div className="w-full bg-indigo-500 text-white text-center py-2 mb-2">
+                    <h1 className="drop-shadow-lg">Reset Password</h1>
+                </div>
+
+                <div className="w-full py-2 px-2 flex items-center justify-center">
                     <div className="bg-white w-96 p-8 rounded-md border border-gray-300 shadow-sm  bg-slate-50">
-                        <h1 className="text-4xl tracking-tight font-extrabold text-center">Reset Password</h1>
                         {showSuccess ? success_div : form_div}
                     </div>
                 </div>
-            </div>
+
         </div>
     )
 }

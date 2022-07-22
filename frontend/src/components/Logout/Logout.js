@@ -14,10 +14,17 @@ const Logout = () => {
     }
 
     return (
-        <div className="Logout">
+        <div className="relative bg-white h-screen overflow-auto">
             <Navigation />
-            <h3 className="m-4">Are you sure you want to Logout?</h3>
-            <button className="border-2 border-black rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-2 text-white font-bold" onClick={handleLogout}>Confirm</button>
+            <div className="bg-slate-100 h-[calc(100%-80px)] w-full flex flex-col items-center justify-start">
+                <div className="w-full bg-indigo-500 text-white text-center py-2 mb-2">
+                    <h1 className="drop-shadow-lg">Logout</h1>
+                </div>
+                <div className="bg-white w-full sm:w-[600px] text-center p-4 mt-4 border-2 border-gray-300 shadow-md rounded-md">
+                    <h3 className="m-4">Are you sure you want to Logout?</h3>
+                    <button className="border-2 border-black rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-2 text-white font-bold" onClick={handleLogout}>Confirm</button>
+                </div>
+            </div>
         </div>
     );
 }
