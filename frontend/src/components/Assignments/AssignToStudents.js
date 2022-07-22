@@ -1,11 +1,14 @@
 import { useSelector } from 'react-redux';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import { XIcon } from '@heroicons/react/outline';
 
 const AssignToStudents = (props) => {
 
     const token = useSelector((state)=>state.auth.token);
+
+    const not_alloc_ref = useRef();
+    const alloc_ref = useRef();
 
     // list of allocated students
     const [allocatedStudents, setAllocatedStudents] = useState([]);
@@ -15,6 +18,22 @@ const AssignToStudents = (props) => {
     const [selectedStudents, setSelectedStudents] = useState([]);
     // list of already assigned select students - that we want to pass to assignee-delete API
     const [selectDeleteStudents, setSelectDeleteStudents] = useState([]);
+
+    // function go select all students in a list - give either alloc or unalloc arrays and refs
+    const selectAll = (ref, arr) => {
+        // iterate through the divs
+        for (let i=0; i<ref.current.children.length; i++) {
+            let input = ref.current.children[i].children[0];
+            input.checked = true;
+        }
+
+        // updated selected array for when submit
+        if (arr === allocatedStudents) {
+            setSelectDeleteStudents([...arr])
+        } else if (arr === notAllocatedStudents) {
+            setSelectedStudents([...arr]);
+        }
+    }
 
     // UPDATE STUDENTS LIST FROM PROPS TO SHOW IF ALLOCATED ALREADY
     const updateStudentProps = useCallback((allocatedStudents) => {
@@ -49,7 +68,7 @@ const AssignToStudents = (props) => {
         axios.get(url, {headers: headers})
             .then(res=>{
                 console.log(res);
-                setAllocatedStudents(res.data);
+                // setAllocatedStudents(res.data);
                 updateStudentProps(res.data);
             })
             .catch(err=>{
@@ -122,7 +141,6 @@ const AssignToStudents = (props) => {
         selectedStudents.forEach((stud, index)=>{
             // if there, remove it
             if (stud.id === student.id) {
-                console.log(`found student in selectedStudents: ${student.id}`)
                 newStudentsList.splice(index, 1);
                 foundStudent = true;
             }
@@ -192,7 +210,10 @@ const AssignToStudents = (props) => {
                     <div>
                         <h3 className="text-left text-sm text-gray-500">Not Assigned</h3>
                         <p className="text-left text-xs mt-2">Which students do you want to give the assignment to?</p>
-                        {not_allocated_student_list}
+                        <button className="mt-2" onClick={()=>selectAll(not_alloc_ref, notAllocatedStudents)}>Select All</button>
+                        <div ref={not_alloc_ref}>
+                            {not_allocated_student_list}
+                        </div>
                     </div>
                     <button 
                         className="rounded-md border-2 border-black bg-sky-500 hover:bg-indigo-500 text-white font-semibold px-4 py-2 m-2"
@@ -205,7 +226,10 @@ const AssignToStudents = (props) => {
                     <div>
                         <h3 className="text-left text-sm text-gray-500">Assigned</h3>
                         <p className="text-left text-xs mt-2">These students have already been given the assignment.</p>
-                        {allocated_student_list}
+                        <button className="mt-2" onClick={()=>selectAll(alloc_ref, allocatedStudents)}>Select All</button>
+                        <div ref={alloc_ref}>
+                            {allocated_student_list}
+                        </div>
                     </div>
                     <button
                         className="rounded-md border-2 border-black bg-sky-500 hover:bg-indigo-500 text-white font-semibold px-4 py-2 m-2"
