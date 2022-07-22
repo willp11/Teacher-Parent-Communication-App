@@ -3,12 +3,16 @@ import { useSelector } from "react-redux";
 import * as Yup from 'yup';
 import axios from "axios";
 import { useState } from "react";
-import AssignToStudents from "../AssignToStudents/AssignToStudents";
-import Assignment from "../Assignment/Assignment";
+import AssignToStudents from "./AssignToStudents";
+import Assignment from "./Assignment";
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 
 const Assignments = (props) => {
 
     const token = useSelector((state) => state.auth.token);
+    const accountType = useSelector((state) => state.auth.accountType);
+
+    const [showForm, setShowForm] = useState(false);
 
     // ASSIGN TO STUDENTS MODE
     const [assignMode, setAssignMode] = useState(false);
@@ -52,7 +56,7 @@ const Assignments = (props) => {
         initialValues: {
             title: "",
             description: "",
-            maximum_score: 0
+            maximum_score: ""
         },
         onSubmit: (values, actions) =>  {
             handleCreateAssignment(values.title, values.description, values.maximum_score, actions);
@@ -68,44 +72,49 @@ const Assignments = (props) => {
     });
 
     let create_assignment_form = (
-        <form onSubmit={assignment_formik.handleSubmit}>
-            <div>
+        <div className="relative w-full sm:w-[500px] p-2 mx-auto mt-2 rounded-md shadow-md shadow-gray-300 bg-white border-2 border-gray-300 text-center">
+            <h3>Create Assignment</h3>
+
+            {showForm ? <ChevronUpIcon onClick={()=>setShowForm(false)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />
+            : <ChevronDownIcon onClick={()=>setShowForm(true)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />}
+
+            {showForm ? <form onSubmit={assignment_formik.handleSubmit}>
                 <input
                     type="text"
-                    placeholder="Title"
+                    placeholder="Type title..."
                     name="title"
                     value={assignment_formik.values.title}
                     onChange={assignment_formik.handleChange}
                     onBlur={assignment_formik.handleBlur}
-                    style={{textAlign: "center"}}
+                    className="border border-gray-300 mt-2 h-10 w-full"
                 /> <br/>
                 {assignment_formik.errors.title ? <div className="ErrorMsg">{assignment_formik.errors.title} </div> : null}
 
                 <textarea
-                    rows="10"
+                    rows="3"
                     name="description"
+                    placeholder="Type description..."
                     value={assignment_formik.values.description}
                     onChange={assignment_formik.handleChange}
                     onBlur={assignment_formik.handleBlur}
-                    placeholder="Description"
+                    className="border border-gray-300 mt-2 w-full"
                 /> <br/>
                 {assignment_formik.errors.content ? <div className="ErrorMsg">{assignment_formik.errors.content} </div> : null}
 
                 <input
                     type="number"
-                    placeholder="Maximum Score"
+                    placeholder="Enter maximum score"
                     name="maximum_score"
                     value={assignment_formik.values.maximum_score}
                     onChange={assignment_formik.handleChange}
                     onBlur={assignment_formik.handleBlur}
-                    style={{textAlign: "center"}}
+                    className="border border-gray-300 mt-2 h-10 w-full"
                 /> <br/>
                 {assignment_formik.errors.maximum_score ? <div className="ErrorMsg">{assignment_formik.errors.maximum_score} </div> : null}
-            </div>
-            <div>
-                <button type="submit">Submit</button>
-            </div>
-        </form>
+                <button className="rounded-md border-2 border-black bg-sky-500 hover:bg-indigo-500 text-white font-semibold px-4 py-2 m-2" type="submit">Submit</button>
+            </form> : null}
+        </div>
+        
     )
 
     // ASSIGNMENTS
@@ -114,13 +123,17 @@ const Assignments = (props) => {
     });
 
     let assignments_div = (
-        <div className="list-div-wrapper">
-            <h2>Assignments</h2>
-            {create_assignment_form}
-            {props.assignments.length === 0 ? <p>There are no assignments</p> : null}
-            {assignments}
+        <div>
+            {accountType === "teacher" ? create_assignment_form : null}
+            
+            <div className="mt-4 mb-16">
+                {props.assignments.length === 0 ? <p className="text-center">There are no assignments set.</p> : null}
+                {assignments}
+            </div>
+
         </div>
     )
+
 
     if (assignMode) {
         return <AssignToStudents students={props.students} assignment={assignmentToAssign} toggleAssignMode={toggleAssignMode}/>
