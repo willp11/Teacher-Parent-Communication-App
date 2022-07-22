@@ -17,14 +17,14 @@ const MemberList = (props) => {
     let add_member_btn = (
         <button 
             onClick={()=>setShowAddMembers(true)} 
-            className="border-2 border-black bg-sky-500 hover:bg-indigo-500 text-white font-bold rounded-full px-4 py-1 my-2"
+            className="border-2 border-black bg-sky-500 hover:bg-indigo-500 text-white text-sm font-semibold rounded-full px-4 py-1 my-2"
         >
             Add Members
         </button>
     )
 
     let member_list_div = (
-        <div className="w-full sm:w-[500px] max-h-[200px] overflow-auto bg-sky-100 p-2 my-2 border border-gray-600 shadow-lg">
+        <div className="w-full sm:w-[500px] max-h-[200px] overflow-auto bg-white p-2 my-2 border border-gray-600 shadow-lg">
             <h2>Group Members</h2>
             {props.direct ? null : add_member_btn}
             {member_list}

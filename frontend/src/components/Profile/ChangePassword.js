@@ -63,8 +63,8 @@ const ChangePassword = () => {
 
     // JSX
     let change_password_div = (
-        <div className="w-full rounded-md shadow-md bg-sky-50 mt-2 mb-4 mx-auto p-2 pb-4">
-            <h2 className="pb-2 text-md text-gray-600">Change Password</h2>
+        <div className="w-full rounded-md shadow-md bg-white mt-2 mb-4 mx-auto p-4 min-h-[250px]">
+            <h2 className="pb-4 text-md">Change Password</h2>
             <form onSubmit={formik.handleSubmit}>
                 <div>
                     <input

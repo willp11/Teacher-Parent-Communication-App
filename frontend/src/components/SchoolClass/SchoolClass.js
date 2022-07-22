@@ -1,4 +1,3 @@
-import './SchoolClass.css';
 import { useParams } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -11,8 +10,8 @@ import Students from '../Students/Students';
 import Assignments from '../Assignments/Assignments';
 import { createMenuDiv } from '../../Utils/utils';
 
-const teacher_menu_items = ["Classroom", "Stories", "Announcements", "Events", "Assignments"]
-const parent_menu_items = ["Stories", "Announcements", "Events"]
+const teacher_menu_items = ["Classroom", "Announcements", "Stories", "Events", "Assignments"]
+const parent_menu_items = ["Announcements", "Stories", "Events"]
 
 const SchoolClass = () => {
 
@@ -77,14 +76,13 @@ const SchoolClass = () => {
 
         school_class_div = (
             <div className="w-full flex flex-col items-center justify-center">
-                <div className="w-full bg-sky-200 text-center py-2">
-                    <h1>{schoolClass.name}</h1>
-                    <p className="text-lg pb-2"><b>Teacher: </b>{schoolClass.teacher.user.first_name + " " + schoolClass.teacher.user.last_name}</p>
+                <div className="w-full bg-indigo-500 text-center py-2">
+                    <h1 className="text-white">{schoolClass.name}</h1>
+                    <p className="text-lg font-bold text-sky-100">{schoolClass.teacher.user.first_name + " " + schoolClass.teacher.user.last_name}</p>
                 </div>
 
-                {menu_div}
-
                 <div className="w-full">
+                    {menu_div}
                     {componentToShow === "Classroom" ? <Students getClassInfo={getClassInfo} students={schoolClass.students} handleDelete={handleDelete} classId={schoolClass.id} /> : null}
                     {componentToShow === "Stories" ? <Stories getClassInfo={getClassInfo} stories={schoolClass.stories} handleDelete={handleDelete} classId={schoolClass.id} /> : null}
                     {componentToShow === "Announcements" ? <Announcements getClassInfo={getClassInfo} announcements={schoolClass.announcements} handleDelete={handleDelete} classId={schoolClass.id}/> : null}
@@ -97,7 +95,7 @@ const SchoolClass = () => {
     }
 
     return (
-        <div className="relative bg-white overflow-auto min-h-screen">
+        <div className="relative bg-slate-100 overflow-auto min-h-screen">
             <Navigation />
             {school_class_div}
         </div>

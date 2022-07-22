@@ -3,11 +3,15 @@ import * as Yup from 'yup';
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Event from "./Event";
+import { useState } from "react";
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 
 const Events = (props) => {
 
     const token = useSelector((state) => state.auth.token);
     const accountType = useSelector((state)=> state.auth.accountType);
+
+    const [showForm, setShowForm] = useState(false);
 
     // CREATE EVENT FUNCTION
     const handleCreateEvent = (name, date, description, helpers_required, actions) => {
@@ -59,9 +63,13 @@ const Events = (props) => {
     });
 
     let create_event_form = (
-        <div className="w-full sm:w-[500px] p-4 mx-auto mt-2 rounded-md shadow-md bg-slate-100 text-center">
-            <form onSubmit={event_formik.handleSubmit}>
-                <h3>Create Event</h3>
+        <div className="relative w-full sm:w-[500px] p-2 mx-auto mt-2 rounded-md shadow-md shadow-gray-300 bg-white border-2 border-gray-300 text-center">
+            <h3>Create Event</h3>
+
+            {showForm ? <ChevronUpIcon onClick={()=>setShowForm(false)} className="h-[24px] w-[24px] absolute right-0 top-2 cursor-pointer" />
+             : <ChevronDownIcon onClick={()=>setShowForm(true)} className="h-[24px] w-[24px] absolute right-0 top-2 cursor-pointer" />}
+
+            {showForm ? <form onSubmit={event_formik.handleSubmit}>
                 <input
                     type="text"
                     placeholder="Type event name..."
@@ -106,7 +114,7 @@ const Events = (props) => {
                 /> <br/>
                 {event_formik.errors.helpers ? <div className="ErrorMsg">{event_formik.errors.helpers} </div> : null}
                 <button type="submit" className="w-32 rounded-full bg-sky-500 hover:bg-indigo-500 p-2 my-2 text-white font-bold border-2 border-black">Submit</button>
-            </form>
+            </form> : null}
         </div>
     )
 

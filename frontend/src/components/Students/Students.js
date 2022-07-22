@@ -5,6 +5,7 @@ import axios from "axios";
 import ProfileImg from '../../Assets/Images/blank-profile.png';
 import StudentModal from "./StudentModal";
 import { useState } from "react";
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 
 const Students = (props) => {
 
@@ -12,6 +13,8 @@ const Students = (props) => {
 
     const [showStudentModal, setShowStudentModal] = useState(false);
     const [studentToShow, setStudentToShow] = useState(null);
+
+    const [showForm, setShowForm] = useState(false);
 
     // SHOW/HIDE STUDENT MODAL
     const showStudentModalHandler = (student) => {
@@ -60,9 +63,11 @@ const Students = (props) => {
 
     // STUDENTS
     let create_student_form = (
-        <div className="w-full sm:w-[400px] p-2 mx-auto mt-2 rounded-md shadow-md bg-slate-100 text-center">
+        <div className="relative w-full sm:w-[500px] p-2 mx-auto mt-2 rounded-md shadow-md shadow-gray-300 bg-white border-2 border-gray-300 text-center">
             <h3>Add Student</h3>
-            <form onSubmit={student_formik.handleSubmit}>
+            {showForm ? <ChevronUpIcon onClick={()=>setShowForm(false)} className="h-[24px] w-[24px] absolute right-0 top-2 cursor-pointer" />
+             : <ChevronDownIcon onClick={()=>setShowForm(true)} className="h-[24px] w-[24px] absolute right-0 top-2 cursor-pointer" />}
+            {showForm ? <form className="transition ease-in-out transition-duration-1000ms" onSubmit={student_formik.handleSubmit}>
                 <div>
                     <input
                         type="text"
@@ -79,7 +84,7 @@ const Students = (props) => {
                 <div>
                     <button type="submit" className="w-32 rounded-full bg-sky-500 hover:bg-indigo-500 p-2 mt-2 mb-4 text-white font-bold border-2 border-black">Submit</button>
                 </div>
-            </form>
+            </form> : null}
         </div>
     )
 
@@ -87,10 +92,10 @@ const Students = (props) => {
         return (
             <div 
                 key={student.id} 
-                className="bg-sky-100 rounded-md shadow-md p-2 w-32 text-center m-2 cursor-pointer"
+                className="bg-sky-200 rounded-md shadow-md p-2 w-32 text-center m-2 cursor-pointer"
                 onClick={()=>showStudentModalHandler(student)}
             >
-                <h3 className="text-gray-600 pb-2 truncate">{student.name}</h3>
+                <h3 className="pb-2 truncate">{student.name}</h3>
                 <img src={ProfileImg} className="h-[100px] w-[100px] mx-auto rounded-full"/>
             </div>
         )
@@ -99,7 +104,7 @@ const Students = (props) => {
     let students_div = (
         <div>
             {create_student_form}
-            <div className="p-2 w-full flex items-center justify-center flex-wrap">
+            <div className="p-2 mt-2 w-full flex items-center justify-center flex-wrap">
                 {students}
             </div>
 

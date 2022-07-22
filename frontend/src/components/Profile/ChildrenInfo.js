@@ -14,8 +14,8 @@ const ChildrenInfo = (props) => {
     })
 
     let children_info_div = (
-        <div className="rounded-md shadow-md bg-sky-50 mt-2 mb-4 p-2">
-            <h2 className="text-gray-600 text-md">Children</h2>
+        <div className="rounded-md shadow-md bg-white mt-2 mb-4 p-4 min-h-[250px]">
+            <h2 className="text-md">Children</h2>
             {children_list}
         </div>
     )

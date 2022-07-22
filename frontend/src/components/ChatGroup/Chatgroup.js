@@ -1,4 +1,3 @@
-import './ChatGroup.css';
 import { useParams } from 'react-router-dom';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
@@ -120,9 +119,11 @@ const ChatGroup = () => {
     let group_div = <p>Loading...</p>
     if (group !== null) {
         group_div = (
-            <div className="w-full bg-white text-center">
-                <h1 className="pb-2">{group.direct_message ? "Direct Message" : group.name}</h1>
-                <div className="w-full flex flex-col items-center">
+            <div className="w-full text-center">
+                <div className="w-full bg-indigo-500 py-2">
+                    <h1 className="font-white drop-shadow-lg text-white">{group.direct_message ? "Direct Message" : group.name}</h1>
+                </div>
+                <div className="w-[calc(100%-1rem)] mx-auto flex flex-col items-center">
                     <MemberList groupId={id} members={groupMembers} direct={group.direct_message} getGroupMembers={getGroupMembers} />
                     <Messages groupId={id} messages={messages} sendMessage={sendMessage} newMessage={messageCountRef.current}/>
                 </div>
@@ -131,9 +132,9 @@ const ChatGroup = () => {
     }
 
     return (
-        <div className="relative bg-white overflow-auto h-screen">
+        <div className="relative bg-slate-100 overflow-auto h-screen">
             <Navigation />
-            <div className="w-full px-2 flex items-center justify-center md:px-4 lg:px-8">
+            <div className="w-full flex items-center justify-center">
                 {group_div}
             </div>
         </div>

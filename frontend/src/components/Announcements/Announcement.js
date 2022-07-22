@@ -44,7 +44,7 @@ const Announcement = (props) => {
     )
     
     let announcement_div = (
-        <div className="w-full sm:w-[500px] p-4 mx-auto bg-sky-100 rounded-md shadow-md" >
+        <div className="w-full sm:w-[500px] p-4 mx-auto bg-sky-200 rounded-md shadow-md shadow-gray-300 border-2 border-gray-300" >
             <div className="bg-white p-2 rounded-md">
                 <div className="flex justify-between pb-2">
                     <h3 className="text-left">{props.announcement.title}</h3>

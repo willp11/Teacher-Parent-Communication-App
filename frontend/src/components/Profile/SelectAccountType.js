@@ -86,7 +86,7 @@ const SelectAccountType = (props) => {
         )
     }
     let select_account_type_div = (
-        <div className="shadow-md mb-2 bg-sky-50 p-2">
+        <div className="shadow-md mb-2 bg-white p-2">
             <h2 className="text-gray-600 text-sm">Select Account Type</h2>
             <div className="flex items-center justify-center m-2">
                 <div 

@@ -1,4 +1,3 @@
-import './Logout.css';
 import { useDispatch } from 'react-redux';
 import authSlice from "../../store/slices/auth";
 import Navigation from '../Navigation/Navigation';

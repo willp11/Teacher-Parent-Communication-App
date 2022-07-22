@@ -10,8 +10,8 @@ const UserInfo = (props) => {
     }
 
     const user_info_div = (
-        <div className="rounded-md bg-sky-50 shadow-md mt-2 mb-4 p-4">
-            <h2 className="pb-2 text-md text-gray-600">User Details</h2>
+        <div className="rounded-md bg-white shadow-md mt-2 mb-4 p-4 min-h-[250px]">
+            <h2 className="pb-2 text-md">User Details</h2>
             <div className="flex flex-row">
                 <div className="w-1/2 flex items-center justify-center">
                     <img src={ProfileImg} className="w-[130px] h-[130px] rounded-full" alt=""/>

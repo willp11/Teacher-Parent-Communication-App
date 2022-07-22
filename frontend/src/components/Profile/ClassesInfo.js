@@ -34,16 +34,16 @@ const ClassesInfo = (props) => {
     // CLASS LIST
     let school_class_list = props.profile.teacher.school_classes.map((school_class) => {
         return (
-            <div key={school_class.id} className="p-2 border border-gray-300 w-64 m-auto shadow-lg bg-white hover:bg-sky-100 font-bold">
+            <div key={school_class.id} className="p-2 border border-gray-300 w-64 mx-auto mb-1 bg-sky-200 hover:bg-indigo-500 hover:text-white font-bold">
                 <Link to={"/class/"+school_class.id}><h4 className="text-sm">{school_class.name}</h4></Link>
             </div>
         )
     })
 
     let classes_info_div = (
-        <div className="rounded-md bg-sky-50 shadow-md mt-2 mb-4 p-2 pb-4">
-            <h2 className="pb-2 text-gray-600 text-md">Classes</h2>
-            <div className="mb-4">
+        <div className="rounded-md bg-white shadow-md mt-2 mb-4 p-4 min-h-[250px]">
+            <h2 className="pb-4 text-md">Classes</h2>
+            <div className="mb-6">
                 <input 
                     className="p-2 border border-gray-300 w-48 sm:w-64 mr-2 h-10" 
                     value={newClassName} 

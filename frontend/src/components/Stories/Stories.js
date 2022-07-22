@@ -3,11 +3,15 @@ import { useSelector } from "react-redux";
 import * as Yup from 'yup';
 import axios from "axios";
 import Story from "./Story";
+import { useState } from "react";
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 
 const Stories = (props) => {
 
     const token = useSelector((state) => state.auth.token);
     const accountType = useSelector((state)=> state.auth.accountType);
+
+    const [showForm, setShowForm] = useState(false)
 
     // CREATE STORY FUNCTION
     const handleCreateStory = (title, content, actions) => {
@@ -49,9 +53,13 @@ const Stories = (props) => {
 
     // STORIES
     let create_story_form = (
-        <div className="w-full sm:w-[500px] p-4 mx-auto mt-2 rounded-md shadow-md bg-slate-100 text-center">
-            <form onSubmit={story_formik.handleSubmit}>
-                <h3>Create Story</h3>
+        <div className="relative w-full sm:w-[500px] p-2 mx-auto mt-2 rounded-lg shadow-md shadow-gray-300 border-2 border-gray-300 bg-white text-center">
+            <h3>Create Story</h3>
+
+            {showForm ? <ChevronUpIcon onClick={()=>setShowForm(false)} className="h-[24px] w-[24px] absolute right-0 top-2 cursor-pointer" />
+             : <ChevronDownIcon onClick={()=>setShowForm(true)} className="h-[24px] w-[24px] absolute right-0 top-2 cursor-pointer" />}
+
+            {showForm ? <form onSubmit={story_formik.handleSubmit}>
                 <input
                     type="text"
                     placeholder="Type title..."
@@ -74,7 +82,7 @@ const Stories = (props) => {
                 /> <br/>
                 {story_formik.errors.content ? <div className="text-sm w-full text-left pl-2">{story_formik.errors.content} </div> : null}
                 <button type="submit" className="w-32 rounded-full bg-sky-500 hover:bg-indigo-500 p-2 my-2 text-white font-bold border-2 border-black">Submit</button>
-            </form>
+            </form> : null}
         </div>
     )
 
@@ -86,7 +94,7 @@ const Stories = (props) => {
         <div>
             {accountType === "teacher" ? create_story_form : null}
             
-            <div className="mt-8 mb-16">
+            <div className="mt-4 mb-16">
                 {stories}
             </div>
             

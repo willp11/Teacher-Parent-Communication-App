@@ -44,7 +44,7 @@ const Event = (props) => {
     )
 
     let event_div = (
-        <div className="w-full sm:w-[500px] p-4 mx-auto bg-sky-100 rounded-md shadow-md" >
+        <div className="w-full sm:w-[500px] p-4 mx-auto bg-sky-200 rounded-md shadow-md shadow-gray-300 border-2 border-gray-300" >
             <div className="bg-white p-2 rounded-md">
                 <div className="flex justify-between pb-2">
                     <h3 className="text-left">{props.event.name}</h3>
@@ -56,7 +56,7 @@ const Event = (props) => {
                 
             </div>
             <div className="relative flex justify-between">
-                <p className="text-gray-600 text-sm pl-2 pt-2 cursor-pointer w-fit">{props.event.helpers_required} helpers required</p>
+                <p className="text-gray-600 text-sm font-semibold pl-2 pt-2 cursor-pointer w-fit">{props.event.helpers_required} helpers required</p>
                 {accountType === "teacher" ? edit_del_btn : null}
                 {showEditDelMenu ? edit_del_menu : null}
             </div>

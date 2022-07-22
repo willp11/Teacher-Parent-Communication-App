@@ -138,14 +138,14 @@ const Profile = () => {
     }
 
     return (
-        <div className="relative bg-white overflow-auto min-h-screen">
+        <div className="relative bg-white h-screen overflow-auto">
             <Navigation />
-            <div className="w-full flex flex-col items-center justify-center p-2">
-                <div className="w-full bg-sky-200 text-center py-2 mb-2">
-                    <h1>Profile</h1>
+            <div className="bg-slate-100 h-[calc(100%-80px)] w-full flex flex-col items-center justify-start">
+                <div className="w-full bg-indigo-500 text-white text-center py-2 mb-2">
+                    <h1 className="drop-shadow-lg">Profile</h1>
                 </div>
                 {menu_div}
-                <div className="w-full sm:w-[600px] bg-white text-center">
+                <div className="w-full sm:w-[600px] text-center">
                     {profile_div}
                 </div>
             </div>

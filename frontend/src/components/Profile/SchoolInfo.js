@@ -43,14 +43,14 @@ const SchoolInfo = (props) => {
     )
     let select_school_div = (
         <div className="pb-2">
-            {dropdown}
-            <button className="border-2 border-black rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-2 text-white text-sm font-bold" onClick={submitSelectSchoolHandler}>Submit</button>
+            {dropdown} <br/>
+            <button className="border-2 border-black rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-1 mt-2 text-white text-sm font-semibold" onClick={submitSelectSchoolHandler}>Submit</button>
         </div>
     )
 
     let school_info_div = (
-        <div className="rounded-md shadow-md bg-sky-50 mt-2 mb-4 p-2">
-            <h2 className="text-gray-600 text-md pb-2">School</h2>
+        <div className="rounded-md shadow-md bg-white mt-2 mb-4 p-4 min-h-[250px]">
+            <h2 className="text-md pb-2">School</h2>
             <p className="pb-4">{props.profile.teacher.school === null ? "You do not have a school yet!" : props.profile.teacher.school.name}</p>
             {select_school_div}
         </div>

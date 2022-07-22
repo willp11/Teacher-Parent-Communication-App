@@ -84,7 +84,7 @@ const Story = (props) => {
 
     // Main story div
     let story_div = (
-        <div className="w-full sm:w-[500px] p-4 mx-auto bg-sky-100 rounded-md shadow-md ">
+        <div className="w-full sm:w-[500px] p-4 mx-auto bg-sky-200 rounded-md shadow-md shadow-gray-300 border-2 border-gray-300">
             <div className="bg-white p-2 rounded-md">
                 <div className="flex justify-between items-center pb-2">
                     <h3 className="text-left">{props.story.title}</h3>
@@ -92,7 +92,7 @@ const Story = (props) => {
                 </div>
                 <p className="pb-2">{props.story.content}</p>
             </div>
-            <p className="text-gray-600 text-sm pl-2 pt-2 cursor-pointer w-fit" onClick={toggleShowComments}>{comments.length} comments</p>
+            <p className="text-gray-600 text-sm font-semibold pl-2 pt-2 cursor-pointer w-fit" onClick={toggleShowComments}>{comments.length} comments</p>
             <div className="my-2 border-b-2 border-gray-600">
                 
             </div>

@@ -46,7 +46,7 @@ const NotificationSettings = (props) => {
 
     // EDIT MODE OFF
     let notification_settings = (
-        <div className="rounded-md shadow-md bg-sky-50 mt-2 mb-4 p-2 pb-4">
+        <div className="rounded-md shadow-md bg-white mt-2 mb-4 p-2 pb-4">
             <h2 className="py-2 text-md text-gray-600">Notification Settings</h2>
             <p className="mb-2 text-sm">How would you like to receive notifications?</p>
             <div>
@@ -86,8 +86,8 @@ const NotificationSettings = (props) => {
     // EDIT MODE ON
     if (editSettingsMode) {
         notification_settings = (
-            <div className="rounded-md shadow-md bg-sky-50 mt-2 mb-4 p-2 pb-4">
-                <h2 className="py-2 text-md text-gray-600">Notification Settings</h2>
+            <div className="rounded-md shadow-md bg-sky-50 mt-2 mb-4 p-4">
+                <h2 className="py-2 text-md">Notification Settings</h2>
                 <p className="mb-2 text-sm">How would you like to receive notifications?</p>
                 <div>
                     <button 
