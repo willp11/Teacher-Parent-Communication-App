@@ -105,6 +105,20 @@ const VideoChat = () => {
             if(type === 'ICEcandidate') {
                 onICECandidate(response.data);
             }
+
+            if(type === 'call_cancelled') {
+                onCallCancelled(response.data);
+            }
+        }
+
+        const onCallCancelled = (data) => {
+            console.log(`Call cancelled: ${data.user} is offline `);
+            setAnswerDivStyle({display: "none"})
+            setCallDivStyle({display: "none"});
+            setCallingDivStyle({display: "none"});
+            setInCallDivStyle({display: "none"});
+
+            stop()
         }
     
         const onNewCall = (data) =>{
