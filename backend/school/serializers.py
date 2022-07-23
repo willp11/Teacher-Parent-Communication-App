@@ -94,16 +94,6 @@ class AnnouncementUpdateSerializer(serializers.ModelSerializer):
         model = Announcement
         fields = ('title', 'content')
 
-class EventSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Event
-        fields = '__all__'
-
-class EventUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Event
-        fields = ('name', 'date', 'description', 'helpers_required')
-
 class StoryCommentListSerializer(serializers.ModelSerializer):
     author = UsernameSerializer()
     class Meta:
@@ -144,6 +134,33 @@ class StudentNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ('id', 'name')
+
+# Serializers to get all a teacher's classes with the list of students and parent's names
+class ParentNameSerializer(serializers.ModelSerializer):
+    user = UserNameOnlySerializer()
+    class Meta:
+        model = Parent
+        fields = ('user',)
+
+# For create and delete Helper instances
+class HelperSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Helper
+        fields = ('event',)
+
+# For nested Helper instances - retrieved with all Event data - provides data on the parents
+class HelperParentDataSerializer(serializers.ModelSerializer):
+    parent = ParentNameSerializer()
+    class Meta:
+        model = Helper
+        fields = ('parent',)
+
+# Events - for retrieving event data and creating event instances
+class EventSerializer(serializers.ModelSerializer):
+    helpers = HelperParentDataSerializer(many=True)
+    class Meta:
+        model = Event
+        fields = ('id', 'name', 'date', 'description', 'school_class', 'helpers_required', 'helpers')
 
 class ClassDetailSerializer(serializers.ModelSerializer):
     teacher = TeacherNameSerializer()
@@ -223,15 +240,16 @@ class StudentsClassInfoSerializer(serializers.ModelSerializer):
         model = SchoolClass
         fields = ('id', 'name', 'school', 'teacher')
 
+# Updating event instances
+class EventUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ('name', 'date', 'description', 'helpers_required')
+
 class RequestHelpersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ('pk', 'helpers_required')
-
-class HelperSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Helper
-        fields = ('event',)
 
 # CHAT GROUPS
 class ChatGroupMemberNameSerializer(serializers.ModelSerializer):
