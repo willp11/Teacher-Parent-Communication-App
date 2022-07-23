@@ -19,19 +19,20 @@ const AssignToStudents = (props) => {
     // list of already assigned select students - that we want to pass to assignee-delete API
     const [selectDeleteStudents, setSelectDeleteStudents] = useState([]);
 
-    // function go select all students in a list - give either alloc or unalloc arrays and refs
-    const selectAll = (ref, arr) => {
+    // function go select all students in a list - give either alloc or unalloc arrays and refs, and select/deselect
+    const selectAll = (ref, arr, check) => {
+        
         // iterate through the divs
         for (let i=0; i<ref.current.children.length; i++) {
             let input = ref.current.children[i].children[0];
-            input.checked = true;
+            input.checked = check;
         }
 
         // updated selected array for when submit
         if (arr === allocatedStudents) {
-            setSelectDeleteStudents([...arr])
+            check ? setSelectDeleteStudents([...arr]) : setSelectDeleteStudents([])
         } else if (arr === notAllocatedStudents) {
-            setSelectedStudents([...arr]);
+            check ? setSelectedStudents([...arr]) : setSelectedStudents([])
         }
     }
 
@@ -207,10 +208,19 @@ const AssignToStudents = (props) => {
             <p className="text-left text-sm font-semibold pl-2 py-1">Choose students to give the assignment to.</p>
             <div className="h-[calc(100%-4rem)] flex flex-col sm:flex-row px-1">
                 <div className="h-1/2 sm:h-full w-full sm:w-1/2 p-1 bg-white border border-gray-300 shadow-md rounded-md flex flex-col justify-between overflow-auto">
-                    <div>
+                    <div className="flex flex-col items-start">
                         <h3 className="text-left text-sm text-gray-500">Not Assigned</h3>
                         <p className="text-left text-xs mt-2">Which students do you want to give the assignment to?</p>
-                        <button className="mt-2" onClick={()=>selectAll(not_alloc_ref, notAllocatedStudents)}>Select All</button>
+                        <div className="flex">
+                            <button 
+                                className="w-12 bg-green-500 hover:bg-green-600 text-sm text-white border border-gray-500 font-semibold p-1 mt-2 mr-2 rounded" 
+                                onClick={()=>selectAll(not_alloc_ref, notAllocatedStudents, true)}
+                            >All</button>
+                            <button 
+                                className="w-12 bg-red-500 hover:bg-red-600 text-sm text-white border border-gray-500 font-semibold p-1 mt-2 rounded" 
+                                onClick={()=>selectAll(not_alloc_ref, notAllocatedStudents, false)}
+                            >None</button>
+                        </div>
                         <div ref={not_alloc_ref}>
                             {not_allocated_student_list}
                         </div>
@@ -223,10 +233,19 @@ const AssignToStudents = (props) => {
                     </button>
                 </div>
                 <div className="h-1/2 sm:h-full w-full sm:w-1/2 p-1 bg-white border border-gray-300 shadow-md rounded-md flex flex-col justify-between overflow-auto">
-                    <div>
+                    <div className="flex flex-col items-start">
                         <h3 className="text-left text-sm text-gray-500">Assigned</h3>
                         <p className="text-left text-xs mt-2">These students have already been given the assignment.</p>
-                        <button className="mt-2" onClick={()=>selectAll(alloc_ref, allocatedStudents)}>Select All</button>
+                        <div className="flex">
+                            <button 
+                                className="w-12 bg-green-500 hover:bg-green-600 text-sm text-white border border-gray-500 font-semibold p-1 mt-2 mr-2 rounded" 
+                                onClick={()=>selectAll(alloc_ref, allocatedStudents, true)}
+                            >All</button>
+                            <button 
+                                className="w-12 bg-red-500 hover:bg-red-600 text-sm text-white border border-gray-500 font-semibold p-1 mt-2 rounded" 
+                                onClick={()=>selectAll(alloc_ref, allocatedStudents, false)}
+                            >None</button>
+                        </div>
                         <div ref={alloc_ref}>
                             {allocated_student_list}
                         </div>
@@ -235,7 +254,7 @@ const AssignToStudents = (props) => {
                         className="rounded-md border-2 border-black bg-sky-500 hover:bg-indigo-500 text-white font-semibold px-4 py-2 m-2"
                         onClick={handleUnassignStudents}
                     >
-                        Remove
+                        Unassign
                     </button>
                 </div>
             </div>
