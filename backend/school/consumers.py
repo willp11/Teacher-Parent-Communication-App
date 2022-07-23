@@ -84,8 +84,7 @@ class CallConsumer(WebsocketConsumer):
             user = Token.objects.get(key=token).user
             self.user = user
             self.my_name = 'chat_%s' % (self.user.id)
-
-            print(user.id)
+            self.calling = None
 
             async_to_sync(self.channel_layer.group_add)(
                 self.my_name,
@@ -105,6 +104,16 @@ class CallConsumer(WebsocketConsumer):
             print("Failed to connect to websocket")
 
     def disconnect(self, close_code):
+        if self.calling != None:
+            async_to_sync(self.channel_layer.group_send)(
+                self.calling,
+                {
+                    'type': 'call_cancelled',
+                    'data': {
+                        'user': self.my_name,
+                    }
+                }
+            )
         # Leave room group
         async_to_sync(self.channel_layer.group_discard)(
             self.my_name,
@@ -122,6 +131,7 @@ class CallConsumer(WebsocketConsumer):
             name = text_data_json['data']['name']
             room_name = 'chat_%s' % (name)
             print(self.my_name, "is calling", room_name)
+            self.calling = room_name
 
             # to notify the callee we send an event to the group name
             # and their group name is the name
@@ -142,6 +152,8 @@ class CallConsumer(WebsocketConsumer):
             
             caller = text_data_json['data']['caller']
             # print(self.my_name, "is answering", caller, "calls.")
+
+            self.calling = caller
 
             async_to_sync(self.channel_layer.group_send)(
                 caller,
@@ -169,7 +181,6 @@ class CallConsumer(WebsocketConsumer):
 
     def call_received(self, event):
 
-        # print(event)
         print('Call received by ', self.my_name )
         self.send(text_data=json.dumps({
             'type': 'call_received',
@@ -179,7 +190,6 @@ class CallConsumer(WebsocketConsumer):
 
     def call_answered(self, event):
 
-        # print(event)
         print(self.my_name, "'s call answered")
         self.send(text_data=json.dumps({
             'type': 'call_answered',
@@ -190,5 +200,11 @@ class CallConsumer(WebsocketConsumer):
     def ICEcandidate(self, event):
         self.send(text_data=json.dumps({
             'type': 'ICEcandidate',
+            'data': event['data']
+        }))
+
+    def call_cancelled(self, event):
+        self.send(text_data=json.dumps({
+            'type': 'call_cancelled',
             'data': event['data']
         }))
