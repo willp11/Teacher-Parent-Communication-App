@@ -3,8 +3,10 @@ import * as Yup from 'yup';
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Event from "./Event";
-import { useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
+
+const eventTypes = ["Today", "Upcoming", "Finished"]
 
 const Events = (props) => {
 
@@ -12,6 +14,55 @@ const Events = (props) => {
     const accountType = useSelector((state)=> state.auth.accountType);
 
     const [showForm, setShowForm] = useState(false);
+    const [selectedEventType, setSelectedEventType] = useState("Today");
+
+    // sorted events
+    const [upcomingEvents, setUpcomingEvents] = useState([]);
+    const [todayEvents, setTodayEvents] = useState([]);
+    const [finishedEvents, setFinishedEvents] = useState([]);
+
+    // Function to sort events by date and if they are today or upcoming or finished
+    const sortEvents = useCallback(()=>{
+        // sort events into today, upcoming and finished
+        let upcoming = [];
+        let today = [];
+        let finished = [];
+        let today_date = new Date().toLocaleDateString();
+        let today_ts = Date.parse(new Date());
+        props.events.forEach((e)=>{
+            let date = new Date(e.date).toLocaleDateString();
+            // console.log(date, today_date)
+            if (date === today_date) {
+                today.push(e);
+            } else {
+                let ts = Date.parse(e.date);
+                ts > today_ts ? upcoming.push(e) : finished.push(e)
+            }
+        })
+
+        // order events by date - upcoming: earliest first, finished: latest first
+        upcoming = upcoming.sort((a,b)=>{
+            let a_ts = Date.parse(a.date)
+            let b_ts = Date.parse(b.date)
+            return a_ts - b_ts
+        })
+        finished = finished.sort((a,b)=>{
+            let a_ts = Date.parse(a.date)
+            let b_ts = Date.parse(b.date)
+            return b_ts - a_ts
+        })
+
+        setUpcomingEvents(upcoming);
+        setFinishedEvents(finished);
+        setTodayEvents(today);
+
+        return {today, upcoming, finished}
+    }, [props.events])
+
+    // when props.events change, sort the events
+    useEffect(()=>{
+        sortEvents()
+    }, [sortEvents])
 
     // CREATE EVENT FUNCTION
     const handleCreateEvent = (name, date, description, helpers_required, actions) => {
@@ -66,8 +117,8 @@ const Events = (props) => {
         <div className="relative w-full sm:w-[500px] p-2 mx-auto mt-2 rounded-md shadow-md shadow-gray-300 bg-white border-2 border-gray-300 text-center">
             <h3>Create Event</h3>
 
-            {showForm ? <ChevronUpIcon onClick={()=>setShowForm(false)} className="h-[24px] w-[24px] absolute right-0 top-2 cursor-pointer" />
-             : <ChevronDownIcon onClick={()=>setShowForm(true)} className="h-[24px] w-[24px] absolute right-0 top-2 cursor-pointer" />}
+            {showForm ? <ChevronUpIcon onClick={()=>setShowForm(false)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />
+             : <ChevronDownIcon onClick={()=>setShowForm(true)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />}
 
             {showForm ? <form onSubmit={event_formik.handleSubmit}>
                 <input
@@ -118,19 +169,67 @@ const Events = (props) => {
         </div>
     )
 
-    let events = props.events.map((event)=>{
+    // Events divs
+    // let upcoming_events_div = null;
+    // if (selectedEventType === "Upcoming") {
+    //     let upcoming_events = upcomingEvents.map((event)=>{
+    //         return <Event key={event.id} event={event} handleDelete={props.handleDelete} getClassInfo={props.getClassInfo} />
+    //     });
+    //     upcoming_events_div = (
+    //         <div className="mt-4 mb-16">
+    //             <h3 className="mb-4">Upcoming Events</h3>
+    //             {upcomingEvents.length === 0 ? <p className="text-center">There are no upcoming events.</p> : null}
+    //             {upcoming_events}
+    //         </div>
+    //     )
+    // }
+    let events = null;
+    let event_arr = [];
+    let div_title = "";
+    let div_txt = ""
+    if (selectedEventType === "Today") {
+        event_arr = todayEvents
+        div_title = "Today's Events"
+        div_txt = "There are no events today."
+    } else if (selectedEventType === "Upcoming") {
+        event_arr = upcomingEvents
+        div_title = "Upcoming Events"
+        div_txt = "There are no upcoming events."
+    } else if (selectedEventType === "Finished") {
+        event_arr = finishedEvents
+        div_title = "Finished Events"
+        div_txt = "There are no finished events."
+    }
+    let selected_events = event_arr.map((event)=>{
         return <Event key={event.id} event={event} handleDelete={props.handleDelete} getClassInfo={props.getClassInfo} />
     });
+    events = (
+        <div className="mt-4 mb-16">
+            <h3 className="mb-4">{div_title}</h3>
+            {event_arr.length === 0 ? <p className="text-center">{div_txt}</p> : null}
+            {selected_events}
+        </div>
+    )
+
+    // Select upcoming, today, finished buttons
+    let buttons = eventTypes.map((type)=>{
+        let style = "w-24 mx-1 text-base font-semibold p-1 border border-gray-300 bg-white hover:bg-indigo-500 hover:text-white rounded shadow-md"
+        if (selectedEventType === type) {
+            style = "w-24 mx-1 text-base font-semibold p-1 border border-gray-300 text-white bg-sky-500 hover:bg-sky-600 rounded shadow-md"
+        }
+        return <button className={style} onClick={()=>setSelectedEventType(type)}>{type}</button>
+    })
+    let buttons_div = (
+        <div className="w-[calc(100%-1rem)] sm:w-[500px] mx-auto flex justify-evenly mt-4">
+            {buttons}
+        </div>
+    )
 
     let events_div = (
         <div>
             {accountType === "teacher" ? create_event_form : null}
-            
-            <div className="mt-4 mb-16">
-                <h3 className="mb-4">Upcoming Events</h3>
-                {events.length === 0 ? <p className="text-center">There are no upcoming events.</p> : null}
-                {events}
-            </div>
+            {buttons_div}
+            {events}
 
         </div>
     )

@@ -65,8 +65,8 @@ const Students = (props) => {
     let create_student_form = (
         <div className="relative w-full sm:w-[500px] p-2 mx-auto mt-2 rounded-md shadow-md shadow-gray-300 bg-white border-2 border-gray-300 text-center">
             <h3>Add Student</h3>
-            {showForm ? <ChevronUpIcon onClick={()=>setShowForm(false)} className="h-[24px] w-[24px] absolute right-0 top-2 cursor-pointer" />
-             : <ChevronDownIcon onClick={()=>setShowForm(true)} className="h-[24px] w-[24px] absolute right-0 top-2 cursor-pointer" />}
+            {showForm ? <ChevronUpIcon onClick={()=>setShowForm(false)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />
+             : <ChevronDownIcon onClick={()=>setShowForm(true)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />}
             {showForm ? <form className="transition ease-in-out transition-duration-1000ms" onSubmit={student_formik.handleSubmit}>
                 <div>
                     <input
