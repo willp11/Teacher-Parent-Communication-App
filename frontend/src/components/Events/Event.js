@@ -1,14 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { DotsHorizontalIcon } from "@heroicons/react/outline";
 import EditEventsModal from "./EditEventsModal";
+import axios from "axios";
 
 const Event = (props) => {
 
+    const token = useSelector((state)=>state.auth.token);
+    const account = useSelector((state)=>state.auth.account);
     const accountType = useSelector((state)=>state.auth.accountType);
 
     const [showEditDelMenu, setShowEditDelMenu] = useState(false);
     const [editMode, setEditMode] = useState(false);
+    const [isHelper, setIsHelper] = useState(false);
+
+    // On component mount - for parents check if user is in helpers array
+    useEffect(()=>{
+        if (accountType === 'parent') {
+            let helpers = props.event.helpers;
+            console.log(helpers);
+            let isHelper = false;
+            helpers.forEach((helper)=>{
+                if (helper.parent.user.id === account.id) isHelper = true;
+            })
+            setIsHelper(isHelper);
+        }
+    }, [account, accountType, props.event.helpers]);
 
     // Turn on and off edit model to display edit modal
     const toggleEditMode = () => {
@@ -19,6 +36,43 @@ const Event = (props) => {
     // Toggle edit and delete menu
     const toggleShowEditDelMenu = () => {
         setShowEditDelMenu(!showEditDelMenu)
+    }
+
+    // Register as helper for Event (parent accounts only)
+    const registerHelper = () => {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token
+        }
+        const data = {
+            event: props.event.id
+        }
+        const url = 'http://localhost:8000/api/v1/school/helper-create/';
+        axios.post(url, data, {headers: headers})
+            .then(res=>{
+                console.log(res);
+                props.getClassInfo();
+            })
+            .catch(err=>{
+                console.log(err);
+            })
+    }
+
+    // Unregister as helper for Event (parent accounts only)
+    const unregisterHelper = () => {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token
+        }
+        const url = `http://localhost:8000/api/v1/school/helper-delete/${props.event.id}`
+        axios.delete(url, {headers: headers})
+            .then(res=>{
+                console.log(res);
+                props.getClassInfo();
+            })
+            .catch(err=>{
+                console.log(err);
+            })
     }
 
     // JSX
@@ -43,6 +97,21 @@ const Event = (props) => {
         </div>
     )
 
+    let register_help_btn = (
+        <button
+            onClick={registerHelper}
+            className="text-sm ml-2 p-1 border-2 border-gray-300 bg-white font-semibold rounded h-8 hover:bg-indigo-500 hover:text-white hover:border-indigo-800"
+        >Register</button>
+    )
+    if (isHelper) {
+        register_help_btn = (
+            <button
+                onClick={unregisterHelper}
+                className="text-sm ml-2 p-1 border-2 border-gray-300 font-semibold rounded h-8 bg-indigo-500 hover:bg-indigo-600 text-white border-indigo-800"
+            >Unregister</button>
+        )
+    }
+
     let event_div = (
         <div className="w-full sm:w-[500px] p-4 mx-auto bg-sky-200 rounded-md shadow-md shadow-gray-300 border-2 border-gray-300" >
             <div className="bg-white p-2 rounded-md">
@@ -56,7 +125,10 @@ const Event = (props) => {
                 
             </div>
             <div className="relative flex justify-between">
-                <p className="text-gray-600 text-sm font-semibold pl-2 pt-2 cursor-pointer w-fit">{props.event.helpers_required} helpers required</p>
+                <div className="flex justify-start items-center">
+                    <p className="text-gray-600 text-sm font-semibold pl-2 w-fit">{props.event.helpers_required - props.event.helpers.length} helpers required</p>
+                    {accountType === "parent" ? register_help_btn : null}
+                </div>
                 {accountType === "teacher" ? edit_del_btn : null}
                 {showEditDelMenu ? edit_del_menu : null}
             </div>
