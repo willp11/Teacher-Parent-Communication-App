@@ -23,6 +23,7 @@ import SchoolClass from './components/SchoolClass/SchoolClass';
 import StudentProfile from './components/StudentProfile/StudentProfile';
 import ChatHub from './components/ChatHub/ChatHub';
 import ChatGroup from './components/ChatGroup/ChatGroup';
+import VideoChat from './components/VideoChat.js/VideoChat';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -41,6 +42,7 @@ root.render(
           <Route path="/studentProfile/:id" element={<StudentProfile />} />
           <Route path="/chatHub" element={<ChatHub />} />
           <Route path="/chatGroup/:id" element={<ChatGroup />} />
+          <Route path="/videoChat" element={<VideoChat />} />
         </Routes>
       </BrowserRouter>
     </PersistGate>

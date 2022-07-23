@@ -50,7 +50,6 @@ const ChatGroup = () => {
                 setGroup(res.data);
                 setMessages(res.data.chat_messages);
                 setGroupMembers(res.data.chat_members);
-                console.log(res.data.chat_members)
                 messagesRef.current = res.data.chat_messages;
                 connectSocket();
             })

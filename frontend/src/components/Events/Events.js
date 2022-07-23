@@ -170,19 +170,6 @@ const Events = (props) => {
     )
 
     // Events divs
-    // let upcoming_events_div = null;
-    // if (selectedEventType === "Upcoming") {
-    //     let upcoming_events = upcomingEvents.map((event)=>{
-    //         return <Event key={event.id} event={event} handleDelete={props.handleDelete} getClassInfo={props.getClassInfo} />
-    //     });
-    //     upcoming_events_div = (
-    //         <div className="mt-4 mb-16">
-    //             <h3 className="mb-4">Upcoming Events</h3>
-    //             {upcomingEvents.length === 0 ? <p className="text-center">There are no upcoming events.</p> : null}
-    //             {upcoming_events}
-    //         </div>
-    //     )
-    // }
     let events = null;
     let event_arr = [];
     let div_title = "";
