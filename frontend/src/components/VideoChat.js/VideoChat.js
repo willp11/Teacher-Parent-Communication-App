@@ -14,11 +14,17 @@ const VideoChat = () => {
 
     const { id } = useParams();
     const token = useSelector((state)=>state.auth.token);
+    const account = useSelector((state)=>state.auth.account);
 
-    const [groupMembers] = useGroupMembers(token, id);
+    // const [groupMembers] = useGroupMembers(token, id);
+    const {groupMembers, loadingMembers} = useGroupMembers(token, id);
     
     const [connected, setConnected] = useState(false);
+
+    // other user's ID
     const [otherUser, setOtherUser] = useState(null);
+    const [otherUserName, setOtherUserName] = useState("");
+
     const [remoteRTCMessage, setRemoteRTCMessage] = useState(null);
     const [iceCandidatesFromCaller, setIceCandidatesFromCaller] = useState([]);
     const [callInProgress, setCallInProgress] = useState(false);
@@ -28,6 +34,20 @@ const VideoChat = () => {
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef(null);
 
+    // Determine who the other user is
+    useEffect(()=>{
+        if (groupMembers.length === 2) {
+            groupMembers.every((member)=>{
+                if (member.user.id !== account.id) {
+                    setOtherUser(`${member.user.id}`)
+                    setOtherUserName(member.user.first_name)
+                    return false;
+                }
+                return true;
+            })
+        }
+    }, [groupMembers])
+
     /////////////////////////
     //// DIV STYLES
     /////////////////////////
@@ -35,8 +55,6 @@ const VideoChat = () => {
     const [callDivStyle, setCallDivStyle] = useState({display: "none"});
     const [callingDivStyle, setCallingDivStyle] = useState({display: "none"});
     const [inCallDivStyle, setInCallDivStyle] = useState({display: "none"});
-    // const [userNameDivStyle, setUserNameDivStyle] = useState({display: "block"});
-    // const [userInfoDivStyle, setUserInfoDivStyle] = useState({display: "none"});
     const [answerDivStyle, setAnswerDivStyle] = useState({display: "none"});
     const [videoDivStyle, setVideoDivStyle] = useState({display: "none"});
 
@@ -45,24 +63,19 @@ const VideoChat = () => {
     ///////////////////////////////////////////////
 
     const login = () => {
-        // setUserNameDivStyle({display: "none"});
-        // setUserInfoDivStyle({display: "block"});
         setCallDivStyle({display: "block"});
 
         connectSocket();
     }
 
-    //event from html
+    // get the peer connection and send the call
     const call = async () => {
         let peerConnection = await beReady();
-
         processCall(peerConnection, otherUser)
     }
 
-    //event from html
+    // get the peer connection and answer the call
     const answer = async () => {
-        //do the event firing
-
         let peerConnection = await beReady();
 
         processAccept(peerConnection);
@@ -87,6 +100,8 @@ const VideoChat = () => {
 
         callSocket.onclose = (e) => {
             console.log("connection closed");
+            setConnected(false);
+            setCallDivStyle({display: "none"})
         }
     
         callSocket.onmessage = (e) =>{
@@ -117,7 +132,7 @@ const VideoChat = () => {
         }
 
         const onCallCancelled = (data) => {
-            console.log(`Call cancelled: ${data.user} is offline `);
+            console.log(`Call with ${data.user} cancelled`);
             setAnswerDivStyle({display: "none"})
             setCallDivStyle({display: "none"});
             setCallingDivStyle({display: "none"});
@@ -127,30 +142,20 @@ const VideoChat = () => {
         }
     
         const onNewCall = (data) =>{
-            setOtherUser(data.caller);
-            let caller_id = data.caller.slice(5)
-            // TO DO
-            // Find user's name from their id
             setRemoteRTCMessage(data.rtcMessage);
             setCallDivStyle({display: "none"});
             setAnswerDivStyle({display: "block"})
         }
     
         const onCallAnswered = (data) =>{
-            //when other accept our call
-            console.log(data);
-            console.log(connection.current);
             setRemoteRTCMessage(data.rtcMessage);
             connection.current.setRemoteDescription(new RTCSessionDescription(data.rtcMessage));
             setCallingDivStyle({display: "none"});
-    
-            console.log("Call Started. They Answered");
     
             callProgress()
         }
     
         const onICECandidate = (data) =>{
-            // console.log(data);
             console.log("GOT ICE candidate");
     
             let message = data.rtcMessage
@@ -189,10 +194,6 @@ const VideoChat = () => {
     
     // send call
     const sendCall = (data) => {
-        //to send a call
-        console.log("Send Call");
-    
-        // socket.emit("call", data);
         callSocket.send(JSON.stringify({
             type: 'call',
             data
@@ -201,9 +202,19 @@ const VideoChat = () => {
         setCallDivStyle({display: "none"});
         setCallingDivStyle({display: "block"});
     }
+
+    // cancel call
+    const cancelCall = () => {
+        callSocket.send(JSON.stringify({
+            type: 'cancel_call'
+        }))
+
+        setCallDivStyle({display: "block"});
+        setCallingDivStyle({display: "none"});
+    }
     
+    // answer call
     const answerCall = (data) => {
-        //to answer a call
         callSocket.send(JSON.stringify({
             type: 'answer_call',
             data
@@ -211,14 +222,12 @@ const VideoChat = () => {
         callProgress();
     }
     
+    // send ICE candidate
     const sendICEcandidate = (data) => {
-        //send only if we have caller, else no need to
-        console.log("Send ICE candidate");
         callSocket.send(JSON.stringify({
             type: 'ICEcandidate',
             data
         }));
-    
     }
 
     // IN PRODUCTION WE NEED TO SETUP STUN AND TURN SERVERS
@@ -369,7 +378,8 @@ const VideoChat = () => {
         setCallingDivStyle({display: "none"});
         setVideoDivStyle({display: "none"});
 
-        setOtherUser(null);
+        // setOtherUser(null);
+        cancelCall();
     }
     
     const callProgress = () => {
@@ -391,69 +401,54 @@ const VideoChat = () => {
     )
 
     const callDiv = (
-        <div id="call" style={callDivStyle}>
-            <div className="flex flex-col items-center">
-                <input placeholder="Whom to call?" style={{textAlign: "center", height: "50px", fontSize: "xx-large"}}
-                    type="text" name="callName" id="callName" onChange={(e)=>setOtherUser(e.target.value)}/>
-                <button className="w-24 rounded p-2 mt-2 text-white font-semibold bg-sky-500 hover:bg-indigo-500" onClick={call}>Call</button>
+        <div id="call" className="w-full" style={callDivStyle}>
+            <div className="bg-white w-full sm:w-[500px] mx-auto my-2 px-2 py-4 border border-gray-300 rounded shadow-md flex flex-col items-center justify-start">
+                <h2>Send Call</h2>
+                <button className="w-32 rounded p-2 mt-2 text-white font-semibold bg-sky-500 hover:bg-indigo-500" onClick={call}>Call</button>
             </div>
         </div>
     )
 
     const answerDiv = (
-        <div id="answer" style={answerDivStyle}>
-            <div className="bg-white w-[calc(100%-1rem)] h-[300px] sm:w-[400px] mx-auto my-2 p-2 border border-gray-300 rounded shadow-md flex flex-col items-center justify-center">
+        <div id="answer" className="w-full" style={answerDivStyle}>
+            <div className="bg-white w-full h-[300px] sm:w-[500px] mx-auto my-2 p-2 border border-gray-300 rounded shadow-md flex flex-col items-center justify-center">
                 <h2>Incoming Call</h2>
                 <img className="w-[100px] h-[100px] rounded-full my-2" src={profileImg} alt="" />
-                <h3><span id="callerName">{otherUser}</span></h3>
-                <button className="w-32 rounded bg-sky-500 hover:bg-green-600 border border-gray-300 text-white font-semibold p-2 m-2" onClick={answer}>Answer</button>
+                <h3><span id="callerName">{otherUserName}</span></h3>
+                <button className="w-32 rounded bg-green-600 hover:bg-green-700 border border-gray-300 text-white font-semibold p-2 m-2" onClick={answer}>Answer</button>
             </div>
         </div>
     )
 
     const callingDiv = (
-        <div id="calling" style={callingDivStyle}>
-            <div className="bg-white w-[calc(100%-1rem)] h-[300px] sm:w-[400px] mx-auto my-2 p-2 border border-gray-300 rounded shadow-md flex flex-col items-center justify-center">
+        <div id="calling" className="w-full" style={callingDivStyle}>
+            <div className="bg-white w-full h-[300px] sm:w-[500px] mx-auto my-2 p-2 border border-gray-300 rounded shadow-md flex flex-col items-center justify-center">
                 <h2>Calling</h2>
                 <img className="w-[100px] h-[100px] rounded-full my-2" src={profileImg} alt=""/>
-                <h3><span id="otherUserNameCA">{otherUser}</span></h3>
+                <h3><span id="otherUserNameCA">{otherUserName}</span></h3>
+                <button className="w-32 rounded bg-red-600 hover:bg-red-700 border border-gray-300 text-white font-semibold p-2 m-2" onClick={cancelCall}>Cancel</button>
             </div>
         </div>
     );
 
     const inCallDiv = (
-        <div id="inCall" style={inCallDivStyle}>
-            <div className="bg-white p-2 border border-gray-300 rounded shadow-md">
+        <div id="inCall" className="w-full" style={inCallDivStyle}>
+            <div className="bg-white w-full sm:w-[500px] mx-auto p-2 border border-gray-300 rounded shadow-md flex flex-col items-center justify-center">
                 <h3>On Call With</h3>
-                <h2><span id="otherUserNameC">{otherUser}</span></h2>
-            </div>
-        </div>
-    )
-
-    let connect_btn_style = "w-32 rounded bg-sky-500 hover:bg-green-600 border border-gray-300 text-white font-semibold p-2 m-2"
-    if (connected) connect_btn_style = "w-32 rounded bg-red-600 hover:bg-red-700 border border-gray-300 text-white font-semibold p-2 m-2"
-    const connectBtn = (
-        <div>
-            <div>
-                <button
-                    className={connect_btn_style}
-                    onClick={connected ? disconnect : login}
-                >
-                    {connected ? "Disconnect" : "Connect"}
-                </button>
+                <h2><span id="otherUserNameC">{otherUserName}</span></h2>
             </div>
         </div>
     )
 
     const videosDiv = (
         <div id="videos" style={videoDivStyle} className="text-center">
-            <div className="absolute top-2 right-2">
+            <div className="absolute top-4 right-2">
                 {localVideo}
             </div>
             <div id="remoteVideoDiv">
                 {remoteVideo}
             </div>
-            <button className="w-32 rounded bg-sky-500 hover:bg-indigo-500 border border-gray-300 text-white font-semibold p-2 m-2" onClick={stop}>End call</button>
+            <button className="w-32 rounded bg-sky-500 hover:bg-indigo-500 border border-gray-300 text-white font-semibold p-2 mx-2 mt-4" onClick={stop}>End call</button>
         </div>
     )
 
@@ -465,9 +460,7 @@ const VideoChat = () => {
                     <h1 className="font-white drop-shadow-lg text-white">Video Chat</h1>
                 </div>
                 <div className=" relative w-[calc(100%-1rem)] mx-auto flex flex-col items-center">
-                    <MemberList members={groupMembers} />
-
-                    {connectBtn}
+                    <MemberList members={groupMembers} loading={loadingMembers} connected={connected} disconnect={disconnect} login={login}/>
 
                     {callDiv}
 

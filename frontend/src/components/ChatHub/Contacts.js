@@ -93,8 +93,8 @@ const Contacts = (props) => {
                             <div className="flex justify-between items-center text-black">
                                 <h4 className="text-sm text-left font-semibold truncate">{school_class.teacher.user.first_name} {school_class.teacher.user.last_name}</h4>
                                 <div className="flex">
-                                    <VideoCameraIcon className="h-[24px] w-[24px] fill-white cursor-pointer" onClick={()=>goDirectOrVideoChatHandler(school_class.teacher, "videoChat")} />
-                                    <ChatIcon className="h-[24px] w-[24px] fill-white cursor-pointer ml-2" onClick={()=>goDirectOrVideoChatHandler(school_class.teacher, "chatGroup")} />
+                                    <VideoCameraIcon className="h-[24px] w-[24px] fill-white cursor-pointer hover:fill-sky-200" onClick={()=>goDirectOrVideoChatHandler(school_class.teacher, "videoChat")} />
+                                    <ChatIcon className="h-[24px] w-[24px] fill-white cursor-pointer ml-2 hover:fill-sky-200" onClick={()=>goDirectOrVideoChatHandler(school_class.teacher, "chatGroup")} />
                                 </div>
                             </div>
                         </div>
@@ -128,8 +128,8 @@ const Contacts = (props) => {
                             <p className="text-xs text-left text-gray-500 truncate">{student.parent.user.first_name} {student.parent.user.last_name}</p>
                         </div>
                         <div className="flex items-center">
-                            <VideoCameraIcon className="h-[24px] w-[24px] fill-white cursor-pointer" onClick={()=>goDirectOrVideoChatHandler(student.parent, "videoChat")} />
-                            <ChatIcon className="h-[24px] w-[24px] fill-white cursor-pointer ml-2" onClick={()=>goDirectOrVideoChatHandler(student.parent, "chatGroup")} />
+                            <VideoCameraIcon className="h-[24px] w-[24px] fill-white cursor-pointer hover:fill-sky-200" onClick={()=>goDirectOrVideoChatHandler(student.parent, "videoChat")} />
+                            <ChatIcon className="h-[24px] w-[24px] fill-white cursor-pointer ml-2 hover:fill-sky-200" onClick={()=>goDirectOrVideoChatHandler(student.parent, "chatGroup")} />
                         </div>
                     </div>
                 )

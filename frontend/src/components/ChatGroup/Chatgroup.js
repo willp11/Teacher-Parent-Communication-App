@@ -16,7 +16,8 @@ const ChatGroup = () => {
     const [messages, setMessages] = useState([]);
     const [socket, setSocket] = useState(null);
 
-    const [groupMembers, setGroupMembers, getGroupMembers] = useGroupMembers(token, id);
+    // const [groupMembers, setGroupMembers, getGroupMembers] = useGroupMembers(token, id);
+    const {groupMembers, setGroupMembers, getGroupMembers} = useGroupMembers(token, id);
 
     // receive new messages, we update the refs and pass to messages component so it can render new messages and scroll down
     const messagesRef = useRef();

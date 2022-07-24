@@ -4,10 +4,12 @@ import axios from "axios";
 export const useGroupMembers = (token, id) => {
 
     const [groupMembers, setGroupMembers] = useState([]);
+    const [loadingMembers, setLoadingMembers] = useState(false);
 
     // Get list of members for chat group and video chat
     // called again when adding new members from AddMembers
     const getGroupMembers = useCallback(()=>{
+        setLoadingMembers(true);
         const headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
@@ -21,6 +23,9 @@ export const useGroupMembers = (token, id) => {
             .catch(err=>{
                 console.log(err);
             })
+            .finally(()=>{
+                setLoadingMembers(false);
+            })
     }, [token, id])
 
     // call again if token or id changes
@@ -28,5 +33,5 @@ export const useGroupMembers = (token, id) => {
         getGroupMembers()
     }, [getGroupMembers])
 
-    return [groupMembers, setGroupMembers, getGroupMembers];
+    return {groupMembers, setGroupMembers, getGroupMembers, loadingMembers};
 }
