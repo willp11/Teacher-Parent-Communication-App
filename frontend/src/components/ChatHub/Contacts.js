@@ -16,15 +16,15 @@ const Contacts = (props) => {
     const [selectedClass, setSelectedClass] = useState(null);
     const [studentSearchTerm, setStudentSearchTerm] = useState("");
 
-    // Send a direct message to a user - finds an existing chat group / creates a new one if none exists
-    const sendDirectMessageHandler = (parent) => {
+    // Go to direct message or video chat - finds an existing chat group / creates a new one if none exists
+    const goDirectOrVideoChatHandler = (recipient, dest) => {
         let chat_group = null;
         // Check if we already have a direct message group with that user
         props.directChats.every((g)=>{
             let group = g.group;
             if (group.direct_message) {
                 // found chat
-                if (group.group_owner.id === parent.user.id || group.recipient.id === parent.user.id) {
+                if (group.group_owner.id === recipient.user.id || group.recipient.id === recipient.user.id) {
                     chat_group = g;
                     return false;
                 }
@@ -39,14 +39,14 @@ const Contacts = (props) => {
             }
             const data = {
                 name: "direct",
-                recipient: parent.user.id
+                recipient: recipient.user.id
             }
             const url = 'http://localhost:8000/api/v1/school/chat-group-create-direct/';
             axios.post(url, data, {headers: headers})
                 .then(res=>{
                     console.log(res);
                     let chat_id = res.data.id;
-                    return navigate(`/chatGroup/${chat_id}`);
+                    return navigate(`/${dest}/${chat_id}`);
                 })
                 .catch(err=>{
                     console.log(err);
@@ -56,7 +56,7 @@ const Contacts = (props) => {
         } else {
             // navigate to chat group
             let chat_id = chat_group.group.id;
-            return navigate(`/chatGroup/${chat_id}`);
+            return navigate(`/${dest}/${chat_id}`);
         }
     }
 
@@ -92,7 +92,10 @@ const Contacts = (props) => {
                             <h4 className="text-xs text-left text-gray-500 font-semibold truncate">Teacher</h4>
                             <div className="flex justify-between items-center text-black">
                                 <h4 className="text-sm text-left font-semibold truncate">{school_class.teacher.user.first_name} {school_class.teacher.user.last_name}</h4>
-                                <ChatIcon className="h-[24px] w-[24px] fill-white cursor-pointer ml-2" onClick={()=>sendDirectMessageHandler(school_class.teacher)} />
+                                <div className="flex">
+                                    <VideoCameraIcon className="h-[24px] w-[24px] fill-white cursor-pointer" onClick={()=>goDirectOrVideoChatHandler(school_class.teacher, "videoChat")} />
+                                    <ChatIcon className="h-[24px] w-[24px] fill-white cursor-pointer ml-2" onClick={()=>goDirectOrVideoChatHandler(school_class.teacher, "chatGroup")} />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -125,8 +128,8 @@ const Contacts = (props) => {
                             <p className="text-xs text-left text-gray-500 truncate">{student.parent.user.first_name} {student.parent.user.last_name}</p>
                         </div>
                         <div className="flex items-center">
-                            <VideoCameraIcon className="h-[24px] w-[24px] fill-white cursor-pointer" />
-                            <ChatIcon className="h-[24px] w-[24px] fill-white cursor-pointer ml-2" onClick={()=>sendDirectMessageHandler(student.parent)} />
+                            <VideoCameraIcon className="h-[24px] w-[24px] fill-white cursor-pointer" onClick={()=>goDirectOrVideoChatHandler(student.parent, "videoChat")} />
+                            <ChatIcon className="h-[24px] w-[24px] fill-white cursor-pointer ml-2" onClick={()=>goDirectOrVideoChatHandler(student.parent, "chatGroup")} />
                         </div>
                     </div>
                 )

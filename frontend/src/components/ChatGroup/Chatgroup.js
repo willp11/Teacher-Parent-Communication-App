@@ -5,6 +5,7 @@ import axios from 'axios';
 import MemberList from './MemberList';
 import Navigation from '../Navigation/Navigation';
 import Messages from './Messages';
+import { useGroupMembers } from '../../Hooks/useGroupMembers';
 
 const ChatGroup = () => {
 
@@ -13,8 +14,9 @@ const ChatGroup = () => {
 
     const [group, setGroup] = useState(null);
     const [messages, setMessages] = useState([]);
-    const [groupMembers, setGroupMembers] = useState([]);
     const [socket, setSocket] = useState(null);
+
+    const [groupMembers, setGroupMembers, getGroupMembers] = useGroupMembers(token, id);
 
     // receive new messages, we update the refs and pass to messages component so it can render new messages and scroll down
     const messagesRef = useRef();
@@ -37,7 +39,7 @@ const ChatGroup = () => {
         setSocket(chatSocket)
     }, [id, token]);
 
-    // Get all data for this chat group
+    // Get all data for this chat group - then connect to sockets
     const getGroupData = useCallback(()=>{
         const headers = {
             'Content-Type': 'application/json',
@@ -58,28 +60,10 @@ const ChatGroup = () => {
             })
     }, [token, id, connectSocket])
 
-    // Get list of members for this chat group (doesn't need to connect to sockets again)
-    // called from AddMembers, through MemberList (via props)
-    const getGroupMembers = useCallback(()=>{
-        const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Token ' + token
-        }
-        const url = `http://localhost:8000/api/v1/school/chat-group-members-list/${id}/`;
-        axios.get(url, {headers: headers})
-            .then(res=>{
-                console.log(res);
-                setGroupMembers(res.data);
-            })
-            .catch(err=>{
-                console.log(err);
-            })
-    }, [token, id])
-
-    // need to update 
+    // On Mount - get group data, also connects to websocket inside getGroupData then function
     useEffect(()=>{
-        getGroupMembers()
-    }, [getGroupMembers])
+        getGroupData()
+    }, [getGroupData])
 
     // Function to send chat socket message
     const sendMessage = (message) => {
@@ -108,11 +92,6 @@ const ChatGroup = () => {
         // update new message count so we scroll more 
         messageCountRef.current += 1;
     }
-
-    // On Mount - get group data, also connects to websocket inside getGroupData then function
-    useEffect(()=>{
-        getGroupData()
-    }, [getGroupData])
 
     // show loading if not retrieved data
     let group_div = <p>Loading...</p>

@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import profileImg from '../../Assets/Images/blank-profile.png';
 import Navigation from "../Navigation/Navigation";
+import { useGroupMembers } from "../../Hooks/useGroupMembers";
+import MemberList from "./MemberList";
 
 const VideoChat = () => {
 
@@ -9,10 +12,12 @@ const VideoChat = () => {
     //// STATE
     ///////////////////////
 
+    const { id } = useParams();
     const token = useSelector((state)=>state.auth.token);
+
+    const [groupMembers] = useGroupMembers(token, id);
     
     const [connected, setConnected] = useState(false);
-    const [myName, setMyName] = useState(null);
     const [otherUser, setOtherUser] = useState(null);
     const [remoteRTCMessage, setRemoteRTCMessage] = useState(null);
     const [iceCandidatesFromCaller, setIceCandidatesFromCaller] = useState([]);
@@ -440,14 +445,6 @@ const VideoChat = () => {
         </div>
     )
 
-    // const userInfoDiv = (
-    //     <div id="userInfo" style={userInfoDivStyle}>
-    //         <div style={{display: "flex", flexDirection: "column", alignItems: "center", width: "300px"}}>
-    //             <h1>Hello, <span id="nameHere">{myName}</span></h1>
-    //         </div>
-    //     </div>
-    // )
-
     const videosDiv = (
         <div id="videos" style={videoDivStyle} className="text-center">
             <div className="absolute top-2 right-2">
@@ -468,9 +465,9 @@ const VideoChat = () => {
                     <h1 className="font-white drop-shadow-lg text-white">Video Chat</h1>
                 </div>
                 <div className=" relative w-[calc(100%-1rem)] mx-auto flex flex-col items-center">
-                    {connectBtn}
+                    <MemberList members={groupMembers} />
 
-                    {/* {userInfoDiv} */}
+                    {connectBtn}
 
                     {callDiv}
 

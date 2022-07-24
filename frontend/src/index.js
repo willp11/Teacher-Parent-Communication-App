@@ -42,7 +42,7 @@ root.render(
           <Route path="/studentProfile/:id" element={<StudentProfile />} />
           <Route path="/chatHub" element={<ChatHub />} />
           <Route path="/chatGroup/:id" element={<ChatGroup />} />
-          <Route path="/videoChat" element={<VideoChat />} />
+          <Route path="/videoChat/:id" element={<VideoChat />} />
         </Routes>
       </BrowserRouter>
     </PersistGate>

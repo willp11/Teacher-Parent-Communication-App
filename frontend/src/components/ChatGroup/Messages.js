@@ -16,6 +16,11 @@ const Messages = (props) => {
     let last_msg_sender = null;
     let show_name = true;
     let messages_div = props.messages.map((msg)=>{
+        // deal with messages where sender left the group
+        if (msg.sender === null || msg.sender === undefined) {
+            msg.sender = {user: {id: 0, first_name: "User left the group"}}
+        }
+
         // check if message was sent by same - determines whether to show name
         if (last_msg_sender === msg.sender.user.id) {
             show_name = false;
