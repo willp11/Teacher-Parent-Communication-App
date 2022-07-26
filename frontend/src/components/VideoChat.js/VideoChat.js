@@ -16,10 +16,12 @@ const VideoChat = () => {
     const token = useSelector((state)=>state.auth.token);
     const account = useSelector((state)=>state.auth.account);
 
-    // const [groupMembers] = useGroupMembers(token, id);
     const {groupMembers, loadingMembers} = useGroupMembers(token, id);
     
     const [connected, setConnected] = useState(false);
+    const [isCalling, setIsCalling] = useState(false);
+    const [isReceivingCall, setIsReceivingCall] = useState(false);
+    const [isInCall, setIsInCall] = useState(false);
 
     // other user's ID
     const [otherUser, setOtherUser] = useState(null);
@@ -27,9 +29,9 @@ const VideoChat = () => {
 
     const [remoteRTCMessage, setRemoteRTCMessage] = useState(null);
     const [iceCandidatesFromCaller, setIceCandidatesFromCaller] = useState([]);
-    const [callInProgress, setCallInProgress] = useState(false);
-    const [callSocket, setCallSocket] = useState(null);
+    // const [callInProgress, setCallInProgress] = useState(false);
 
+    const socketRef = useRef(null);
     const connection = useRef(null);
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef(null);
@@ -46,62 +48,63 @@ const VideoChat = () => {
                 return true;
             })
         }
-    }, [groupMembers])
+    }, [groupMembers, account.id])
 
-    /////////////////////////
-    //// DIV STYLES
-    /////////////////////////
+    // Clear socket and peer connection when unmount
+    useEffect(()=>{
+        return () => {
+            if (socketRef.current !== null) {
+                socketRef.current.close()
+                socketRef.current = null
+            }
+            if (connection.current !== null) {
+                connection.current.close();
+                connection.current = null;
+            }
+        }
+    }, [])
 
-    const [callDivStyle, setCallDivStyle] = useState({display: "none"});
-    const [callingDivStyle, setCallingDivStyle] = useState({display: "none"});
-    const [inCallDivStyle, setInCallDivStyle] = useState({display: "none"});
-    const [answerDivStyle, setAnswerDivStyle] = useState({display: "none"});
-    const [videoDivStyle, setVideoDivStyle] = useState({display: "none"});
-
-    //////////////////////////////////////////////
-    //// FUNCTIONS
-    ///////////////////////////////////////////////
-
-    const login = () => {
-        setCallDivStyle({display: "block"});
-
+    // connect to socket
+    const connect = () => {
         connectSocket();
     }
 
     // get the peer connection and send the call
     const call = async () => {
         let peerConnection = await beReady();
+        console.log(peerConnection)
         processCall(peerConnection, otherUser)
+        setIsCalling(true);
     }
 
     // get the peer connection and answer the call
     const answer = async () => {
         let peerConnection = await beReady();
-
         processAccept(peerConnection);
-
-        setAnswerDivStyle({display: "none"});
+        setIsReceivingCall(false);
+        setIsInCall(true);
     }
 
     // connect to websocket
     const connectSocket = () => {
 
-        let callSocket = new WebSocket(
-            `ws://127.0.0.1:8000/ws/call/${token}/`
+        const callSocket = new WebSocket(
+            `ws://127.0.0.1:8000/ws/call/${id}/${token}/`
         );
     
-        callSocket.onopen = event =>{
+        callSocket.onopen = (e) =>{
             callSocket.send(JSON.stringify({
                 type: 'login',
-                data: {
-                }
+                data: { }
             }));
+            socketRef.current = callSocket;
+            setConnected(true);
         }
 
         callSocket.onclose = (e) => {
             console.log("connection closed");
             setConnected(false);
-            setCallDivStyle({display: "none"})
+            stop();
         }
     
         callSocket.onmessage = (e) =>{
@@ -114,12 +117,15 @@ const VideoChat = () => {
             }
     
             if(type === 'call_received') {
-                // console.log(response);
-                onNewCall(response.data)
+                setRemoteRTCMessage(response.data.rtcMessage);
+                setIsReceivingCall(true);
             }
     
             if(type === 'call_answered') {
-                onCallAnswered(response.data);
+                setRemoteRTCMessage(response.data.rtcMessage);
+                connection.current.setRemoteDescription(new RTCSessionDescription(response.data.rtcMessage));
+                setIsInCall(true);
+                setIsCalling(false);
             }
     
             if(type === 'ICEcandidate') {
@@ -127,32 +133,11 @@ const VideoChat = () => {
             }
 
             if(type === 'call_cancelled') {
-                onCallCancelled(response.data);
+                removePeerConnection();
+                setIsReceivingCall(false);
+                setIsCalling(false);
+                setIsInCall(false);
             }
-        }
-
-        const onCallCancelled = (data) => {
-            console.log(`Call with ${data.user} cancelled`);
-            setAnswerDivStyle({display: "none"})
-            setCallDivStyle({display: "none"});
-            setCallingDivStyle({display: "none"});
-            setInCallDivStyle({display: "none"});
-
-            stop()
-        }
-    
-        const onNewCall = (data) =>{
-            setRemoteRTCMessage(data.rtcMessage);
-            setCallDivStyle({display: "none"});
-            setAnswerDivStyle({display: "block"})
-        }
-    
-        const onCallAnswered = (data) =>{
-            setRemoteRTCMessage(data.rtcMessage);
-            connection.current.setRemoteDescription(new RTCSessionDescription(data.rtcMessage));
-            setCallingDivStyle({display: "none"});
-    
-            callProgress()
         }
     
         const onICECandidate = (data) =>{
@@ -176,59 +161,51 @@ const VideoChat = () => {
             }
     
         }
-
-        setCallSocket(callSocket)
     
     }
-
-    // disconnect from websocket
-    const disconnect = () => {
-        if (callSocket !== null) {
-            callSocket.close()
-            setCallSocket(null)
-            setConnected(false)
-            stop()
-            setCallDivStyle({display: "none"});
-        }
-    }
     
+    /////////////////////////////////////////////////////////////
+    // functions for sending messages to socket
+    /////////////////////////////////////////////////////////////
+
     // send call
     const sendCall = (data) => {
-        callSocket.send(JSON.stringify({
+        socketRef.current.send(JSON.stringify({
             type: 'call',
             data
         }));
-
-        setCallDivStyle({display: "none"});
-        setCallingDivStyle({display: "block"});
+        setIsCalling(true);
     }
 
     // cancel call
     const cancelCall = () => {
-        callSocket.send(JSON.stringify({
+        socketRef.current.send(JSON.stringify({
             type: 'cancel_call'
         }))
-
-        setCallDivStyle({display: "block"});
-        setCallingDivStyle({display: "none"});
+        setIsCalling(false);
     }
     
     // answer call
     const answerCall = (data) => {
-        callSocket.send(JSON.stringify({
+        socketRef.current.send(JSON.stringify({
             type: 'answer_call',
             data
         }));
-        callProgress();
+        setIsReceivingCall(false);
+        setIsInCall(true);
     }
     
     // send ICE candidate
     const sendICEcandidate = (data) => {
-        callSocket.send(JSON.stringify({
+        socketRef.current.send(JSON.stringify({
             type: 'ICEcandidate',
             data
         }));
     }
+
+    /////////////////////////////////////////////////////////
+    // Functions for creating peer connection, sending ICE candidates to other user and getting remote stream
+    ///////////////////////////////////////////////////////
 
     // IN PRODUCTION WE NEED TO SETUP STUN AND TURN SERVERS
     // let pcConfig = {
@@ -243,16 +220,14 @@ const VideoChat = () => {
     //         ]
     // };
 
+    // Get local media stream and create peer connection
     const beReady = async () => {
-        
         try {
             let stream = await navigator.mediaDevices.getUserMedia({
                 audio: true,
                 video: true
             });
-
             localVideoRef.current.srcObject = stream;
-
             let peerConnectionWithStream = createPeerConnectionAddStream(stream)
             return peerConnectionWithStream;
         } catch(e) {
@@ -261,6 +236,7 @@ const VideoChat = () => {
         
     }
 
+    // Send connection offer to peer
     const processCall = (peerConnection, userName) => {
         peerConnection.createOffer((sessionDescription) => {
             peerConnection.setLocalDescription(sessionDescription);
@@ -268,26 +244,21 @@ const VideoChat = () => {
                 name: userName,
                 rtcMessage: sessionDescription
             })
-
             connection.current = peerConnection;
-            console.log("processed call")
         }, (error) => {
             console.log(error);
         });
     }
 
+    // Answer connection offer from peer
     const processAccept = (peerConnection) => {
-
         peerConnection.setRemoteDescription(new RTCSessionDescription(remoteRTCMessage));
         peerConnection.createAnswer((sessionDescription) => {
-
             peerConnection.setLocalDescription(sessionDescription);
-
             answerCall({
                 caller: otherUser,
                 rtcMessage: sessionDescription
             });
-
             connection.current = peerConnection;
             console.log("answered call")
         }, (error) => {
@@ -295,8 +266,7 @@ const VideoChat = () => {
         })
     }
 
-    /////////////////////////////////////////////////////////
-
+    // Create peer connection and add local stream to connection. Set functions to deal with getting ICE candidates (send to peer) and on stream added/removed events
     const createPeerConnectionAddStream = (stream) => {
         try {
             // WHEN WE USE STUN AND TURN SERVERS WE PASS CONFIG AS ARG HERE
@@ -311,7 +281,6 @@ const VideoChat = () => {
             // add stream
             peerConnection.addStream(stream);
 
-            console.log('Created RTCPeerConnnection');
             return peerConnection;
         } catch (e) {
             console.log('Failed to create PeerConnection, exception: ' + e.message);
@@ -320,11 +289,10 @@ const VideoChat = () => {
         }
     }
 
+    // Send ICE candidates to peer
     const handleIceCandidate = (event) => {
-        // console.log('icecandidate event: ', event);
         if (event.candidate) {
             console.log("Local ICE candidate");
-            // console.log(event.candidate.candidate);
 
             sendICEcandidate({
                 user: otherUser,
@@ -340,12 +308,14 @@ const VideoChat = () => {
         }
     }
 
+    // Remote stream added event - set the remote video object
     const handleRemoteStreamAdded = (event) => {
         console.log('Remote stream added.');
 
         remoteVideoRef.current.srcObject = event.stream;
     }
 
+    // Remove stream removed event - set the remote and local video objects to null
     const handleRemoteStreamRemoved = (event) => {
         console.log('Remote stream removed. Event: ', event);
 
@@ -354,40 +324,43 @@ const VideoChat = () => {
     }
 
     window.onbeforeunload = function () {
-        if (callInProgress) {
+        if (isInCall) {
             stop();
         }
     };
-    
-    const stop = () => {
 
-        if (localVideoRef.current.srcObject !== null) {
+    ////////////////////////////////////////////////////////////
+    // Reset functions - reset UI, disconnect from socket, remove video stream objects
+    /////////////////////////////////////////////////////////////
+
+    // Reset - remove video ref and peer connection
+    const removePeerConnection = () => {
+        if (localVideoRef.current !== null) {
             localVideoRef.current.srcObject.getTracks().forEach(track => track.stop());
         }
-
-        setCallInProgress(false);
 
         if (connection.current !== null) {
             connection.current.close();
             connection.current = null;
         }
-
-        setCallDivStyle({display: "block"});
-        setAnswerDivStyle({display: "none"});
-        setInCallDivStyle({display: "none"});
-        setCallingDivStyle({display: "none"});
-        setVideoDivStyle({display: "none"});
-
-        // setOtherUser(null);
-        cancelCall();
     }
     
-    const callProgress = () => {
-        setVideoDivStyle({display: "block"});
-        setInCallDivStyle({display: "block"});
-        setCallInProgress(true);
+    // Stop - reset and send cancel call message to socket to notify other user that call is cancelled
+    const stop = () => {
+        removePeerConnection();
+        cancelCall();
+        setIsInCall(false);
     }
 
+    // Function for disconnecting from websocket manually (user clicks disconnect button)
+    const disconnect = () => {
+        if (socketRef.current !== null) {
+            socketRef.current.close()
+            socketRef.current = null
+            setConnected(false)
+            stop()
+        }
+    }
 
     /////////////////////////
     //// JSX
@@ -397,11 +370,11 @@ const VideoChat = () => {
         <video width="100px" id="localVideo" autoPlay muted playsInline ref={localVideoRef} />
     )
     const remoteVideo = (
-        <video style={{width: "500px"}} id="remoteVideo" autoPlay playsInline ref={remoteVideoRef} />
+        <video className="w-[500px]" id="remoteVideo" autoPlay playsInline ref={remoteVideoRef} />
     )
 
     const callDiv = (
-        <div id="call" className="w-full" style={callDivStyle}>
+        <div id="call" className="w-full">
             <div className="bg-white w-full sm:w-[500px] mx-auto my-2 px-2 py-4 border border-gray-300 rounded shadow-md flex flex-col items-center justify-start">
                 <h2>Send Call</h2>
                 <button className="w-32 rounded p-2 mt-2 text-white font-semibold bg-sky-500 hover:bg-indigo-500" onClick={call}>Call</button>
@@ -410,7 +383,7 @@ const VideoChat = () => {
     )
 
     const answerDiv = (
-        <div id="answer" className="w-full" style={answerDivStyle}>
+        <div id="answer" className="w-full">
             <div className="bg-white w-full h-[300px] sm:w-[500px] mx-auto my-2 p-2 border border-gray-300 rounded shadow-md flex flex-col items-center justify-center">
                 <h2>Incoming Call</h2>
                 <img className="w-[100px] h-[100px] rounded-full my-2" src={profileImg} alt="" />
@@ -421,7 +394,7 @@ const VideoChat = () => {
     )
 
     const callingDiv = (
-        <div id="calling" className="w-full" style={callingDivStyle}>
+        <div id="calling" className="w-full">
             <div className="bg-white w-full h-[300px] sm:w-[500px] mx-auto my-2 p-2 border border-gray-300 rounded shadow-md flex flex-col items-center justify-center">
                 <h2>Calling</h2>
                 <img className="w-[100px] h-[100px] rounded-full my-2" src={profileImg} alt=""/>
@@ -432,7 +405,7 @@ const VideoChat = () => {
     );
 
     const inCallDiv = (
-        <div id="inCall" className="w-full" style={inCallDivStyle}>
+        <div id="inCall" className="w-full">
             <div className="bg-white w-full sm:w-[500px] mx-auto p-2 border border-gray-300 rounded shadow-md flex flex-col items-center justify-center">
                 <h3>On Call With</h3>
                 <h2><span id="otherUserNameC">{otherUserName}</span></h2>
@@ -441,7 +414,7 @@ const VideoChat = () => {
     )
 
     const videosDiv = (
-        <div id="videos" style={videoDivStyle} className="text-center">
+        <div id="videos" className={isInCall ? "text-center" : "hidden"}>
             <div className="absolute top-4 right-2">
                 {localVideo}
             </div>
@@ -460,18 +433,17 @@ const VideoChat = () => {
                     <h1 className="font-white drop-shadow-lg text-white">Video Chat</h1>
                 </div>
                 <div className=" relative w-[calc(100%-1rem)] mx-auto flex flex-col items-center">
-                    <MemberList members={groupMembers} loading={loadingMembers} connected={connected} disconnect={disconnect} login={login}/>
+                    <MemberList members={groupMembers} loading={loadingMembers} connected={connected} disconnect={disconnect} connect={connect}/>
 
-                    {callDiv}
+                    {connected && !isCalling && !isInCall && !isReceivingCall ? callDiv : null}
 
-                    {answerDiv}
+                    {connected && isReceivingCall ? answerDiv : null}
 
-                    {callingDiv}
+                    {connected && isCalling ? callingDiv : null}
 
-                    {inCallDiv}
+                    {connected && isInCall ? inCallDiv : null}
 
                     <br/>
-
                     {videosDiv}
                 </div>
             </div>

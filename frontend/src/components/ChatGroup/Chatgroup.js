@@ -14,20 +14,26 @@ const ChatGroup = () => {
 
     const [group, setGroup] = useState(null);
     const [messages, setMessages] = useState([]);
-    const [socket, setSocket] = useState(null);
 
-    // const [groupMembers, setGroupMembers, getGroupMembers] = useGroupMembers(token, id);
     const {groupMembers, setGroupMembers, getGroupMembers} = useGroupMembers(token, id);
 
     // receive new messages, we update the refs and pass to messages component so it can render new messages and scroll down
     const messagesRef = useRef();
     const messageCountRef = useRef(0)
 
+    // keep socket in ref so doesn't set null, so we can close it on unmount
+    const socketRef = useRef(null)
+
     // connect to websocket - called inside getGroupData
     const connectSocket = useCallback(() => {
         const chatSocket = new WebSocket(
             `ws://127.0.0.1:8000/ws/chat/${id}/${token}/`
         );
+        // print that we have connected successfully
+        chatSocket.onopen = function(e) {
+            console.log("opened socket", chatSocket);
+            socketRef.current = chatSocket
+        }
         // when receive new message, write to chat log div
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
@@ -37,7 +43,6 @@ const ChatGroup = () => {
         chatSocket.onclose = function(e) {
             console.error('Chat socket closed unexpectedly');
         };
-        setSocket(chatSocket)
     }, [id, token]);
 
     // Get all data for this chat group - then connect to sockets
@@ -59,17 +64,25 @@ const ChatGroup = () => {
             .catch(err=>{
                 console.log(err);
             })
-    }, [token, id, connectSocket])
+    }, [token, id, connectSocket, setGroupMembers])
 
-    // On Mount - get group data, also connects to websocket inside getGroupData then function
+    // On Mount - get group data, also connects to websocket inside getGroupData then function. On unmount close the socket
     useEffect(()=>{
         getGroupData()
+
+        return () => {
+            try {
+                socketRef.current.close()
+            } catch {
+                console.log("error closing socket...")
+            }
+        }
     }, [getGroupData])
 
     // Function to send chat socket message
     const sendMessage = (message) => {
-        if (socket !== null) {
-            socket.send(JSON.stringify({
+        if (socketRef.current !== null) {
+            socketRef.current.send(JSON.stringify({
                 'message': message
             }));
         }

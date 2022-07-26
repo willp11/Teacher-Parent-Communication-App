@@ -29,7 +29,7 @@ const MemberList = (props) => {
             <div>
                 <button
                     className={connect_btn_style}
-                    onClick={props.connected ? props.disconnect : props.login}
+                    onClick={props.connected ? props.disconnect : props.connect}
                 >
                     {props.connected ? "Disconnect" : "Connect"}
                 </button>
