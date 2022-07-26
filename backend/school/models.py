@@ -162,6 +162,8 @@ class ChatGroup(models.Model):
 class GroupMember(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='chat_group_member')
     group = models.ForeignKey(ChatGroup, on_delete=models.CASCADE, related_name='chat_members')
+    connected_to_call = models.BooleanField(default=False)
+    connected_to_chat = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('user', 'group')

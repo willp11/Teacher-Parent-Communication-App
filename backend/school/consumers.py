@@ -1,3 +1,4 @@
+from email.headerregistry import Group
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
 from rest_framework.authtoken.models import Token
@@ -16,7 +17,26 @@ def save_message(chat_id, sender, message):
     message.save()
     return message
 
-# GROUP CHAT CONSUMER
+# type = chat or call, value = True or False
+@sync_to_async
+def update_connected_status(chat_id, user, type, value):
+    print("updating connected status...")
+    if value != True and value != False:
+        raise ValueError
+    group = ChatGroup.objects.get(pk=chat_id)
+    group_member = GroupMember.objects.get(user=user, group=group)
+    if type == 'chat':
+        group_member.connected_to_chat = value
+        group_member.save()
+        print(group_member, group_member.connected_to_chat)
+    elif type == 'call':
+        group_member.connected_to_call = value
+        group_member.save()
+        print(group_member, group_member.connected_to_call)
+    else:
+        raise ValueError
+
+# Group chat
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
 
@@ -27,18 +47,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.room_name = self.scope['url_route']['kwargs']['room_name']
             self.room_group_name = 'chat_%s' % (self.room_name)
 
-            print(self.room_group_name)
-
             await self.channel_layer.group_add(
                 self.room_group_name,
                 self.channel_name
             )
             await self.accept()
+
+            await update_connected_status(self.room_name, self.user, 'chat', True)
         except:
             print("error connecting to websocket")
 
     async def disconnect(self, close_code):
         try:
+            await update_connected_status(self.room_name, self.user, 'chat', False)
+
             await self.channel_layer.group_discard(
                 self.room_group_name,
                 self.channel_name
@@ -76,25 +98,28 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'user': user
         }))
 
-# VIDEO CHAT CONSUMER
-class CallConsumer(WebsocketConsumer):
-    def connect(self):
+# Video Chat
+class CallConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
         token = self.scope['url_route']['kwargs']['token']
         try:
-            user = Token.objects.get(key=token).user
+            user = await get_user(token)
             self.user = user
-            self.my_name = 'chat_%s' % (self.user.id)
-            self.calling = None
+            self.my_name = 'chat%s' % (user.id)
+            self.other_user = None
+            self.room_name = self.scope['url_route']['kwargs']['room_name']
 
-            async_to_sync(self.channel_layer.group_add)(
+            await self.channel_layer.group_add(
                 self.my_name,
                 self.channel_name
             )
 
-            self.accept()
+            await self.accept()
+
+            await update_connected_status(self.room_name, self.user, 'call', True)
 
             # response to client, that we are connected.
-            self.send(text_data=json.dumps({
+            await self.send(text_data=json.dumps({
                 'type': 'connection',
                 'data': {
                     'message': "Connected"
@@ -103,108 +128,135 @@ class CallConsumer(WebsocketConsumer):
         except:
             print("Failed to connect to websocket")
 
-    def disconnect(self, close_code):
-        if self.calling != None:
-            async_to_sync(self.channel_layer.group_send)(
-                self.calling,
-                {
-                    'type': 'call_cancelled',
-                    'data': {
-                        'user': self.my_name,
+    async def disconnect(self, close_code):
+        try:
+            # notify the other user that they have disconnected
+            if self.other_user != None:
+                await self.channel_layer.group_send(
+                    self.other_user,
+                    {
+                        'type': 'call_cancelled',
+                        'data': {
+                            'user': self.my_name,
+                        }
                     }
-                }
+                )
+
+            # update connected status in database
+            await update_connected_status(self.room_name, self.user, 'call', False)
+
+            # Leave room group
+            await self.channel_layer.group_discard(
+                self.my_name,
+                self.channel_name
             )
-        # Leave room group
-        async_to_sync(self.channel_layer.group_discard)(
-            self.my_name,
-            self.channel_name
-        )
+        except:
+            print("Error disconnecting from websocket")
 
     # Receive message from client WebSocket
-    def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        # print(text_data_json)
+    async def receive(self, text_data):
 
-        eventType = text_data_json['type']
-        
-        if eventType == 'call':
-            name = text_data_json['data']['name']
-            room_name = 'chat_%s' % (name)
-            print(self.my_name, "is calling", room_name)
-            self.calling = room_name
-
-            # to notify the callee we send an event to the group name
-            # and their group name is the name
-            async_to_sync(self.channel_layer.group_send)(
-                room_name,
-                {
-                    'type': 'call_received',
-                    'data': {
-                        'caller': self.my_name,
-                        'rtcMessage': text_data_json['data']['rtcMessage']
-                    }
-                }
-            )
-
-        if eventType == 'answer_call':
-            # has received call from someone now notify the calling user
-            # we can notify to the group with the caller name
+        try:
+            text_data_json = json.loads(text_data)
+            eventType = text_data_json['type']
             
-            caller = text_data_json['data']['caller']
-            # print(self.my_name, "is answering", caller, "calls.")
+            if eventType == 'call':
+                name = text_data_json['data']['name']
 
-            self.calling = caller
+                room_name = 'chat%s' % (name)
+                self.other_user = room_name
 
-            async_to_sync(self.channel_layer.group_send)(
-                caller,
-                {
-                    'type': 'call_answered',
-                    'data': {
-                        'rtcMessage': text_data_json['data']['rtcMessage']
+                print(self.my_name, "is calling", room_name)
+
+                # to notify the callee we send a call_received event to their group room_name
+                await self.channel_layer.group_send(
+                    room_name,
+                    {
+                        'type': 'call_received',
+                        'data': {
+                            'caller': self.my_name,
+                            'rtcMessage': text_data_json['data']['rtcMessage']
+                        }
                     }
-                }
-            )
+                )
 
-        if eventType == 'ICEcandidate':
+            # notify other user that the call is cancelled
+            if eventType == 'cancel_call':
+                if self.other_user != None:
+                    await self.channel_layer.group_send(
+                        self.other_user,
+                        {
+                            'type': 'call_cancelled',
+                            'data': {
+                                'user': self.my_name,
+                            }
+                        }
+                    )
 
-            user = text_data_json['data']['user']
+            if eventType == 'answer_call':
+                # has received call from someone now notify the calling user
+                # we can notify to the group with the caller name
+                
+                caller = text_data_json['data']['caller']
+                room_name = 'chat%s' % (caller)
+                self.other_user = room_name
 
-            async_to_sync(self.channel_layer.group_send)(
-                user,
-                {
-                    'type': 'ICEcandidate',
-                    'data': {
-                        'rtcMessage': text_data_json['data']['rtcMessage']
+                print(self.my_name, "is answering", caller, "call.")
+
+                await self.channel_layer.group_send(
+                    room_name,
+                    {
+                        'type': 'call_answered',
+                        'data': {
+                            'rtcMessage': text_data_json['data']['rtcMessage']
+                        }
                     }
-                }
-            )
+                )
 
-    def call_received(self, event):
+            if eventType == 'ICEcandidate':
+                # send ICE candidates to other user
+                user = text_data_json['data']['user']
+
+                room_name = 'chat%s' % (user)
+
+                await self.channel_layer.group_send(
+                    room_name,
+                    {
+                        'type': 'ICEcandidate',
+                        'data': {
+                            'rtcMessage': text_data_json['data']['rtcMessage']
+                        }
+                    }
+                )
+        except:
+            print("error receiving message from client")
+
+    async def call_received(self, event):
 
         print('Call received by ', self.my_name )
-        self.send(text_data=json.dumps({
+        await self.send(text_data=json.dumps({
             'type': 'call_received',
             'data': event['data']
         }))
 
 
-    def call_answered(self, event):
+    async def call_answered(self, event):
 
         print(self.my_name, "'s call answered")
-        self.send(text_data=json.dumps({
+        await self.send(text_data=json.dumps({
             'type': 'call_answered',
             'data': event['data']
         }))
 
 
-    def ICEcandidate(self, event):
-        self.send(text_data=json.dumps({
+    async def ICEcandidate(self, event):
+        await self.send(text_data=json.dumps({
             'type': 'ICEcandidate',
             'data': event['data']
         }))
 
-    def call_cancelled(self, event):
-        self.send(text_data=json.dumps({
+    async def call_cancelled(self, event):
+        await self.send(text_data=json.dumps({
             'type': 'call_cancelled',
             'data': event['data']
         }))
