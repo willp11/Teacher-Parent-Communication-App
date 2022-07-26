@@ -8,7 +8,8 @@ const MemberList = (props) => {
     // Member list
     let member_list = props.members.map((member)=>{
         let stroke = "stroke-red-500";
-        if (member.user.id === account.id) stroke = "stroke-green-500";
+        if (member.user.id === account.id && props.connected === true) stroke = "stroke-green-500";
+        if (member.user.id !== account.id && props.otherUserConnected === true) stroke = "stroke-green-500";
         let width = ""
         if (props.connected) width = "w-36"
         return (

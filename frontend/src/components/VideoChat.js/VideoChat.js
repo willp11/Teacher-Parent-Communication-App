@@ -23,13 +23,13 @@ const VideoChat = () => {
     const [isReceivingCall, setIsReceivingCall] = useState(false);
     const [isInCall, setIsInCall] = useState(false);
 
-    // other user's ID
+    // other otherUser is user id
     const [otherUser, setOtherUser] = useState(null);
     const [otherUserName, setOtherUserName] = useState("");
+    const [otherUserConnected, setOtherUserConnected] = useState(false);
 
     const [remoteRTCMessage, setRemoteRTCMessage] = useState(null);
     const [iceCandidatesFromCaller, setIceCandidatesFromCaller] = useState([]);
-    // const [callInProgress, setCallInProgress] = useState(false);
 
     const socketRef = useRef(null);
     const connection = useRef(null);
@@ -73,7 +73,7 @@ const VideoChat = () => {
     const call = async () => {
         let peerConnection = await beReady();
         console.log(peerConnection)
-        processCall(peerConnection, otherUser)
+        processCall(peerConnection)
         setIsCalling(true);
     }
 
@@ -111,32 +111,45 @@ const VideoChat = () => {
             let response = JSON.parse(e.data);
             let type = response.type;
     
-            if(type === 'connection') {
-                console.log(response.data.message)
+            if (type === 'connection') {
+                console.log(response.data)
+                setOtherUserConnected(response.data.other_user_connected)
                 setConnected(true);
             }
     
-            if(type === 'call_received') {
+            if (type === 'call_received') {
                 setRemoteRTCMessage(response.data.rtcMessage);
                 setIsReceivingCall(true);
             }
     
-            if(type === 'call_answered') {
+            if (type === 'call_answered') {
                 setRemoteRTCMessage(response.data.rtcMessage);
                 connection.current.setRemoteDescription(new RTCSessionDescription(response.data.rtcMessage));
                 setIsInCall(true);
                 setIsCalling(false);
             }
     
-            if(type === 'ICEcandidate') {
+            if (type === 'ICEcandidate') {
                 onICECandidate(response.data);
             }
 
-            if(type === 'call_cancelled') {
+            if (type === 'call_cancelled') {
                 removePeerConnection();
                 setIsReceivingCall(false);
                 setIsCalling(false);
                 setIsInCall(false);
+            }
+
+            if (type === 'user_disconnected') {
+                removePeerConnection();
+                setIsReceivingCall(false);
+                setIsCalling(false);
+                setIsInCall(false);
+                setOtherUserConnected(false);
+            }
+
+            if (type === 'user_connected') {
+                setOtherUserConnected(true);
             }
         }
     
@@ -237,11 +250,10 @@ const VideoChat = () => {
     }
 
     // Send connection offer to peer
-    const processCall = (peerConnection, userName) => {
+    const processCall = (peerConnection) => {
         peerConnection.createOffer((sessionDescription) => {
             peerConnection.setLocalDescription(sessionDescription);
             sendCall({
-                name: userName,
                 rtcMessage: sessionDescription
             })
             connection.current = peerConnection;
@@ -256,7 +268,6 @@ const VideoChat = () => {
         peerConnection.createAnswer((sessionDescription) => {
             peerConnection.setLocalDescription(sessionDescription);
             answerCall({
-                caller: otherUser,
                 rtcMessage: sessionDescription
             });
             connection.current = peerConnection;
@@ -336,7 +347,9 @@ const VideoChat = () => {
     // Reset - remove video ref and peer connection
     const removePeerConnection = () => {
         if (localVideoRef.current !== null) {
-            localVideoRef.current.srcObject.getTracks().forEach(track => track.stop());
+            if (localVideoRef.current.srcObject !== null) {
+                localVideoRef.current.srcObject.getTracks().forEach(track => track.stop());   
+            }
         }
 
         if (connection.current !== null) {
@@ -433,7 +446,7 @@ const VideoChat = () => {
                     <h1 className="font-white drop-shadow-lg text-white">Video Chat</h1>
                 </div>
                 <div className=" relative w-[calc(100%-1rem)] mx-auto flex flex-col items-center">
-                    <MemberList members={groupMembers} loading={loadingMembers} connected={connected} disconnect={disconnect} connect={connect}/>
+                    <MemberList members={groupMembers} loading={loadingMembers} connected={connected} otherUserConnected={otherUserConnected} disconnect={disconnect} connect={connect}/>
 
                     {connected && !isCalling && !isInCall && !isReceivingCall ? callDiv : null}
 
