@@ -97,7 +97,7 @@ const StudentModal = (props) => {
     // JSX
     let upload_image_modal = (
         <div className="fixed top-0 left-0 bg-[rgba(0,0,0,0.7)] z-20 w-screen h-screen flex items-center justify-center">
-            <div className="w-calc(100%-2rem) sm:w-[400px] bg-white rounded shadow-md p-4">
+            <div className="w-calc(100%-2rem) sm:w-[400px] bg-white rounded shadow-md p-4 text-center">
                 <h2 className="mb-4">Upload File</h2>
                 <button onClick={()=>setImageToUpload(null)} className="rounded bg-red-600 text-white font-semibold hover:bg-red-700 p-2 w-24 mr-2">Cancel</button>
                 <button onClick={confirmUploadImageHandler} className="rounded bg-green-600 text-white font-semibold hover:bg-green-700 p-2 w-24">Confirm</button>

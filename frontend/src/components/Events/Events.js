@@ -206,7 +206,7 @@ const Events = (props) => {
         if (selectedEventType === type) {
             style = "w-24 mx-1 text-base font-semibold p-1 border border-gray-300 text-white bg-sky-500 hover:bg-sky-600 rounded shadow-md"
         }
-        return <button className={style} onClick={()=>setSelectedEventType(type)}>{type}</button>
+        return <button key={type} className={style} onClick={()=>setSelectedEventType(type)}>{type}</button>
     })
     let buttons_div = (
         <div className="w-[calc(100%-1rem)] sm:w-[500px] mx-auto flex justify-evenly mt-4">
