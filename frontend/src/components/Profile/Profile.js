@@ -113,7 +113,7 @@ const Profile = () => {
 
             profile_div = (
                 <div>
-                    {componentToShow === "User Details" ? <UserInfo profile={profile} /> : null}
+                    {componentToShow === "User Details" ? <UserInfo profile={profile} getUserProfile={getUserProfile} /> : null}
                     {componentToShow === "Change Password" ? <ChangePassword /> : null}
                     {componentToShow === "School" ? <SchoolInfo profile={profile} schools={schoolList} getUserProfile={getUserProfile} /> : null}
                     {componentToShow === "Classes" ? <ClassesInfo profile={profile} getUserProfile={getUserProfile} /> : null}
@@ -128,7 +128,7 @@ const Profile = () => {
 
             profile_div = (
                 <div>
-                    {componentToShow === "User Details" ? <UserInfo profile={profile} /> : null}
+                    {componentToShow === "User Details" ? <UserInfo profile={profile} getUserProfile={getUserProfile} /> : null}
                     {componentToShow === "Change Password" ? <ChangePassword /> : null}
                     {componentToShow === "Notifications" ? <NotificationSettings profile={profile} settings={notificationSettings} getUserProfile={getUserProfile} /> : null}
                     {componentToShow === "Children" ? <ChildrenInfo profile={profile} /> : null}

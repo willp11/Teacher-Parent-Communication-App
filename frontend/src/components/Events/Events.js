@@ -173,7 +173,8 @@ const Events = (props) => {
     let events = null;
     let event_arr = [];
     let div_title = "";
-    let div_txt = ""
+    let div_txt = "";
+    let finished = false;
     if (selectedEventType === "Today") {
         event_arr = todayEvents
         div_title = "Today's Events"
@@ -186,9 +187,10 @@ const Events = (props) => {
         event_arr = finishedEvents
         div_title = "Finished Events"
         div_txt = "There are no finished events."
+        finished = true;
     }
     let selected_events = event_arr.map((event)=>{
-        return <Event key={event.id} event={event} handleDelete={props.handleDelete} getClassInfo={props.getClassInfo} />
+        return <Event key={event.id} event={event} handleDelete={props.handleDelete} getClassInfo={props.getClassInfo} finished={finished}/>
     });
     events = (
         <div className="mt-4 mb-16">

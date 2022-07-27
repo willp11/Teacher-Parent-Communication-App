@@ -18,7 +18,6 @@ const Event = (props) => {
     useEffect(()=>{
         if (accountType === 'parent') {
             let helpers = props.event.helpers;
-            console.log(helpers);
             let isHelper = false;
             helpers.forEach((helper)=>{
                 if (helper.parent.user.id === account.id) isHelper = true;
@@ -96,20 +95,22 @@ const Event = (props) => {
             <span><DotsHorizontalIcon className="h-[24px] w-[24px]" /></span>
         </div>
     )
-
-    let register_help_btn = (
-        <button
-            onClick={registerHelper}
-            className="text-sm ml-2 p-1 border-2 border-gray-300 bg-white font-semibold rounded h-8 hover:bg-indigo-500 hover:text-white hover:border-indigo-800"
-        >Register</button>
-    )
-    if (isHelper) {
+    let register_help_btn = null;
+    if (!props.finished) {
         register_help_btn = (
             <button
-                onClick={unregisterHelper}
-                className="text-sm ml-2 p-1 border-2 border-gray-300 font-semibold rounded h-8 bg-indigo-500 hover:bg-indigo-600 text-white border-indigo-800"
-            >Unregister</button>
+                onClick={registerHelper}
+                className="text-sm ml-2 p-1 border-2 border-gray-300 bg-white font-semibold rounded h-8 hover:bg-indigo-500 hover:text-white hover:border-indigo-800"
+            >Register</button>
         )
+        if (isHelper) {
+            register_help_btn = (
+                <button
+                    onClick={unregisterHelper}
+                    className="text-sm ml-2 p-1 border-2 border-gray-300 font-semibold rounded h-8 bg-indigo-500 hover:bg-indigo-600 text-white border-indigo-800"
+                >Unregister</button>
+            )
+        }
     }
 
     let event_div = (
@@ -126,7 +127,7 @@ const Event = (props) => {
             </div>
             <div className="relative flex justify-between">
                 <div className="flex justify-start items-center">
-                    <p className="text-gray-600 text-sm font-semibold pl-2 w-fit">{props.event.helpers_required - props.event.helpers.length} helpers required</p>
+                    {!props.finished ? <p className="text-gray-600 text-sm font-semibold pl-2 w-fit">{props.event.helpers_required - props.event.helpers.length} helpers required</p> : null}
                     {accountType === "parent" ? register_help_btn : null}
                 </div>
                 {accountType === "teacher" ? edit_del_btn : null}
