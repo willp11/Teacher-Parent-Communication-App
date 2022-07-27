@@ -9,7 +9,7 @@ const EditAssignmentModal = (props) => {
     const token = useSelector((state)=>state.auth.token);
 
     // Confirm button
-    const handleEditAssignmentConfirm = (title, description, maximum_score) => {
+    const handleEditAssignmentConfirm = (title, description, maximum_score, response_format) => {
         const headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
@@ -17,7 +17,8 @@ const EditAssignmentModal = (props) => {
         const data = {
             title, 
             description, 
-            maximum_score
+            maximum_score,
+            response_format
         };
         const url = 'http://localhost:8000/api/v1/school/assignment-update/' + props.assignment.id + '/';
         axios.put(url, data, {headers: headers})
@@ -36,10 +37,11 @@ const EditAssignmentModal = (props) => {
         initialValues: {
             title: props.assignment.title,
             description: props.assignment.description,
-            maximum_score: props.assignment.maximum_score
+            maximum_score: props.assignment.maximum_score,
+            response_format: props.assignment.response_format
         },
         onSubmit: (values, actions) =>  {
-            handleEditAssignmentConfirm(values.title, values.description, values.maximum_score);
+            handleEditAssignmentConfirm(values.title, values.description, values.maximum_score, values.response_format);
         },
         validationSchema: Yup.object({
             title: Yup.string().trim().required("title is required"),
@@ -92,6 +94,50 @@ const EditAssignmentModal = (props) => {
                     className="border border-gray-300 mt-2 h-10 w-full"
                 /> <br/>
                 {assignment_formik.errors.maximum_score ? <div className="ErrorMsg">{assignment_formik.errors.maximum_score} </div> : null}
+
+                <div className="py-2 px-1 border border-gray-300 mt-2">
+                    <p className="mb-1 text-left font-semibold text-sm">Response format:</p>
+                    <div className="w-full flex justify-start">
+                        <div>
+                            <input
+                                type="radio"
+                                name="response_format"
+                                value="Text"
+                                id="Text"
+                                checked={assignment_formik.values.response_format === "Text"}
+                                onChange={assignment_formik.handleChange}
+                                onBlur={assignment_formik.handleBlur}
+                            />
+                            <label htmlFor="Text" className="ml-1 mr-4">Text</label> 
+                        </div>
+                        <div>
+                            <input
+                                type="radio"
+                                name="response_format"
+                                value="Image"
+                                id="Image"
+                                checked={assignment_formik.values.response_format === "Image"}
+                                onChange={assignment_formik.handleChange}
+                                onBlur={assignment_formik.handleBlur}
+                            />
+                            <label htmlFor="Image" className="ml-1 mr-4">Image</label>
+                        </div>
+                        <div>
+                            <input
+                                type="radio"
+                                name="response_format"
+                                value="Video"
+                                id="Video"
+                                checked={assignment_formik.values.response_format === "Video"}
+                                onChange={assignment_formik.handleChange}
+                                onBlur={assignment_formik.handleBlur}
+                            />
+                            <label htmlFor="Video" className="ml-1 mr-4">Video</label>
+                        </div>
+                    </div>
+                </div>
+                {assignment_formik.errors.response_format ? <div className="text-sm text-left pl-1">{assignment_formik.errors.response_format} </div> : null}
+
                 <button className="rounded-md border-2 border-black bg-sky-500 hover:bg-indigo-500 text-white font-semibold px-4 py-2 m-2" type="submit">Submit</button>
             </form>
         </div>
