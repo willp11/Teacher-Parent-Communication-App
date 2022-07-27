@@ -117,6 +117,13 @@ class StudentCreateView(CreateAPIView):
             student.delete()
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+class StudentImageUpdateView(RetrieveUpdateAPIView):
+    serializer_class = StudentImageSerializer
+    permission_classes = [IsAuthenticated, IsEmailVerified]
+
+    def get_object(self):
+        return get_object_or_404(Student, pk=self.kwargs['pk'])
+
 class StudentDeleteView(RetrieveDestroyAPIView):
     serializer_class = StudentCreateSerializer
     permission_classes = [IsAuthenticated, IsEmailVerified]

@@ -67,6 +67,11 @@ class StudentSerializer(serializers.ModelSerializer):
         model = Student
         fields = '__all__'
 
+class StudentImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ('image',)
+
 class ParentSerializer(serializers.ModelSerializer):
     settings = ParentSettingsSerializer()
     children = StudentSerializer(many=True)
@@ -138,7 +143,7 @@ class ClassListSerializer(serializers.ModelSerializer):
 class StudentNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'image')
 
 # Serializers to get all a teacher's classes with the list of students and parent's names
 class ParentNameSerializer(serializers.ModelSerializer):
