@@ -85,9 +85,8 @@ class Story(models.Model):
         return self.title
 
 class StoryMedia(models.Model):
-    story = models.ForeignKey(Story, on_delete=models.CASCADE)
-    file = models.FileField(upload_to="story_media/")
-    description = models.CharField(max_length=256, null=True, blank=True)
+    story = models.ForeignKey(Story, on_delete=models.CASCADE, related_name='story_images')
+    image = models.ImageField(upload_to="story_media/", null=True, blank=True)
 
 class StoryComment(models.Model):
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='user_comments')

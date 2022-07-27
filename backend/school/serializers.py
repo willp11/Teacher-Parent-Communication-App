@@ -120,7 +120,13 @@ class StoryCommentUpdateSerializer(serializers.ModelSerializer):
         model = StoryComment
         fields = ('content', 'updated_at',)
 
+class StoryMediaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StoryMedia
+        fields = '__all__'
+
 class StorySerializer(serializers.ModelSerializer):
+    story_images = StoryMediaSerializer(many=True)
     class Meta:
         model = Story
         fields = '__all__'
@@ -129,11 +135,6 @@ class StoryUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Story
         fields = ('title', 'content')
-
-class StoryMediaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = StoryMedia
-        fields = '__all__'
 
 class ClassListSerializer(serializers.ModelSerializer):
     class Meta:
