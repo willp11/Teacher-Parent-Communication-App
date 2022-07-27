@@ -2,6 +2,7 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
+    path('profile-upload/', ProfilePictureUpdateView.as_view(), name='profile_upload'),
     path('school-list-create/', SchoolCreateView.as_view(), name='school_create'),
     path('parent-create/', ParentCreateView.as_view(), name='parent_create'),
     path('teacher-create/', TeacherCreateView.as_view(), name='teacher_create'),

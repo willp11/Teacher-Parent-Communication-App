@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from .models import *
 
+class ProfilePictureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('profile_picture',)
+
 class UsernameSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser

@@ -1,5 +1,3 @@
-from time import time
-from tkinter import CASCADE
 from django.db import models
 from accounts.models import CustomUser
 

@@ -57,7 +57,10 @@ INSTALLED_APPS = [
 
     # local
     'accounts.apps.AccountsConfig',
-    'school.apps.SchoolConfig'
+    'school.apps.SchoolConfig',
+
+    # have to place after local apps
+    'django_cleanup.apps.CleanupConfig'
 ]
 
 MIDDLEWARE = [
@@ -197,3 +200,8 @@ REST_AUTH_SERIALIZERS = {
 REST_AUTH_REGISTER_SERIALIZERS = {
     'REGISTER_SERIALIZER': 'accounts.serializers.NameRegistrationSerializer',
 }
+
+MEDIA_URL = '/images/'
+MEDIA_ROOT = (
+    os.path.join(BASE_DIR, 'images')
+)

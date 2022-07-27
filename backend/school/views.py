@@ -8,6 +8,13 @@ from .models import *
 from .utils import check_has_child_in_class, generate_invite_code
 from .permissions import IsEmailVerified, IsStudentParentOrTeacher, IsChatOwner, IsChatOwnerOrMember
 
+class ProfilePictureUpdateView(RetrieveUpdateAPIView):
+    serializer_class = ProfilePictureSerializer
+    permission_classes = [IsAuthenticated, IsEmailVerified]
+
+    def get_object(self):
+        return self.request.user
+
 class SchoolCreateView(ListCreateAPIView):
     serializer_class = SchoolSerializer
     permission_classes = [IsAuthenticated, IsEmailVerified]
