@@ -87,7 +87,7 @@ class AssignmentSerializer(serializers.ModelSerializer):
 class AssignmentUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignment
-        fields = ('title', 'description', 'maximum_score')
+        fields = ('title', 'description', 'maximum_score', 'response_format')
 
 class AssigneeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -211,10 +211,10 @@ class AssigneeDeleteSerializer(serializers.ModelSerializer):
         model = Assignee
         fields = ('id',)
 
-class AssignmentMediaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AssignmentMedia
-        fields = ('__all__')
+# class AssignmentMediaSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = AssignmentMedia
+#         fields = ('__all__')
 
 class AssigneeScoreUpdateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -226,12 +226,18 @@ class AssigneeInPortfolioUpdateSerializer(serializers.ModelSerializer):
         model = Assignee
         fields = ('pk', 'in_portfolio')
 
+class AssignmentResponseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AssignmentResponse
+        fields = '__all__'
+
 class PortfolioItemSerializer(serializers.ModelSerializer):
     assignment = AssignmentSerializer()
-    assignment_media = AssignmentMediaSerializer(many=True)
+    assignment_responses = AssignmentResponseSerializer(many=True)
+    # assignment_media = AssignmentMediaSerializer(many=True)
     class Meta:
         model = Assignee
-        fields = ('assignment', 'feedback', 'score', 'assignment_media')
+        fields = ('assignment', 'feedback', 'score', 'assignment_responses')
 
 class StickerSerializer(serializers.ModelSerializer):
     class Meta:

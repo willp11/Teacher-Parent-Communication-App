@@ -397,18 +397,18 @@ class AssigneeDeleteListView(ListAPIView, DestroyAPIView):
 
         return Response(status=status.HTTP_200_OK)
 
-class AssignmentMediaCreateView(CreateAPIView):
-    serializer_class = AssignmentMediaSerializer
-    permission_classes = [IsAuthenticated, IsEmailVerified]
+# class AssignmentMediaCreateView(CreateAPIView):
+#     serializer_class = AssignmentMediaSerializer
+#     permission_classes = [IsAuthenticated, IsEmailVerified]
 
-    def perform_create(self, serializer):
-        # user must be teacher of class that assignment is set for
-        teacher = get_object_or_404(Teacher, user=self.request.user)
-        assignee = get_object_or_404(Assignee, pk=self.request.data['assignee'])
-        assignment = get_object_or_404(Assignment, pk=assignee.assignment.pk)
-        if assignment.school_class.teacher != teacher:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-        serializer.save()
+#     def perform_create(self, serializer):
+#         # user must be teacher of class that assignment is set for
+#         teacher = get_object_or_404(Teacher, user=self.request.user)
+#         assignee = get_object_or_404(Assignee, pk=self.request.data['assignee'])
+#         assignment = get_object_or_404(Assignment, pk=assignee.assignment.pk)
+#         if assignment.school_class.teacher != teacher:
+#             return Response(status=status.HTTP_401_UNAUTHORIZED)
+#         serializer.save()
 
 class AssigneeScoreUpdateView(RetrieveUpdateAPIView):
     serializer_class = AssigneeScoreUpdateSerializer

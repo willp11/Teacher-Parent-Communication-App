@@ -1,5 +1,9 @@
 from django.db import models
 from accounts.models import CustomUser
+from django.utils.crypto import get_random_string
+
+def create_assignment_code():
+    return get_random_string(8)
 
 class School(models.Model):
     name = models.CharField(max_length=100)
@@ -55,6 +59,17 @@ class Assignment(models.Model):
     school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE, related_name='assignments')
     maximum_score = models.IntegerField(null=True, blank=True)
 
+    TEXT = 'Text'
+    IMAGE = 'Image'
+    VIDEO = 'Video'
+    RESPONSE_FORMAT_CHOICES = [
+        (TEXT, 'Text'),
+        (IMAGE, 'Image'),
+        (VIDEO, 'Video'),
+    ]
+    response_format = models.CharField(max_length=16, choices=RESPONSE_FORMAT_CHOICES, default=TEXT)
+    code = models.CharField(max_length=8, unique=True, default=create_assignment_code)
+
     def __str__(self):
         return self.title
 
@@ -71,9 +86,15 @@ class Assignee(models.Model):
     class Meta:
         unique_together = ('student', 'assignment')
 
-class AssignmentMedia(models.Model):
-    assignee = models.ForeignKey(Assignee, on_delete=models.CASCADE, related_name='assignment_media')
-    file = models.FileField(upload_to="assignment_media/")
+class AssignmentResponse(models.Model):
+    assignee = models.ForeignKey(Assignee, on_delete=models.CASCADE, related_name='assignment_responses')
+    text = models.TextField(null=True, blank=True)
+    image = models.ImageField(upload_to='assignment_media/', null=True, blank=True)
+    video = models.FileField(upload_to='assignment_media/', null=True, blank=True)
+
+# class AssignmentMedia(models.Model):
+#     assignee = models.ForeignKey(Assignee, on_delete=models.CASCADE, related_name='assignment_media')
+#     file = models.FileField(upload_to="assignment_media/")
     
 class Story(models.Model):
     title = models.CharField(max_length=100)
