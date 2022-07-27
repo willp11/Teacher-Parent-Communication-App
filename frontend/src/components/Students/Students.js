@@ -88,15 +88,19 @@ const Students = (props) => {
         </div>
     )
 
-    let students = props.students.map((student)=>{
+    let students = props.students.map((student, idx)=>{
+        let profile_img_src = ProfileImg;
+        if (student.image !== null) {
+            profile_img_src = student.image
+        }
         return (
             <div 
                 key={student.id} 
                 className="bg-sky-200 rounded-md shadow-md p-2 w-32 text-center m-2 cursor-pointer"
-                onClick={()=>showStudentModalHandler(student)}
+                onClick={()=>showStudentModalHandler(idx)}
             >
                 <h3 className="pb-2 truncate">{student.name}</h3>
-                <img src={ProfileImg} className="h-[100px] w-[100px] mx-auto rounded-full"/>
+                <img src={profile_img_src} className="h-[100px] w-[100px] mx-auto rounded-full" alt=""/>                
             </div>
         )
     })
@@ -108,7 +112,7 @@ const Students = (props) => {
                 {students}
             </div>
 
-            {showStudentModal ? <StudentModal student={studentToShow} getClassInfo={props.getClassInfo} hide={hideStudentModalHandler} handleDelete={props.handleDelete}/> : null}
+            {showStudentModal ? <StudentModal student={studentToShow !== null ? props.students[studentToShow] : null} getClassInfo={props.getClassInfo} hide={hideStudentModalHandler} handleDelete={props.handleDelete}/> : null}
         </div>
     )
 

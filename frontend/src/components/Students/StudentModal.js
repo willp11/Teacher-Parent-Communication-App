@@ -1,20 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import ProfileImg from '../../Assets/Images/blank-profile.png';
-import { PencilAltIcon, CheckIcon, XIcon, TrashIcon } from "@heroicons/react/outline";
+import { PencilAltIcon, CheckIcon, XIcon, TrashIcon, UploadIcon } from "@heroicons/react/outline";
 import AwardSticker from "./AwardSticker";
 
 const StudentModal = (props) => {
 
     const token = useSelector((state)=>state.auth.token);
-
-    const [studentName, setStudentName] = useState("");
-
-    // Load the student's name - so when update the UI when edit name
-    useEffect(()=>{
-        setStudentName(props.student.name);
-    }, [props.student])
 
     // DELETE MODE
     const [showDelete, setShowDelete] = useState(false);
@@ -23,6 +16,38 @@ const StudentModal = (props) => {
     const [editMode, setEditMode] = useState(false);
     // edited student's new name
     const [newStudentName, setNewStudentName] = useState("");
+
+    // UPLOAD IMAGE
+    const [imageToUpload, setImageToUpload] = useState(null);
+    const uploadButtonRef = useRef(null);
+
+    const showUploadFile = () => {
+        if (uploadButtonRef.current !== null) {
+            uploadButtonRef.current.click();
+        }
+    }
+    const confirmUploadImageHandler = () => {
+        console.log(imageToUpload);
+        const headers = {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': 'Token ' + token
+        }
+        const url = `http://localhost:8000/api/v1/school/student-image-upload/${props.student.id}/`;
+        const data = {
+            image: imageToUpload
+        }
+        axios.put(url, data, {headers: headers})
+            .then(res=>{
+                console.log(res);
+                props.getClassInfo();
+            })
+            .catch(err=>{
+                console.log(err);
+            })
+            .finally(()=>{
+                setImageToUpload(null);
+            })
+    }
 
     // EDIT STUDENT FUNCTIONS
     // Turn on/off edit mode
@@ -48,7 +73,7 @@ const StudentModal = (props) => {
             .then(res=>{
                 console.log(res);
                 props.getClassInfo();
-                setStudentName(newStudentName);
+                // setStudentName(newStudentName);
             })
             .catch(err => {
                 console.log(err);
@@ -70,9 +95,19 @@ const StudentModal = (props) => {
     }
 
     // JSX
+    let upload_image_modal = (
+        <div className="fixed top-0 left-0 bg-[rgba(0,0,0,0.7)] z-20 w-screen h-screen flex items-center justify-center">
+            <div className="w-calc(100%-2rem) sm:w-[400px] bg-white rounded shadow-md p-4">
+                <h2 className="mb-4">Upload File</h2>
+                <button onClick={()=>setImageToUpload(null)} className="rounded bg-red-600 text-white font-semibold hover:bg-red-700 p-2 w-24 mr-2">Cancel</button>
+                <button onClick={confirmUploadImageHandler} className="rounded bg-green-600 text-white font-semibold hover:bg-green-700 p-2 w-24">Confirm</button>
+            </div>
+        </div>
+    )
+
     let edit_on_div = (
         <div className="text-center pt-6">
-            <h2 className="mr-2 truncate">{studentName}</h2>
+            <h2 className="mr-2 truncate">{props.student.name}</h2>
             <div className="flex items-center justify-center">
                 <input 
                     placeholder="Type new name..." 
@@ -87,10 +122,15 @@ const StudentModal = (props) => {
     )
     let edit_off_div = (
         <div className="flex items-center justify-center pt-6">
-            <h2 className="mr-2 truncate">{studentName}</h2>
+            <h2 className="mr-2 truncate">{props.student.name}</h2>
             <PencilAltIcon className="h-[24px] w-[24px] cursor-pointer" onClick={toggleEditMode}/>
         </div>
     )
+
+    let profile_img_src = ProfileImg;
+    if (props.student.image !== null) {
+        profile_img_src = props.student.image
+    }
 
     let student_modal_div = (
         <div className="fixed top-0 left-0 bg-[rgba(0,0,0,0.7)] w-screen h-screen flex items-center justify-center">
@@ -105,10 +145,17 @@ const StudentModal = (props) => {
                 />
                 <div className="w-full border-b-2 border-gray-400">
                     {editMode ? edit_on_div : edit_off_div}
-                    <img src={ProfileImg} className="h-[100px] w-[100px] mx-auto rounded-full my-2"/>
+                    <div className="flex flex-col items-center justify-center">
+                        <div className="relative">
+                            <UploadIcon className="h-[24px] w-[24px] absolute bottom-1 left-[calc(50%-12px)] cursor-pointer" onClick={showUploadFile}/>
+                            <img src={profile_img_src} className="h-[100px] w-[100px] mx-auto rounded-full my-2" alt="" onClick={showUploadFile}/>
+                        </div>
+                        <input type="file" className="hidden" onChange={(e)=>setImageToUpload(e.currentTarget.files[0])} ref={uploadButtonRef}/>
+                    </div>
                 </div>
-                <AwardSticker studentId={props.student.id} name={studentName}/>
+                <AwardSticker studentId={props.student.id} name={props.student.name}/>
             </div>
+            {imageToUpload !== null ? upload_image_modal : null}
         </div>
     )
 
