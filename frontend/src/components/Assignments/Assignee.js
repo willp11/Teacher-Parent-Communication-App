@@ -47,11 +47,11 @@ const Assignee = (props) => {
                 </div>
                 <p className="text-sm ml-1 mb-1">Score: {props.student.score ? props.student.score : "--"} / {props.assignment.maximum_score}</p>
                 <div className="w-full flex justify-between mb-1">
-                    <button className="w-24 p-1 border border-gray-400 bg-white cursor-pointer rounded-md text-sm shadow" onClick={handleShowFeedback}>Feedback</button>
-                    <button className="w-24 p-1 border border-gray-400 bg-white cursor-pointer rounded-md text-sm shadow" onClick={handleShowResponse}>Response</button>
+                    <button className="w-24 p-1 border border-gray-400 bg-white cursor-pointer rounded-md text-sm shadow hover:bg-gray-50" onClick={handleShowFeedback}>Feedback</button>
+                    <button className="w-24 p-1 border border-gray-400 bg-white cursor-pointer rounded-md text-sm shadow hover:bg-gray-50" onClick={handleShowResponse}>Response</button>
                 </div>
                 <p className="text-xs">{message}</p>
-                {showFeedback ? <Feedback assignee={props.student} assignment={props.assignment} toggleFeedbackModal={toggleFeedbackModal} /> : null}
+                {showFeedback ? <Feedback assignee={props.student} assignment={props.assignment} toggleFeedbackModal={toggleFeedbackModal} getAllocatedStudents={props.getAllocatedStudents} /> : null}
                 {showResponse ? <Response assignee={props.student} assignment={props.assignment} toggleResponseModal={toggleResponseModal} /> : null}
             </div>
         )

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSelector } from "react-redux";
-import { XIcon } from "@heroicons/react/outline";
+import { XIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
 import axios from "axios";
 import Assignee from "./Assignee";
 
@@ -34,7 +34,7 @@ const ResponsesModal = (props) => {
 
     // Create list of students
     let student_list_div = studentList.map(student=>{
-        return <Assignee key={student.id} student={student} assignment={props.assignment} />
+        return <Assignee key={student.id} student={student} assignment={props.assignment} getAllocatedStudents={getAllocatedStudents} />
     })
 
     let responses_div = (
@@ -46,6 +46,16 @@ const ResponsesModal = (props) => {
             />
 
             <p className="text-left text-sm font-semibold pl-2 py-1">Select a student to view their assignment response, give a score and provide feedback.</p>
+            <div className="w-full flex justify-start">
+                <div className="w-28 m-2 flex items-center">
+                    <CheckCircleIcon className="h-[24px] w-[24px] stroke-green-600" />
+                    <p className="text-xs">Submitted</p>
+                </div>
+                <div className="w-28 flex items-center">
+                    <XCircleIcon className="h-[24px] w-[24px] stroke-red-600" />
+                    <p className="text-xs">Not submitted</p>
+                </div>
+            </div>
             <div className="flex flex-col px-1">
                 {student_list_div}
             </div>
