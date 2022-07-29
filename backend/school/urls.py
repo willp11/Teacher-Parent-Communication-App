@@ -25,6 +25,7 @@ urlpatterns = [
     path('story-media-create/', StoryMediaCreateView.as_view(), name='story_media_create'),
     path('story-delete/<int:pk>/', StoryDeleteView.as_view(), name='story_delete'),
     path('story-update/<int:pk>/', StoryUpdateView.as_view(), name='story_update'),
+    path('assignment-detail/<code>/', AssignmentDetailView.as_view(), name='assignment_detail'),
     path('assignment-create/', AssignmentCreateView.as_view(), name='assignment_create'),
     path('assignment-delete/<int:pk>/', AssignmentDeleteView.as_view(), name='assignment_delete'),
     path('assignment-update/<int:pk>/', AssignmentUpdateView.as_view(), name='assignment_update'),

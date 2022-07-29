@@ -201,11 +201,17 @@ class StudentUpdateNameSerializer(serializers.ModelSerializer):
         model = Student
         fields = ('name',)
 
+class AssignmentResponseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AssignmentResponse
+        fields = '__all__'
+
 class AssigneeListSerializer(serializers.ModelSerializer):
     student = StudentUpdateNameSerializer()
+    assignment_responses = AssignmentResponseSerializer(many=True)
     class Meta:
         model = Assignee
-        fields = ('id', 'student', 'feedback', 'score', 'submitted')
+        fields = ('id', 'student', 'feedback', 'score', 'submitted', 'assignment_responses')
 
 class AssigneeCreateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -225,17 +231,19 @@ class AssigneeDeleteSerializer(serializers.ModelSerializer):
 class AssigneeScoreUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignee
-        fields = ('pk', 'score')
+        fields = ('pk', 'score', 'feedback')
 
 class AssigneeInPortfolioUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignee
         fields = ('pk', 'in_portfolio')
 
-class AssignmentResponseSerializer(serializers.ModelSerializer):
+# Get all data about an assignment - including all students it is assigned to and their responses
+class AssignmentDetailSerializer(serializers.ModelSerializer):
+    assigned_students = AssigneeListSerializer(many=True)
     class Meta:
-        model = AssignmentResponse
-        fields = '__all__'
+        model = Assignment
+        fields = ('title', 'description', 'maximum_score', 'response_format', 'assigned_students', )
 
 class PortfolioItemSerializer(serializers.ModelSerializer):
     assignment = AssignmentSerializer()

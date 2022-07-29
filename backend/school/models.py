@@ -74,7 +74,7 @@ class Assignment(models.Model):
         return self.title
 
 class Assignee(models.Model):
-    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, related_name='assigned_students')
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='portfolio')
     feedback = models.CharField(max_length=1024, null=True, blank=True)
     score = models.IntegerField(null=True, blank=True)

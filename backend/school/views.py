@@ -1,5 +1,5 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, ListCreateAPIView, DestroyAPIView, RetrieveUpdateAPIView, RetrieveDestroyAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
@@ -281,6 +281,14 @@ class StoryUpdateView(RetrieveUpdateAPIView):
         if school_class.teacher != teacher:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         return story
+
+class AssignmentDetailView(RetrieveAPIView):
+    serializer_class = AssignmentDetailSerializer
+    permission_classes = [AllowAny]
+
+    def get_object(self):
+        assignment = get_object_or_404(Assignment, code=self.kwargs['code'])
+        return assignment
 
 class AssignmentCreateView(CreateAPIView):
     serializer_class = AssignmentSerializer
