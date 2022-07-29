@@ -80,7 +80,7 @@ const Assignment = (props) => {
                 <div className="w-full flex justify-between">
                     <p className="pb-2 text-sm"><b>Response format: </b>{props.assignment.response_format}</p>
                     <div className="flex justify-center items-start">
-                        <p className="text-sm font-bold">Response Link: </p>
+                        <p className="text-sm font-bold">Student Link: </p>
                         <LinkIcon className="h-[24px] w-[24px] cursor-pointer stroke-gray-600 ml-1 hover:stroke-indigo-500" onClick={copyLink}/>
                         {showCopiedNotification ? <div className="relative">
                             <div className="absolute right-0 top-0 bg-white rounded border border-gray-300 p-2 w-24 text-center z-20">

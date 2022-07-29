@@ -172,6 +172,7 @@ const Assignments = (props) => {
             
             <div className="mt-4 mb-16">
                 {props.assignments.length === 0 ? <p className="text-center">There are no assignments set.</p> : null}
+                {props.assignments.length !== 0 ? <p className="text-sm font-semibold text-center">Students can submit their work for an assignment by following the "Student Link"</p> : null}
                 {assignments}
             </div>
 

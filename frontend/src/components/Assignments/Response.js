@@ -14,6 +14,17 @@ const Response = (props) => {
                 className="absolute top-2 left-2 h-[24px] w-[24px] hover:stroke-indigo-500 cursor-pointer"
                 onClick={props.toggleResponseModal}
             />
+            <div className="w-full flex justify-start items-center">
+                <p className="font-semibold mr-2">Student: </p>
+                <p>{props.assignee.student.name}</p>
+            </div>
+            <div className="w-full flex justify-start items-center">
+                <p className="font-semibold mr-2">Assignment: </p>
+                <p>{props.assignment.title}</p>
+            </div>
+            <div className="w-full p-1 mt-2 border border-gray-300 rounded h-[400px] overflow-auto">
+
+            </div>
         </div>
     )
     return (
