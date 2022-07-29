@@ -78,7 +78,7 @@ class Assignee(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='portfolio')
     feedback = models.CharField(max_length=1024, null=True, blank=True)
     score = models.IntegerField(null=True, blank=True)
-    in_portfolio = models.BooleanField(default=False)
+    submitted = models.BooleanField(default=False)
 
     def __str__(self):
         return '{} assigned to {}'.format(self.student.name, self.assignment.title)

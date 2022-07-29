@@ -28,6 +28,7 @@ urlpatterns = [
     path('assignment-create/', AssignmentCreateView.as_view(), name='assignment_create'),
     path('assignment-delete/<int:pk>/', AssignmentDeleteView.as_view(), name='assignment_delete'),
     path('assignment-update/<int:pk>/', AssignmentUpdateView.as_view(), name='assignment_update'),
+    path('assignee-list/<int:pk>/', AssigneeListView.as_view(), name='assignee_list'),
     path('assignee-create/<int:pk>/', AssigneeCreateView.as_view(), name='assignee_create'),
     path('assignee-delete/<int:pk>/', AssigneeDeleteView.as_view(), name='assignee_delete'),
     path('assignee-delete-list/<int:pk>/', AssigneeDeleteListView.as_view(), name='assignee_delete_list'),

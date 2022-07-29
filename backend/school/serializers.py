@@ -201,6 +201,12 @@ class StudentUpdateNameSerializer(serializers.ModelSerializer):
         model = Student
         fields = ('name',)
 
+class AssigneeListSerializer(serializers.ModelSerializer):
+    student = StudentUpdateNameSerializer()
+    class Meta:
+        model = Assignee
+        fields = ('id', 'student', 'feedback', 'score', 'submitted')
+
 class AssigneeCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignee

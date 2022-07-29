@@ -321,6 +321,13 @@ class AssignmentUpdateView(RetrieveUpdateAPIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         return assignment
 
+class AssigneeListView(ListAPIView):
+    serializer_class = AssigneeListSerializer
+    permission_classes = [IsAuthenticated, IsEmailVerified]
+
+    def get_queryset(self):
+        assignment = get_object_or_404(Assignment, pk=self.kwargs['pk'])
+        return Assignee.objects.filter(assignment=assignment)
 
 class AssigneeCreateView(ListCreateAPIView):
     serializer_class = AssigneeCreateSerializer
@@ -367,7 +374,6 @@ class AssigneeDeleteView(RetrieveDestroyAPIView):
             instance.delete()
             return Response(status=status.HTTP_200_OK)
 
-# TO DO
 # ASSIGNEE DELETE LIST VIEW
 # take a list of assignees that we want to delete
 class AssigneeDeleteListView(ListAPIView, DestroyAPIView):
