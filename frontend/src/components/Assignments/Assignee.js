@@ -1,23 +1,35 @@
 import { useState } from "react";
 import { CheckCircleIcon, XCircleIcon, ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 import { useMessage } from "../../Hooks/useMessage";
+import Feedback from "./Feedback";
+import Response from "./Response";
 
 const Assignee = (props) => {
 
     const [show, setShow] = useState(false);
     const [message, setMessage] = useMessage();
+    const [showFeedback, setShowFeedback] = useState(false);
+    const [showResponse, setShowResponse] = useState(false);
+
+    const toggleFeedbackModal = () => {
+        setShowFeedback(!showFeedback);
+    }
+
+    const toggleResponseModal = () => {
+        setShowResponse(!showResponse);
+    }
 
     const handleShowFeedback = () => {
-        if (props.student.submitted) {
-            
+        if (!props.student.submitted) {
+            toggleFeedbackModal()
         } else {
             setMessage("The student has not submitted the work yet.")
         }
     }
 
     const handleShowResponse = () => {
-        if (props.student.submitted) {
-            
+        if (!props.student.submitted) {
+            toggleResponseModal()
         } else {
             setMessage("The student has not submitted the work yet.")
         }
@@ -39,6 +51,8 @@ const Assignee = (props) => {
                     <button className="w-24 p-1 border border-gray-400 bg-white cursor-pointer rounded-md text-sm shadow" onClick={handleShowResponse}>Response</button>
                 </div>
                 <p className="text-xs">{message}</p>
+                {showFeedback ? <Feedback assignee={props.student} assignment={props.assignment} toggleFeedbackModal={toggleFeedbackModal} /> : null}
+                {showResponse ? <Response assignee={props.student} assignment={props.assignment} toggleResponseModal={toggleResponseModal} /> : null}
             </div>
         )
     } else {
