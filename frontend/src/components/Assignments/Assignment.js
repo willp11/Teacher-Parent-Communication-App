@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { DotsHorizontalIcon, UserAddIcon, LinkIcon } from "@heroicons/react/outline";
 import EditAssignmentModal from "./EditAssignmentModal";
+import ResponsesModal from "./ResponsesModal";
 
 const Assignment = (props) => {
 
@@ -12,6 +13,8 @@ const Assignment = (props) => {
 
     const [showCopiedNotification, setShowCopiedNotification] = useState(false);
 
+    const [showResponsesModal, setShowResponsesModal] = useState(false);
+
     useEffect(()=>{
         const reset = setTimeout(()=>{
             setShowCopiedNotification(false)
@@ -21,6 +24,11 @@ const Assignment = (props) => {
             clearTimeout(reset)
         }
     }, [showCopiedNotification])
+
+    // Turn on and off to display response modal
+    const toggleResponsesModal = () => {
+        setShowResponsesModal(!showResponsesModal);
+    }
 
     // Turn on and off edit model to display edit modal
     const toggleEditMode = () => {
@@ -96,6 +104,7 @@ const Assignment = (props) => {
                     </div>
                     <div 
                         className="w-28 ml-2 p-2 border-2 border-gray-300 bg-white cursor-pointer rounded-md flex items-center justify-center"
+                        onClick={toggleResponsesModal}
                     >
                         <span>Responses</span>
                     </div>
@@ -110,6 +119,7 @@ const Assignment = (props) => {
         <div className="list-div">
             {assignment_div}
             {(editMode) ? <EditAssignmentModal assignment={props.assignment} getClassInfo={props.getClassInfo} toggleEditMode={toggleEditMode} /> : null}
+            {(showResponsesModal) ? <ResponsesModal assignment={props.assignment} toggleResponsesModal={toggleResponsesModal} /> : null}
         </div>
     )
 

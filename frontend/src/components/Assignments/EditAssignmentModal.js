@@ -54,7 +54,7 @@ const EditAssignmentModal = (props) => {
     });
 
     let edit_form = (
-        <div className="relative w-full sm:w-[500px] p-4 mx-auto mt-2 rounded-md shadow-md shadow-gray-300 bg-white border-2 border-gray-300 text-center">
+        <div className="relative w-full sm:w-[600px] p-4 mx-auto mt-2 rounded-md bg-white border-2 border-gray-300 text-center">
             <h3>Edit Assignment</h3>
             <XIcon 
                 className="absolute top-2 right-2 h-[24px] w-[24px] hover:border hover:border-gray-300 cursor-pointer"
