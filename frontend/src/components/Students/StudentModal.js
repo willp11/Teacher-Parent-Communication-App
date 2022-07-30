@@ -4,6 +4,7 @@ import axios from "axios";
 import ProfileImg from '../../Assets/Images/blank-profile.png';
 import { PencilAltIcon, CheckIcon, XIcon, TrashIcon, UploadIcon } from "@heroicons/react/outline";
 import AwardSticker from "./AwardSticker";
+import { Link } from "react-router-dom";
 
 const StudentModal = (props) => {
 
@@ -107,7 +108,7 @@ const StudentModal = (props) => {
 
     let edit_on_div = (
         <div className="text-center pt-6">
-            <h2 className="mr-2 truncate">{props.student.name}</h2>
+            <Link to={`/studentProfile/${props.student.id}`}><h2 className="mr-2 truncate text-blue-600 underline">{props.student.name}</h2></Link>
             <div className="flex items-center justify-center">
                 <input 
                     placeholder="Type new name..." 
@@ -122,7 +123,7 @@ const StudentModal = (props) => {
     )
     let edit_off_div = (
         <div className="flex items-center justify-center pt-6">
-            <h2 className="mr-2 truncate">{props.student.name}</h2>
+            <Link to={`/studentProfile/${props.student.id}`}><h2 className="mr-2 truncate text-blue-600 underline">{props.student.name}</h2></Link>
             <PencilAltIcon className="h-[24px] w-[24px] cursor-pointer" onClick={toggleEditMode}/>
         </div>
     )
