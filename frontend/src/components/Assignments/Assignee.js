@@ -20,7 +20,7 @@ const Assignee = (props) => {
     }
 
     const handleShowFeedback = () => {
-        if (!props.student.submitted) {
+        if (props.student.submitted) {
             toggleFeedbackModal()
         } else {
             setMessage("The student has not submitted the work yet.")
@@ -28,7 +28,7 @@ const Assignee = (props) => {
     }
 
     const handleShowResponse = () => {
-        if (!props.student.submitted) {
+        if (props.student.submitted) {
             toggleResponseModal()
         } else {
             setMessage("The student has not submitted the work yet.")

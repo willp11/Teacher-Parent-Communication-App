@@ -3,15 +3,23 @@ import { useEffect, useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { useMessage } from "../../Hooks/useMessage";
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
 
 const SubmitAssignment = () => {
 
     const {code} = useParams()
     const token = useSelector((state)=>state.auth.token);
 
+    const [message, setMessage] = useMessage();
+
     const [assignment, setAssignment] = useState(null);
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    const [imageResponse, setImageResponse] = useState(null);
+    const [videoResponse, setVideoResponse] = useState(null);
+    const [textResponse, setTextResponse] = useState("");
 
     const getAssignment = useCallback(() => {
         const headers = {
@@ -37,14 +45,57 @@ const SubmitAssignment = () => {
         getAssignment();
     }, [getAssignment])
 
+    // submit assignment handler
+    const submitAssignment = () => {
+        if (selectedStudent !== null) {
+            const headers = {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': 'Token ' + token
+            }
+            const url = 'http://localhost:8000/api/v1/school/assignment-response-create/';
+            const data = {
+                assignee: selectedStudent.id,
+                text: textResponse,
+                image: imageResponse,
+                video: videoResponse
+            }
+            axios.post(url, data, {headers: headers})
+                .then(res=>{
+                    console.log(res);
+                    setMessage("Assignment uploaded successfully")
+                    getAssignment()
+                    setSelectedStudent({...selectedStudent, submitted: true})
+                })
+                .catch(err=>{
+                    console.log(err);
+                    setMessage("There was a problem uploading your assignment")
+                })
+                .finally(()=>{
+                    if (assignment.response_format === "Text") {
+                        setTextResponse("");
+                    } else if (assignment.response_format === "Image") {
+                        setImageResponse(null);
+                    } else if (assignment.response_format === "Video") {
+                        setVideoResponse(null);
+                    }
+                })
+        }
+    }
+
     // Student List
     let student_list_div = null;
     if (assignment !== null) {
         student_list_div = assignment.assigned_students.map(assignee=>{
-            let style = "p-1 my-1 w-full border-2 border-gray-200 bg-sky-100 cursor-pointer hover:bg-indigo-500 hover:text-white rounded-md";
+            let style = "flex justify-between p-1 my-1 w-full border-2 border-gray-200 bg-sky-100 cursor-pointer hover:bg-indigo-500 hover:text-white rounded-md";
+            let green = "stroke-green-600";
             if (selectedStudent !== null) {
-                if (selectedStudent.id === assignee.id) style = "p-1 my-1 w-full border-2 border-gray-200 bg-sky-500 text-white rounded-md"
+                if (selectedStudent.id === assignee.id) {
+                    style = "flex justify-between p-1 my-1 w-full border-2 border-gray-200 bg-sky-500 text-white rounded-md"
+                    green = "stroke-lime-400";
+                }
             }
+            let icon = null;
+            (assignee.submitted) ? icon = <CheckCircleIcon className={`h-[24px] w-[24px] ${green}`} /> : icon = <XCircleIcon className="h-[24px] w-[24px] stroke-red-600" />
             return (
                 <div
                     key={assignee.id}
@@ -52,6 +103,7 @@ const SubmitAssignment = () => {
                     onClick={()=>setSelectedStudent(assignee)}
                 >
                     <h4 className="text-base text-left font-semibold truncate">{assignee.student.name}</h4>
+                    {icon}
                 </div>
             )
         })
@@ -59,28 +111,50 @@ const SubmitAssignment = () => {
 
     // Assignment Input
     let assignment_input = null;
-    if (assignment !== null) {
+    let submit_div = null;
+    if (assignment !== null && selectedStudent !== null) {
         if (assignment.response_format === "Text") {
             assignment_input = (
-                <div>
-                    <textarea 
-                        rows="12"
-                        placeholder="Type your answer..."
-                        className="border border-gray-300 w-full mt-2 p-1"
-                    />
-                    <button className="rounded w-24 p-2 bg-sky-500 text-white font-semibold hover:bg-indigo-500">Submit</button>
-                </div>
+                <textarea 
+                    rows="12"
+                    placeholder="Type your answer..."
+                    className="border border-gray-300 w-full mt-2 p-1"
+                    value={textResponse}
+                    onChange={(e)=>setTextResponse(e.target.value)}
+                />
             )
         } else if (assignment.response_format === "Image") {
             assignment_input = (
-                <input type="file" />
+                <input type="file" onChange={(e)=>setImageResponse(e.currentTarget.files[0])} />
             )
         } else if (assignment.response_format === "Video") {
             assignment_input = (
-                <input type="file" />
+                <input type="file" onChange={(e)=>setVideoResponse(e.currentTarget.files[0])} />
+            )
+        }
+        if (selectedStudent.submitted) {
+            submit_div = (
+                <div>
+                    <p>The assignment has already been submitted.</p>
+                </div>
+            )
+        } else {
+            submit_div = (
+                <div className="mt-2">
+                    {assignment_input}
+                    <br />
+                    <button 
+                        className="rounded w-24 p-2 bg-sky-500 text-white font-semibold hover:bg-indigo-500 ml-1 mt-2"
+                        onClick={submitAssignment}
+                    >
+                        Submit
+                    </button>
+                    <p className="text-sm text-left font-semibold mt-2">{message}</p>
+                </div>
             )
         }
     }
+
 
     if (loading) {
         return (
@@ -106,6 +180,16 @@ const SubmitAssignment = () => {
                         </div>
                         <div className="p-1">
                             <p className="text-sm">Select your name from the list.</p>
+                            <div className="w-full flex justify-start">
+                                <div className="w-28 my-2 flex items-center">
+                                    <CheckCircleIcon className="h-[24px] w-[24px] stroke-green-600" />
+                                    <p className="text-xs">Submitted</p>
+                                </div>
+                                <div className="w-28 flex items-center">
+                                    <XCircleIcon className="h-[24px] w-[24px] stroke-red-600" />
+                                    <p className="text-xs">Not submitted</p>
+                                </div>
+                            </div>
                             {student_list_div}
                         </div>
                     </div>
@@ -129,7 +213,7 @@ const SubmitAssignment = () => {
                         </div>
                         <div className="min-h-[400px] p-1 m-1">
                             {selectedStudent ? <h3 className="text-left">{selectedStudent.student.name}'s Assignment</h3> : <p>Select a student to get started...</p>}
-                            {assignment_input}
+                            {submit_div}
                         </div>
                     </div>
                 </div>
