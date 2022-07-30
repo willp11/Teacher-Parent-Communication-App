@@ -424,6 +424,19 @@ class AssigneeDeleteListView(ListAPIView, DestroyAPIView):
 #             return Response(status=status.HTTP_401_UNAUTHORIZED)
 #         serializer.save()
 
+class AssignmentResponseCreateView(CreateAPIView):
+    serializer_class = AssignmentResponseSerializer
+    permission_classes = [AllowAny]
+
+    def perform_create(self, serializer):
+        assignee = get_object_or_404(Assignee, pk=self.request.data['assignee'])
+        if assignee.submitted == True:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            assignee.submitted = True
+            assignee.save()
+            serializer.save()
+
 class AssigneeScoreUpdateView(RetrieveUpdateAPIView):
     serializer_class = AssigneeScoreUpdateSerializer
     permission_classes = [IsAuthenticated, IsEmailVerified]

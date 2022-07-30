@@ -33,6 +33,7 @@ urlpatterns = [
     path('assignee-create/<int:pk>/', AssigneeCreateView.as_view(), name='assignee_create'),
     path('assignee-delete/<int:pk>/', AssigneeDeleteView.as_view(), name='assignee_delete'),
     path('assignee-delete-list/<int:pk>/', AssigneeDeleteListView.as_view(), name='assignee_delete_list'),
+    path('assignment-response-create/', AssignmentResponseCreateView.as_view(), name='assignment_response_create'),
     # path('assignment-media-create/', AssignmentMediaCreateView.as_view(), name='assignment_media_create'),
     path('assignee-score-update/<int:pk>/', AssigneeScoreUpdateView.as_view(), name='assignee_score_update'),
     path('assignee-in-portfolio-update/<int:pk>/', AssigneeInPortfolioUpdateView.as_view(), name='assignee_in_portfolio_update'),
