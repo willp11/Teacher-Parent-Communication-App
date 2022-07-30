@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import Navigation from "../Navigation/Navigation";
 import axios from "axios";
 import starImg from '../../Assets/Images/star-sticker.jpg';
@@ -10,6 +11,7 @@ import catImg from '../../Assets/Images/cat-sticker.jpg';
 
 const StudentProfile = () => {
 
+    const navigate = useNavigate();
     const { id } = useParams();
     const token = useSelector((state)=>state.auth.token);
 
@@ -74,7 +76,7 @@ const StudentProfile = () => {
                 <div className="my-2">
                     <p className="text-xs text-gray-600">Parent</p>
                     <p className="font-semibold">{studentProfile.parent.user.first_name} {studentProfile.parent.user.last_name}</p>
-                    <button className="bg-sky-500 hover:bg-indigo-500 rounded text-white font-semibold px-2 py-1 mt-1 text-sm">Message</button>
+                    <button className="bg-sky-500 hover:bg-indigo-500 rounded text-white font-semibold px-2 py-1 mt-1 text-sm" onClick={()=>navigate('/chatHub')}>Message</button>
                 </div>
             )
         } else {
@@ -121,7 +123,7 @@ const StudentProfile = () => {
 
         // School class info div
         let student_info_div = (
-            <div className="w-full sm:w-96 mx-auto bg-sky-100 rounded shadow border border-gray-300 p-2 my-2 text-left">
+            <div className="w-full sm:w-[500px]  mx-auto bg-sky-100 rounded shadow border border-gray-300 p-2 my-2 text-left">
                 <div className="my-2">
                     <p className="text-xs text-gray-600">Class</p>
                     <Link to={`/class/${studentProfile.school_class.id}`}><p className="font-semibold text-left text-blue-700 underline">{studentProfile.school_class.name}</p></Link>
@@ -140,21 +142,61 @@ const StudentProfile = () => {
         )
 
         // Assignments div
-        // let assignments = studentProfile.portfolio.map((assignment)=>{
-        //     return (
-        //         <div className="w-full sm:w-[300px] mx-auto border border-gray-300" key={assignment.assignment.id}>
-        //             <h3 className="pb-2">{assignment.assignment.title}</h3>
-        //             <p className="p-2 text-sm text-left">{assignment.assignment.description}</p>
-        //             <p className="text-sm pt-2"><b>Score: </b>{assignment.score === null ? "--" : assignment.score} / {assignment.assignment.maximum_score}</p>
-        //             <p className="text-sm pb-2"><b>Feedback: </b>{assignment.feedback === null ? "No feedback yet." : assignment.feedback}</p>
-        //         </div>
-        //     );
-        // })
+        let assignments = studentProfile.portfolio.map((assignment)=>{
+            let student_response = null;
+            if (assignment.assignment.response_format === "Text") {
+                student_response = (
+                    <div className="w-full max-h-[350px] overflow-auto bg-white border border-gray-300 p-2 mt-1">
+                        {assignment.assignment_responses[0].text}
+                    </div>
+                )
+            } else if (assignment.assignment.response_format === "Image") {
+                student_response = (
+                    <div className="w-full max-h-[350px] overflow-auto bg-white border border-gray-300 rounded p-2 mt-1">
+                        <img src={assignment.assignment_responses[0].image} className="object-scale-down" alt=""/>
+                    </div>
+                )
+            } else if (assignment.assignment.response_format === "Video") {
+                student_response = (
+                    <div className="w-full max-h-[350px] overflow-auto bg-white border border-gray-300 rounded p-2 mt-1">
+                        <video className="object-scale-down" controls>
+                            <source src={assignment.assignment_responses[0].video} type="video/mp4" />
+                        </video>
+                    </div>
+                )
+            }
+            return (
+                <div className="w-full sm:w-[500px] mx-auto bg-sky-100 rounded border border-gray-300 text-left p-2 my-2" key={assignment.assignment.id}>
+                    <div className="my-2">
+                        <p className="text-xs text-gray-600">Assignment</p>
+                        <p className="font-semibold">{assignment.assignment.title}</p>
+                    </div>
+                    <div className="my-2">
+                        <p className="text-xs text-gray-600">Description</p>
+                        <p className="font-semibold">{assignment.assignment.description}</p>
+                    </div>
+                    <div className="my-2">
+                        <p className="text-xs text-gray-600">Score</p>
+                        <p className="font-semibold">{assignment.score === null ? "--" : assignment.score} / {assignment.assignment.maximum_score}</p>
+                    </div>
+                    <div className="my-2">
+                        <p className="text-xs text-gray-600">Feedback</p>
+                        <p className="font-semibold">{assignment.feedback === null ? "No feedback yet." : assignment.feedback}</p>
+                    </div>
+                    <div className="my-2">
+                        <p className="text-xs text-gray-600">Work</p>
+                        {student_response}
+                    </div>
+                </div>
+            );
+        })
 
         let assignments_div = (
             <div className="p-2">
-                <h2 className="text-left">Portfolio</h2>
-                {/* {assignments} */}
+                <h2>Portfolio</h2>
+                <div className="flex flex-wrap">
+                    {assignments}
+                </div>
             </div>
         )
 
