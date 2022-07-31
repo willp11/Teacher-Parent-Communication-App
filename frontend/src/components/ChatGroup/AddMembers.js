@@ -100,8 +100,8 @@ const AddMembers = (props) => {
     let user_list = parentList.map(parent=>{
         return (
             <div key={parent.user.id} className="w-48 mx-auto flex justify-between items-center bg-white rounded-md shadow-md p-1 my-4">
-                <p className="p-1 font-bold truncate">{parent.user.first_name} {parent.user.last_name}</p>
-                <TrashIcon className="h-[24px] w-[24px] cursor-pointer hover:fill-red-300" onClick={()=>removeFromListHandler(parent)} />
+                <p className="p-1 font-semibold truncate">{parent.user.first_name} {parent.user.last_name}</p>
+                <TrashIcon className="h-[24px] w-[24px] cursor-pointer hover:fill-red-400" onClick={()=>removeFromListHandler(parent)} />
             </div>
         )
     })
@@ -125,7 +125,7 @@ const AddMembers = (props) => {
     let user_list_div = (
         <div className="w-full sm:w-[500px] max-h-[300px] overflow-auto bg-sky-200 rounded shadow-md p-2 mx-auto my-4">
             <h3>New Users</h3>
-            {(parentList.length > 0) ? user_list : <p>No users added to list</p>}
+            {(parentList.length > 0) ? user_list : <p className="text-sm">Click + to add user to chat group</p>}
             {(parentList.length > 0) ? submit_btn : null}
             <p className="text-sm">{message}</p>
         </div>

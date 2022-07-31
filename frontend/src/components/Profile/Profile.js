@@ -115,7 +115,7 @@ const Profile = () => {
                 <div>
                     {componentToShow === "User Details" ? <UserInfo profile={profile} getUserProfile={getUserProfile} /> : null}
                     {componentToShow === "Change Password" ? <ChangePassword /> : null}
-                    {componentToShow === "School" ? <SchoolInfo profile={profile} schools={schoolList} getUserProfile={getUserProfile} /> : null}
+                    {componentToShow === "School" ? <SchoolInfo profile={profile} schools={schoolList} getUserProfile={getUserProfile} getSchoolList={getSchoolList} /> : null}
                     {componentToShow === "Classes" ? <ClassesInfo profile={profile} getUserProfile={getUserProfile} /> : null}
                 </div>
             )

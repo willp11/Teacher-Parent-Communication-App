@@ -67,7 +67,7 @@ const StoryComments = (props) => {
                     <p className="text-sm">{new Date(comment.created_at).toLocaleTimeString()}</p>
                     <p className="text-sm">{new Date(comment.created_at).toLocaleDateString()}</p>
                 </div>
-                <p><b>{comment.author.username}: </b>{comment.content}</p>
+                <p><b>{`${comment.author.first_name} ${comment.author.last_name}`}: </b>{comment.content}</p>
             </div>
         )
     })

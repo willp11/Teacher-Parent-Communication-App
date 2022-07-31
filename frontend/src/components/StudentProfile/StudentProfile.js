@@ -144,24 +144,32 @@ const StudentProfile = () => {
         // Assignments div
         let assignments = studentProfile.portfolio.map((assignment)=>{
             let student_response = null;
-            if (assignment.assignment.response_format === "Text") {
+            if (assignment.assignment_responses.length > 0) {
+                if (assignment.assignment.response_format === "Text") {
+                    student_response = (
+                        <div className="w-full max-h-[350px] overflow-auto bg-white border border-gray-300 p-2 mt-1">
+                            {assignment.assignment_responses[0].text}
+                        </div>
+                    )
+                } else if (assignment.assignment.response_format === "Image") {
+                    student_response = (
+                        <div className="w-full max-h-[350px] overflow-auto bg-white border border-gray-300 rounded p-2 mt-1">
+                            <img src={assignment.assignment_responses[0].image} className="object-scale-down" alt=""/>
+                        </div>
+                    )
+                } else if (assignment.assignment.response_format === "Video") {
+                    student_response = (
+                        <div className="w-full max-h-[350px] overflow-auto bg-white border border-gray-300 rounded p-2 mt-1">
+                            <video className="object-scale-down" controls>
+                                <source src={assignment.assignment_responses[0].video} type="video/mp4" />
+                            </video>
+                        </div>
+                    )
+                }
+            } else {
                 student_response = (
-                    <div className="w-full max-h-[350px] overflow-auto bg-white border border-gray-300 p-2 mt-1">
-                        {assignment.assignment_responses[0].text}
-                    </div>
-                )
-            } else if (assignment.assignment.response_format === "Image") {
-                student_response = (
-                    <div className="w-full max-h-[350px] overflow-auto bg-white border border-gray-300 rounded p-2 mt-1">
-                        <img src={assignment.assignment_responses[0].image} className="object-scale-down" alt=""/>
-                    </div>
-                )
-            } else if (assignment.assignment.response_format === "Video") {
-                student_response = (
-                    <div className="w-full max-h-[350px] overflow-auto bg-white border border-gray-300 rounded p-2 mt-1">
-                        <video className="object-scale-down" controls>
-                            <source src={assignment.assignment_responses[0].video} type="video/mp4" />
-                        </video>
+                    <div>
+                        <Link to={`/assignment/${assignment.assignment.code}/`}><p className="text-blue-600 underline font-semibold">Upload your work</p></Link>
                     </div>
                 )
             }

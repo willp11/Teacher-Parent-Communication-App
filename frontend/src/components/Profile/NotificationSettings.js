@@ -89,6 +89,7 @@ const NotificationSettings = (props) => {
                 <button disabled className={props.profile.parent.settings.new_event_notification === false ? "selected" : "unselected"}>No</button>
             </div>
             <button className="w-32 rounded bg-sky-500 hover:bg-indigo-500 px-2 py-2 text-white font-semibold m-2" onClick={()=>setEditSettingsMode(true)}>Edit Settings</button>
+            <p className="text-sm">{message}</p>
         </div>
     )
 

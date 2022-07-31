@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import {useMessage} from '../../Hooks/useMessage';
 import Spinner from '../Spinner/Spinner';
+import AddSchool from "./AddSchool";
 
 const SchoolInfo = (props) => {
 
@@ -75,10 +76,13 @@ const SchoolInfo = (props) => {
 
     let school_info_div = (
         <div className="rounded-md shadow-md bg-white mt-2 mb-4 p-4 min-h-[250px]">
-            <h2 className="text-md pb-2">School</h2>
-            <p className="pb-4">{props.profile.teacher.school === null ? "You do not have a school yet!" : props.profile.teacher.school.name}</p>
+            <h2 className="text-base text-gray-500">Your School</h2>
+            <h2 className="pb-4">{props.profile.teacher.school === null ? "You do not have a school yet!" : props.profile.teacher.school.name}</h2>
             {select_school_div}
             <p className="text-sm">{message}</p>
+            <div className="border-b-2 border-gray-300 my-2"></div>
+            <p className="mt-2">Don't see your school in the list?</p>
+            <AddSchool getSchoolList={props.getSchoolList} />
         </div>
     )
 

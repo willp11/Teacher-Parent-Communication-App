@@ -42,9 +42,11 @@ const ClassesInfo = (props) => {
     // CLASS LIST
     let school_class_list = props.profile.teacher.school_classes.map((school_class) => {
         return (
-            <div key={school_class.id} className="p-2 rounded border border-gray-300 w-64 mx-auto mb-1 bg-sky-200 hover:bg-indigo-500 hover:text-white font-bold">
-                <Link to={"/class/"+school_class.id}><h4 className="text-base">{school_class.name}</h4></Link>
-            </div>
+            <Link to={"/class/"+school_class.id}>
+                <div key={school_class.id} className="p-2 rounded border border-gray-300 w-64 mx-auto mb-1 bg-sky-200 hover:bg-indigo-500 hover:text-white font-bold">
+                    <h4 className="text-base">{school_class.name}</h4>
+                </div>
+            </Link>
         )
     })
 

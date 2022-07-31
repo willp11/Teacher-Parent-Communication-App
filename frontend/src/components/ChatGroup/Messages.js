@@ -83,7 +83,7 @@ const Messages = (props) => {
     }
 
     return (
-        <div className="relative h-[400px] w-full sm:w-[500px] bg-white rounded-sm border border-gray-600 shadow-md my-2">
+        <div className="relative h-[400px] w-full sm:w-[500px] bg-white rounded border border-gray-300 shadow-md my-2">
             <div className="h-[calc(100%-2.5rem)] overflow-auto" ref={messagesRef}>
                 {messages_div}
             </div>
