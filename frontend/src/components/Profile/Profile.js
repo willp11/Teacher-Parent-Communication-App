@@ -131,7 +131,7 @@ const Profile = () => {
                     {componentToShow === "User Details" ? <UserInfo profile={profile} getUserProfile={getUserProfile} /> : null}
                     {componentToShow === "Change Password" ? <ChangePassword /> : null}
                     {componentToShow === "Notifications" ? <NotificationSettings profile={profile} settings={notificationSettings} getUserProfile={getUserProfile} /> : null}
-                    {componentToShow === "Children" ? <ChildrenInfo profile={profile} /> : null}
+                    {componentToShow === "Children" ? <ChildrenInfo profile={profile} getUserProfile={getUserProfile} /> : null}
                 </div>
             )
         }
