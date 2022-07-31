@@ -5,6 +5,7 @@ import { useFormik } from "formik"
 import * as Yup from 'yup';
 import axios from 'axios';
 import { useMessage } from "../../Hooks/useMessage";
+import Spinner from "../Spinner/Spinner";
 
 const Feedback = (props) => {
 
@@ -12,6 +13,7 @@ const Feedback = (props) => {
 
     const [editMode, setEditMode] = useState(false);
     const [message, setMessage] = useMessage();
+    const [loading, setLoading] = useState(false);
 
     const toggleEditMode = () => {
         setEditMode(!editMode)
@@ -27,6 +29,7 @@ const Feedback = (props) => {
             score,
             feedback
         }
+        setLoading(true);
         axios.put(url, data, {headers: headers})
             .then(res=>{
                 console.log(res);
@@ -39,6 +42,7 @@ const Feedback = (props) => {
             })
             .finally(()=>{
                 setEditMode(false);
+                setLoading(false);
             })
     }
 
@@ -62,6 +66,19 @@ const Feedback = (props) => {
             feedback: Yup.string().trim()
         })
     });
+
+    // SUBMIT BTN
+    let submit_btn = (
+        <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 mt-1 text-white font-semibold">Submit</button>
+    )
+    if (loading) {
+        submit_btn = (
+            <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 mt-1 text-white font-semibold flex justify-center" disabled>
+                <Spinner />
+                Loading
+            </button>
+        )
+    }
 
     let form_div = (
         <form onSubmit={form.handleSubmit}>
@@ -88,7 +105,7 @@ const Feedback = (props) => {
             /> <br/>
             {form.errors.feedback ? <div className="text-sm text-left">{form.errors.feedback} </div> : null}
             <div className="w-full flex justify-center">
-                <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 mt-1 text-white font-semibold">Submit</button>
+                {submit_btn}
             </div>
         </form>
     )
@@ -130,7 +147,7 @@ const Feedback = (props) => {
                 <PencilAltIcon className="h-[24px] w-[24px]"/>
             </div>
             {editMode ? form_div : score_feedback}
-            <p className="text-sm font-semibold mt-1">{message}</p>
+            <p className="text-sm mt-1">{message}</p>
         </div>
     )
     return (

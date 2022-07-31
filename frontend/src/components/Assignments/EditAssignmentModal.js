@@ -3,10 +3,14 @@ import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
 import { XIcon } from "@heroicons/react/outline";
+import { useState } from "react";
+import Spinner from "../Spinner/Spinner";
 
 const EditAssignmentModal = (props) => {
 
     const token = useSelector((state)=>state.auth.token);
+
+    const [loading, setLoading] = useState(false);
 
     // Confirm button
     const handleEditAssignmentConfirm = (title, description, maximum_score, response_format) => {
@@ -21,6 +25,7 @@ const EditAssignmentModal = (props) => {
             response_format
         };
         const url = 'http://localhost:8000/api/v1/school/assignment-update/' + props.assignment.id + '/';
+        setLoading(true);
         axios.put(url, data, {headers: headers})
             .then(res=>{
                 console.log(res);
@@ -29,6 +34,9 @@ const EditAssignmentModal = (props) => {
             })
             .catch(err => {
                 console.log(err);
+            })
+            .finally(()=>{
+                setLoading(false);
             })
     }
 
@@ -52,6 +60,19 @@ const EditAssignmentModal = (props) => {
             )
         })
     });
+
+    // SUBMIT BTN
+    let submit_btn = (
+        <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 m-2 text-white font-semibold">Submit</button>
+    )
+    if (loading) {
+        submit_btn = (
+            <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 my-2 mx-auto text-white font-semibold flex justify-center" disabled>
+                <Spinner />
+                Loading
+            </button>
+        )
+    }
 
     let edit_form = (
         <div className="relative w-full sm:w-[600px] p-4 mx-auto mt-2 rounded-md bg-white border-2 border-gray-300 text-center">
@@ -138,7 +159,7 @@ const EditAssignmentModal = (props) => {
                 </div>
                 {assignment_formik.errors.response_format ? <div className="text-sm text-left pl-1">{assignment_formik.errors.response_format} </div> : null}
 
-                <button className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 m-2 text-white font-semibold" type="submit">Submit</button>
+                {submit_btn}
             </form>
         </div>
     )

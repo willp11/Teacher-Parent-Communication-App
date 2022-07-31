@@ -5,6 +5,8 @@ import { useSelector } from "react-redux";
 import Announcement from "./Announcement";
 import { useState } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
+import { useMessage } from "../../Hooks/useMessage";
+import Spinner from "../Spinner/Spinner";
 
 const Announcements = (props) => {
 
@@ -12,6 +14,8 @@ const Announcements = (props) => {
     const accountType = useSelector((state)=> state.auth.accountType);
 
     const [showForm, setShowForm] = useState(false);
+    const [message, setMessage] = useMessage();
+    const [loading, setLoading] = useState(false);
 
     // CREATE ANNOUNCEMENT FUNCTION
     const handleCreateAnnouncement = (title, content, actions) => {
@@ -25,14 +29,20 @@ const Announcements = (props) => {
             school_class: props.classId
         }
         const url = 'http://localhost:8000/api/v1/school/announcement-create/';
+        setLoading(true);
         axios.post(url, data, {headers: headers})
             .then(res=>{
                 console.log(res);
                 props.getClassInfo();
                 actions.resetForm();
+                setMessage("Announcement created successfully.")
             })
             .catch(err => {
                 console.log(err);
+                setMessage("There was a problem creating the announcement.")
+            })
+            .finally(()=>{
+                setLoading(false);
             })
     }
 
@@ -50,6 +60,19 @@ const Announcements = (props) => {
             content: Yup.string().trim().required("Content is required")
         })
     });
+
+    // SUBMIT BTN
+    let submit_btn = (
+        <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 m-2 text-white font-semibold">Submit</button>
+    )
+    if (loading) {
+        submit_btn = (
+            <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 my-2 mx-auto text-white font-semibold flex justify-center" disabled>
+                <Spinner />
+                Loading
+            </button>
+        )
+    }
 
     // CREATE ANNOUNCEMENT FORM
     let create_announcement_form = (
@@ -81,7 +104,8 @@ const Announcements = (props) => {
                     className="border border-gray-300 mt-2 w-full"
                 /> <br/>
                 {announcement_formik.errors.content ? <div className="text-sm w-full text-left pl-2 mt-1">{announcement_formik.errors.content} </div> : null}
-                <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 m-2 text-white font-semibold">Submit</button>
+                {submit_btn}
+                <p className="text-sm">{message}</p>
             </form> : null }
         </div>
     )
