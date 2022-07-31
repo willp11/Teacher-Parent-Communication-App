@@ -40,22 +40,28 @@ class ParentCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated, IsEmailVerified]
 
     def perform_create(self, serializer):
-        # check invite code is valid
-        invite_code = get_object_or_404(InviteCode, code=self.request.data['invite_code'], used=False)
         # save parent instance
         parent = serializer.save(user=self.request.user)
-        # update invite code instance
-        invite_code.parent = parent
-        invite_code.used = True
-        invite_code.save()
-        # update student instance
-        student = invite_code.student
-        student.parent = parent
-        student.save()
         # create parent settings instance
         settings = ParentSettings(parent=parent)
         settings.save()
 
+class InviteCodeUseView(RetrieveUpdateAPIView):
+    serializer_class = InviteCodeOnlySerializer
+    permission_classes = [IsAuthenticated, IsEmailVerified]
+
+    def get_object(self):
+        # unused invite code
+        invite_code = get_object_or_404(InviteCode, code=self.request.data['code'], used=False)
+        return invite_code
+
+    def perform_update(self, serializer):
+        invite_code = self.get_object()
+        parent = get_object_or_404(Parent, user=self.request.user)
+        serializer.save(parent=parent, user=True)
+        student = invite_code.student
+        student.parent = parent
+        student.save()
 
 class PortfolioListView(ListAPIView):
     serializer_class = AssigneeSerializer

@@ -18,14 +18,13 @@ class Teacher(models.Model):
     school = models.ForeignKey(School,  on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return self.user.username
+        return '{} in {}'.format(self.user.first_name, self.user.last_name)
 
 class Parent(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='parent')
-    invite_code = models.CharField(max_length=8)
 
     def __str__(self):
-        return self.user.username
+        return '{}'.format(self.user.email)
 
 class SchoolClass(models.Model):
     name = models.CharField(max_length=100)

@@ -6,6 +6,7 @@ urlpatterns = [
     path('school-list-create/', SchoolCreateView.as_view(), name='school_create'),
     path('parent-create/', ParentCreateView.as_view(), name='parent_create'),
     path('teacher-create/', TeacherCreateView.as_view(), name='teacher_create'),
+    path('use-invite-code/', InviteCodeUseView.as_view(), name='use_invite_code'),
     path('teacher-school-update/', TeacherSchoolUpdateView.as_view(), name='teacher_school_update'),
     path('portfolio/<int:student>/', PortfolioListView.as_view(), name='portfolio'),
     path('class/<int:pk>/', ClassDetailView.as_view(), name='class_detail'),

@@ -6,11 +6,6 @@ class ProfilePictureSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ('profile_picture',)
 
-class UsernameSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ('username',)
-
 class UserNameOnlySerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
@@ -47,7 +42,7 @@ class TeacherNameSerializer(serializers.ModelSerializer):
 class ParentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Parent
-        fields = ('invite_code',)
+        fields = ('user',)
 
 class ParentSettingsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -105,7 +100,7 @@ class AnnouncementUpdateSerializer(serializers.ModelSerializer):
         fields = ('title', 'content')
 
 class StoryCommentListSerializer(serializers.ModelSerializer):
-    author = UsernameSerializer()
+    author = UserNameOnlySerializer()
     class Meta:
         model = StoryComment
         fields = '__all__'
