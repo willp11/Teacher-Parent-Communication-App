@@ -192,7 +192,7 @@ class AnnouncementUpdateView(RetrieveUpdateAPIView):
         return announcement
 
 class EventCreateView(CreateAPIView):
-    serializer_class = EventSerializer
+    serializer_class = EventCreateSerializer
     permission_classes = [IsAuthenticated, IsEmailVerified]
 
     def perform_create(self, serializer):
@@ -231,7 +231,7 @@ class EventUpdateView(RetrieveUpdateAPIView):
         return event
 
 class StoryCreateView(CreateAPIView):
-    serializer_class = StorySerializer
+    serializer_class = StoryCreateSerializer
     permission_classes = [IsAuthenticated, IsEmailVerified]
 
     def perform_create(self, serializer):

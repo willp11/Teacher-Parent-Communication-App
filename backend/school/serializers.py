@@ -125,6 +125,11 @@ class StoryMediaSerializer(serializers.ModelSerializer):
         model = StoryMedia
         fields = '__all__'
 
+class StoryCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Story
+        fields = ('title', 'content', 'school_class')
+
 class StorySerializer(serializers.ModelSerializer):
     story_images = StoryMediaSerializer(many=True)
     class Meta:
@@ -166,12 +171,28 @@ class HelperParentDataSerializer(serializers.ModelSerializer):
         model = Helper
         fields = ('parent',)
 
-# Events - for retrieving event data and creating event instances
+# Events - for retrieving event data
 class EventSerializer(serializers.ModelSerializer):
     helpers = HelperParentDataSerializer(many=True)
     class Meta:
         model = Event
         fields = ('id', 'name', 'date', 'description', 'school_class', 'helpers_required', 'helpers')
+
+class EventCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ('name', 'date', 'description', 'school_class', 'helpers_required')
+
+# Updating event instances
+class EventUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ('name', 'date', 'description', 'helpers_required')
+
+class RequestHelpersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ('pk', 'helpers_required')
 
 class ClassDetailSerializer(serializers.ModelSerializer):
     teacher = TeacherNameSerializer()
@@ -270,17 +291,6 @@ class StudentsClassInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = SchoolClass
         fields = ('id', 'name', 'school', 'teacher')
-
-# Updating event instances
-class EventUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Event
-        fields = ('name', 'date', 'description', 'helpers_required')
-
-class RequestHelpersSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Event
-        fields = ('pk', 'helpers_required')
 
 # CHAT GROUPS
 class ChatGroupMemberNameSerializer(serializers.ModelSerializer):
