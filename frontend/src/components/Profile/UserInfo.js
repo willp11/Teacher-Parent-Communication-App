@@ -3,12 +3,14 @@ import { useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { UploadIcon } from "@heroicons/react/outline";
+import Spinner from '../Spinner/Spinner';
 
 const UserInfo = (props) => {
 
     const token = useSelector((state)=>state.auth.token);
 
     const [profileToUpload, setProfileToUpload] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const uploadButtonRef = useRef(null);
 
@@ -19,7 +21,6 @@ const UserInfo = (props) => {
     }
 
     const confirmUploadProfileHandler = () => {
-        console.log(profileToUpload);
         const headers = {
             'Content-Type': 'multipart/form-data',
             'Authorization': 'Token ' + token
@@ -28,6 +29,7 @@ const UserInfo = (props) => {
         const data = {
             profile_picture: profileToUpload
         }
+        setLoading(true);
         axios.put(url, data, {headers: headers})
             .then(res=>{
                 console.log(res);
@@ -38,6 +40,7 @@ const UserInfo = (props) => {
             })
             .finally(()=>{
                 setProfileToUpload(null);
+                setLoading(false);
             })
     }
 
@@ -63,6 +66,16 @@ const UserInfo = (props) => {
         profile_img_src = props.profile.profile_picture
     }
 
+    let upload_loading = null;
+    if (loading) {
+        upload_loading = (
+            <div className="w-full flex justify-center items-center mt-1">
+                <p className="text-sm pr-2">Uploading image</p>
+                <Spinner />
+            </div>
+        )
+    }
+
     const user_info_div = (
         <div className="rounded-md bg-white shadow-md mt-2 mb-4 p-4 min-h-[250px]">
             <h2 className="pb-4 text-md">User Details</h2>
@@ -73,6 +86,7 @@ const UserInfo = (props) => {
                         <img src={profile_img_src} className="w-[130px] h-[130px] rounded-full cursor-pointer" alt="" onClick={showUploadFile}/>
                     </div>
                     <input type="file" className="hidden" onChange={(e)=>setProfileToUpload(e.currentTarget.files[0])} ref={uploadButtonRef}/>
+                    {upload_loading}
                 </div>
                 <div className="text-left w-1/2">
                     <h2 className="text-gray-600 text-sm text-left">Name</h2>

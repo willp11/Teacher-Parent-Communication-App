@@ -3,6 +3,8 @@ import { useSelector } from "react-redux";
 import { DotsHorizontalIcon } from "@heroicons/react/outline";
 import EditEventsModal from "./EditEventsModal";
 import axios from "axios";
+import Spinner from "../Spinner/Spinner";
+import HelperList from "./HelperList";
 
 const Event = (props) => {
 
@@ -13,6 +15,8 @@ const Event = (props) => {
     const [showEditDelMenu, setShowEditDelMenu] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [isHelper, setIsHelper] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [showHelperList, setShowHelperList] = useState(false);
 
     // On component mount - for parents check if user is in helpers array
     useEffect(()=>{
@@ -47,6 +51,7 @@ const Event = (props) => {
             event: props.event.id
         }
         const url = 'http://localhost:8000/api/v1/school/helper-create/';
+        setLoading(true);
         axios.post(url, data, {headers: headers})
             .then(res=>{
                 console.log(res);
@@ -54,6 +59,9 @@ const Event = (props) => {
             })
             .catch(err=>{
                 console.log(err);
+            })
+            .finally(()=>{
+                setLoading(false);
             })
     }
 
@@ -64,6 +72,7 @@ const Event = (props) => {
             'Authorization': 'Token ' + token
         }
         const url = `http://localhost:8000/api/v1/school/helper-delete/${props.event.id}`
+        setLoading(true);
         axios.delete(url, {headers: headers})
             .then(res=>{
                 console.log(res);
@@ -71,6 +80,9 @@ const Event = (props) => {
             })
             .catch(err=>{
                 console.log(err);
+            })
+            .finally(()=>{
+                setLoading(false);
             })
     }
 
@@ -97,19 +109,46 @@ const Event = (props) => {
     )
     let register_help_btn = null;
     if (!props.finished) {
-        register_help_btn = (
-            <button
-                onClick={registerHelper}
-                className="text-sm ml-2 p-1 border-2 border-gray-300 bg-white font-semibold rounded h-8 hover:bg-indigo-500 hover:text-white hover:border-indigo-800"
-            >Register</button>
-        )
-        if (isHelper) {
-            register_help_btn = (
-                <button
-                    onClick={unregisterHelper}
-                    className="text-sm ml-2 p-1 border-2 border-gray-300 font-semibold rounded h-8 bg-indigo-500 hover:bg-indigo-600 text-white border-indigo-800"
-                >Unregister</button>
-            )
+        if (loading) {
+            if (isHelper) {
+                register_help_btn = (
+                    <button
+                        onClick={registerHelper}
+                        className="text-sm ml-2 p-2 border-2 border-gray-300 font-semibold rounded h-8 bg-indigo-500 hover:bg-indigo-600 hover:text-white hover:border-indigo-800 flex justify-center items-center"
+                    >
+                        <Spinner />
+                        Loading
+                    </button>
+                )
+            } else {
+                register_help_btn = (
+                    <button
+                        onClick={registerHelper}
+                        className="text-sm ml-2 p-2 border-2 border-gray-300 bg-white font-semibold rounded h-8 hover:bg-indigo-500 hover:text-white hover:border-indigo-800 flex justify-center items-center"
+                    >
+                        <Spinner />
+                        Loading
+                    </button>
+                )
+            }
+        } else {
+            if (isHelper) {
+                register_help_btn = (
+                    <button
+                        onClick={unregisterHelper}
+                        className="text-sm ml-2 p-1 border-2 border-gray-300 font-semibold rounded h-8 bg-indigo-500 hover:bg-indigo-600 text-white border-indigo-800"
+                    >Unregister</button>
+                )
+            } else {
+                register_help_btn = (
+                    <button
+                        onClick={registerHelper}
+                        className="text-sm ml-2 p-1 border-2 border-gray-300 bg-white font-semibold rounded h-8 hover:bg-indigo-500 hover:text-white hover:border-indigo-800"
+                    >
+                        Register
+                    </button>
+                )
+            }
         }
     }
 
@@ -127,7 +166,10 @@ const Event = (props) => {
             </div>
             <div className="relative flex justify-between">
                 <div className="flex justify-start items-center">
-                    {!props.finished ? <p className="text-gray-600 text-sm font-semibold pl-2 w-fit">{props.event.helpers_required - props.event.helpers.length} helpers required</p> : null}
+                    {!props.finished ? <p className="text-gray-600 text-sm font-semibold pl-2 w-fit">{props.event.helpers_required - props.event.helpers.length} 
+                        <span className="text-blue-600 underline cursor-pointer px-1" onClick={()=>setShowHelperList(true)}>helpers</span> 
+                        required
+                    </p> : null}
                     {accountType === "parent" ? register_help_btn : null}
                 </div>
                 {accountType === "teacher" ? edit_del_btn : null}
@@ -140,6 +182,7 @@ const Event = (props) => {
         <div className="mb-4">
             {event_div}
             {(editMode) ? <EditEventsModal event={props.event} getClassInfo={props.getClassInfo} toggleEditMode={toggleEditMode} /> : null}
+            {(showHelperList) ? <HelperList helpers={props.event.helpers} setShowHelperList={setShowHelperList} /> : null}
         </div>
     )
 
