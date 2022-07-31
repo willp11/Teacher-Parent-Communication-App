@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import Spinner from "../Spinner/Spinner";
+import {useMessage} from '../../Hooks/useMessage';
 
 const NotificationSettings = (props) => {
 
@@ -8,6 +10,8 @@ const NotificationSettings = (props) => {
 
     const [editSettingsMode, setEditSettingsMode] = useState(false);
     const [editedParentSettings, setEditedParentSettings] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useMessage();
     
     useEffect(()=>{
         setEditedParentSettings(props.settings);
@@ -28,19 +32,24 @@ const NotificationSettings = (props) => {
 
     // Submit edit parents request
     const submitEditParentSettings = () => {
-        console.log("submitting edit parent settings")
         const headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
         };
+        setLoading(true);
         axios.put('http://localhost:8000/api/v1/school/parent-settings-update/', editedParentSettings, {headers: headers})
             .then(res => {
                 console.log(res);
                 props.getUserProfile();
                 setEditSettingsMode(false);
+                setMessage("Settings updated successfully.")
             })
             .catch(err => {
                 console.log(err);
+                setMessage("There was a problem updating settings.")
+            })
+            .finally(()=>{
+                setLoading(false);
             })
     }
 
@@ -79,9 +88,22 @@ const NotificationSettings = (props) => {
                 <button disabled className={props.profile.parent.settings.new_event_notification === true ? "selected" : "unselected"}>Yes</button>
                 <button disabled className={props.profile.parent.settings.new_event_notification === false ? "selected" : "unselected"}>No</button>
             </div>
-            <button className="w-32 rounded-full bg-sky-500 hover:bg-indigo-500 px-2 py-2 text-white font-bold m-2 border-2 border-black" onClick={()=>setEditSettingsMode(true)}>Edit Settings</button>
+            <button className="w-32 rounded bg-sky-500 hover:bg-indigo-500 px-2 py-2 text-white font-semibold m-2" onClick={()=>setEditSettingsMode(true)}>Edit Settings</button>
         </div>
     )
+
+    // SUBMIT BTN
+    let submit_btn = (
+        <button className="w-24 rounded bg-sky-500 hover:bg-indigo-500 py-2 text-white font-semibold m-2" onClick={submitEditParentSettings} disabled={false}>Submit</button>
+    )
+    if (loading) {
+        submit_btn = (
+            <button className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold m-2 flex justify-center mx-auto" type="submit" disabled={true}>
+                <Spinner />
+                Loading
+            </button>
+        )
+    }
 
     // EDIT MODE ON
     if (editSettingsMode) {
@@ -140,8 +162,9 @@ const NotificationSettings = (props) => {
                         onClick={()=>editParentSettingsHandler("new_event_notification", false)}
                         className={editedParentSettings.new_event_notification === false ? "selected" : "unselected"}>No</button>
                 </div>
-                <button className="w-24 rounded-full bg-red-600 hover:bg-red-700 py-2 text-white font-bold m-2 border-2 border-black" onClick={cancelEditParentSettings}>Cancel</button>
-                <button className="w-24 rounded-full bg-sky-500 hover:bg-indigo-500 py-2 text-white font-bold m-2 border-2 border-black" onClick={submitEditParentSettings}>Submit</button>
+                {loading ? null : <button className="w-24 rounded bg-red-600 hover:bg-red-700 py-2 text-white font-semibold m-2" onClick={cancelEditParentSettings}>Cancel</button>}
+                {submit_btn}
+                <p className="text-sm">{message}</p>
             </div>
         );
     }

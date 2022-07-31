@@ -61,7 +61,7 @@ const SelectAccountType = (props) => {
     if (selectedAccountType === 'teacher') {
         submit_btn = (
             <button 
-                className="w-32 border-2 border-black rounded-full bg-sky-500 hover:bg-indigo-500 p-2 text-white text-sm font-bold" 
+                className="w-24 rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold" 
                 onClick={handleSubmitCreateTeacher}
             >
                 Submit
@@ -78,7 +78,7 @@ const SelectAccountType = (props) => {
                 />
                 <button 
                     onClick={()=>handleSubmitInviteCode(inviteCode)}
-                    className="rounded-full border-2 border-black bg-sky-500 hover:bg-indigo-500 px-4 py-2 text-white text-sm font-bold ml-2"
+                    className="w-24 rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold ml-2"
                 >
                     Submit
                 </button>
@@ -86,14 +86,14 @@ const SelectAccountType = (props) => {
         )
     }
     let select_account_type_div = (
-        <div className="shadow-md mb-2 bg-white p-2">
-            <h2 className="text-gray-600 text-sm">Select Account Type</h2>
+        <div className="rounded shadow-md mb-2 bg-white p-4">
+            <h2 className="text-md">Select Account Type</h2>
             <div className="flex items-center justify-center m-2">
                 <div 
-                    className={selectedAccountType === 'teacher' ? "selected" : "unselected cursor-pointer hover:bg-indigo-100"}
+                    className={selectedAccountType === 'teacher' ? "selected" : "unselected cursor-pointer"}
                     onClick={()=>setSelectedAccountType('teacher')}>Teacher</div>
                 <div 
-                    className={selectedAccountType === 'parent' ? "selected" : "unselected cursor-pointer hover:bg-indigo-100"}
+                    className={selectedAccountType === 'parent' ? "selected" : "unselected cursor-pointer"}
                     onClick={()=>setSelectedAccountType('parent')}>Parent</div>
             </div>
             {submit_btn}

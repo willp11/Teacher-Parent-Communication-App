@@ -16,7 +16,7 @@ const MemberList = (props) => {
     let add_member_btn = (
         <button 
             onClick={()=>setShowAddMembers(true)} 
-            className="border-2 border-black bg-sky-500 hover:bg-indigo-500 text-white text-sm font-semibold rounded-full px-4 py-1 my-2"
+            className="bg-sky-500 hover:bg-indigo-500 text-white font-semibold rounded px-4 py-1 my-2"
         >
             Add Members
         </button>

@@ -150,7 +150,7 @@ const Register = () => {
                         <button 
                             disabled={loading} 
                             type="submit" 
-                            className="w-full rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-3 mt-4 mb-2 text-white font-bold border-2 border-black"
+                            className="w-full rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-3 mt-4 mb-2 text-white font-bold"
                         >
                             SIGN UP
                         </button>

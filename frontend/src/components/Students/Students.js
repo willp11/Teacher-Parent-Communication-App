@@ -79,10 +79,10 @@ const Students = (props) => {
                         style={{textAlign: "center"}}
                         className="border border-gray-300 mt-2 h-10"
                     /> <br/>
-                    {student_formik.errors.name ? <div className="text-sm pl-2 py-1">{student_formik.errors.name} </div> : null}
+                    {student_formik.errors.name ? <div className="text-sm">{student_formik.errors.name} </div> : null}
                 </div>
                 <div>
-                    <button type="submit" className="w-32 rounded-full bg-sky-500 hover:bg-indigo-500 p-2 mt-2 mb-4 text-white font-bold border-2 border-black">Submit</button>
+                    <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 m-2 text-white font-semibold">Submit</button>
                 </div>
             </form> : null}
         </div>

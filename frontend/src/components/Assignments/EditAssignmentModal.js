@@ -71,7 +71,7 @@ const EditAssignmentModal = (props) => {
                     onBlur={assignment_formik.handleBlur}
                     className="border border-gray-300 mt-2 h-10 w-full"
                 /> <br/>
-                {assignment_formik.errors.title ? <div className="ErrorMsg">{assignment_formik.errors.title} </div> : null}
+                {assignment_formik.errors.title ? <div className="text-sm w-full text-left pl-2">{assignment_formik.errors.title} </div> : null}
 
                 <textarea
                     rows="3"
@@ -82,7 +82,7 @@ const EditAssignmentModal = (props) => {
                     onBlur={assignment_formik.handleBlur}
                     className="border border-gray-300 mt-2 w-full"
                 /> <br/>
-                {assignment_formik.errors.content ? <div className="ErrorMsg">{assignment_formik.errors.content} </div> : null}
+                {assignment_formik.errors.content ? <div className="text-sm w-full text-left pl-2">{assignment_formik.errors.content} </div> : null}
 
                 <input
                     type="number"
@@ -93,7 +93,7 @@ const EditAssignmentModal = (props) => {
                     onBlur={assignment_formik.handleBlur}
                     className="border border-gray-300 mt-2 h-10 w-full"
                 /> <br/>
-                {assignment_formik.errors.maximum_score ? <div className="ErrorMsg">{assignment_formik.errors.maximum_score} </div> : null}
+                {assignment_formik.errors.maximum_score ? <div className="text-sm w-full text-left pl-2">{assignment_formik.errors.maximum_score} </div> : null}
 
                 <div className="py-2 px-1 border border-gray-300 mt-2">
                     <p className="mb-1 text-left font-semibold text-sm">Response format:</p>
@@ -138,7 +138,7 @@ const EditAssignmentModal = (props) => {
                 </div>
                 {assignment_formik.errors.response_format ? <div className="text-sm text-left pl-1">{assignment_formik.errors.response_format} </div> : null}
 
-                <button className="rounded-md border-2 border-black bg-sky-500 hover:bg-indigo-500 text-white font-semibold px-4 py-2 m-2" type="submit">Submit</button>
+                <button className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 m-2 text-white font-semibold" type="submit">Submit</button>
             </form>
         </div>
     )

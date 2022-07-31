@@ -81,7 +81,7 @@ const Stories = (props) => {
                     className="border border-gray-300 mt-2 w-full"
                 /> <br/>
                 {story_formik.errors.content ? <div className="text-sm w-full text-left pl-2">{story_formik.errors.content} </div> : null}
-                <button type="submit" className="w-32 rounded-full bg-sky-500 hover:bg-indigo-500 p-2 my-2 text-white font-bold border-2 border-black">Submit</button>
+                <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 m-2 text-white font-semibold">Submit</button>
             </form> : null}
         </div>
     )

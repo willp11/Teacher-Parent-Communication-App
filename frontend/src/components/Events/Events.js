@@ -130,7 +130,7 @@ const Events = (props) => {
                     onBlur={event_formik.handleBlur}
                     className="border border-gray-300 mt-2 h-10 w-full"
                 /> <br/>
-                {event_formik.errors.name ? <div className="ErrorMsg">{event_formik.errors.name} </div> : null}
+                {event_formik.errors.name ? <div className="text-sm w-full text-left pl-2">{event_formik.errors.name} </div> : null}
 
                 <input
                     type="date"
@@ -141,7 +141,7 @@ const Events = (props) => {
                     onBlur={event_formik.handleBlur}
                     className="border border-gray-300 mt-2 h-10 w-full"
                 /> <br/>
-                {event_formik.errors.date ? <div className="ErrorMsg">{event_formik.errors.date} </div> : null}
+                {event_formik.errors.date ? <div className="text-sm w-full text-left pl-2">{event_formik.errors.date} </div> : null}
 
                 <textarea
                     rows="3"
@@ -152,7 +152,7 @@ const Events = (props) => {
                     onBlur={event_formik.handleBlur}
                     className="border border-gray-300 mt-2 w-full"
                 /> <br/>
-                {event_formik.errors.description ? <div className="ErrorMsg">{event_formik.errors.description} </div> : null}
+                {event_formik.errors.description ? <div className="text-sm w-full text-left pl-2">{event_formik.errors.description} </div> : null}
 
                 <input
                     type="number"
@@ -163,8 +163,8 @@ const Events = (props) => {
                     onBlur={event_formik.handleBlur}
                     className="border border-gray-300 mt-2 h-10 w-full"
                 /> <br/>
-                {event_formik.errors.helpers ? <div className="ErrorMsg">{event_formik.errors.helpers} </div> : null}
-                <button type="submit" className="w-32 rounded-full bg-sky-500 hover:bg-indigo-500 p-2 my-2 text-white font-bold border-2 border-black">Submit</button>
+                {event_formik.errors.helpers ? <div className="text-sm w-full text-left pl-2">{event_formik.errors.helpers} </div> : null}
+                <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 m-2 text-white font-semibold">Submit</button>
             </form> : null}
         </div>
     )
@@ -204,7 +204,7 @@ const Events = (props) => {
     let buttons = eventTypes.map((type)=>{
         let style = "w-24 mx-1 text-base font-semibold p-1 border border-gray-300 bg-white hover:bg-indigo-500 hover:text-white rounded shadow-md"
         if (selectedEventType === type) {
-            style = "w-24 mx-1 text-base font-semibold p-1 border border-gray-300 text-white bg-sky-500 hover:bg-sky-600 rounded shadow-md"
+            style = "w-24 mx-1 text-base font-semibold p-1 border border-gray-300 text-white bg-sky-500 rounded shadow-md"
         }
         return <button key={type} className={style} onClick={()=>setSelectedEventType(type)}>{type}</button>
     })

@@ -1,8 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { XIcon, TrashIcon } from '@heroicons/react/outline';
 import Contacts from "./Contacts";
+import { useMessage } from "../../Hooks/useMessage";
+import Spinner from "../Spinner/Spinner";
 
 const AddMembers = (props) => {
 
@@ -13,19 +15,9 @@ const AddMembers = (props) => {
     const [parentList, setParentList] = useState([]);
 
     // already member error message
-    const [message, setMessage] = useState("");
-    const [messageCount, setMessageCount] = useState(0);
+    const [message, setMessage] = useMessage();
 
-    // remove error message after 5 seconds
-    useEffect(()=>{
-        let resetMsg = setTimeout(()=>{
-            setMessage("");
-        }, [5000]);
-
-        return () => {
-            clearTimeout(resetMsg);
-        }
-    }, [messageCount])
+    const [loading, setLoading] = useState(false);
 
     // function to handle adding new parents to list
     const addToListHandler = (parent) => {
@@ -35,7 +27,6 @@ const AddMembers = (props) => {
             if (p.user.id === parent.user.id) {
                 userFound = true;
                 setMessage(`${parent.user.first_name} ${parent.user.last_name} is already in the list`);
-                setMessageCount(messageCount + 1);
             }
         })
 
@@ -44,7 +35,6 @@ const AddMembers = (props) => {
             if (member.user.id === parent.user.id) {
                 userFound = true;
                 setMessage(`${parent.user.first_name} ${parent.user.last_name} is already in the group`);
-                setMessageCount(messageCount + 1);
             } 
         })
 
@@ -74,7 +64,6 @@ const AddMembers = (props) => {
 
     // function to submit list
     const submitParentListHandler = () => {
-        console.log("submitting list")
         const headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
@@ -90,14 +79,20 @@ const AddMembers = (props) => {
             data_arr.push(user)
         })
         const url = `http://localhost:8000/api/v1/school/chat-group-add-members/${props.groupId}/`;
+        setLoading(true)
         axios.post(url, data_arr, {headers: headers})
             .then(res=>{
                 console.log(res)
                 setParentList([]);
                 props.getGroupMembers();
+                setMessage("Users added to group successfully.")
             })
             .catch(err=>{
                 console.log(err)
+                setMessage("There was a problem adding users to the group.")
+            })
+            .finally(()=>{
+                setLoading(false);
             })
     }
 
@@ -110,15 +105,29 @@ const AddMembers = (props) => {
             </div>
         )
     })
+    let submit_btn = (
+        <button 
+            className="bg-sky-500 hover:bg-indigo-500 text-white font-semibold rounded px-4 py-1" 
+            onClick={submitParentListHandler}>Submit
+        </button>
+    )
+    if (loading) {
+        submit_btn = (
+            <button 
+                className="bg-sky-500 hover:bg-indigo-500 text-white font-semibold rounded px-4 py-1 flex mx-auto" 
+                onClick={submitParentListHandler}
+            >
+                <Spinner />
+                Loading
+            </button>
+        )
+    }
     let user_list_div = (
         <div className="w-full sm:w-[500px] max-h-[300px] overflow-auto bg-sky-200 rounded shadow-md p-2 mx-auto my-4">
             <h3>New Users</h3>
             {(parentList.length > 0) ? user_list : <p>No users added to list</p>}
-            {(parentList.length > 0) ? <button 
-                                            className="shadow-md bg-sky-500 hover:bg-indigo-500 text-white font-semibold rounded-full px-4 py-1" 
-                                            onClick={submitParentListHandler}>Submit
-                                        </button> : null}
-            <p style={{fontSize: "0.8rem"}}>{message}</p>
+            {(parentList.length > 0) ? submit_btn : null}
+            <p className="text-sm">{message}</p>
         </div>
     )
 

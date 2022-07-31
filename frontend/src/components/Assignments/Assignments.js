@@ -155,7 +155,7 @@ const Assignments = (props) => {
                 </div>
                 {assignment_formik.errors.response_format ? <div className="text-sm text-left pl-1">{assignment_formik.errors.response_format} </div> : null}
 
-                <button className="rounded-md border-2 border-black bg-sky-500 hover:bg-indigo-500 text-white font-semibold px-4 py-2 m-2" type="submit">Submit</button>
+                <button className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 m-2 text-white font-semibold" type="submit">Submit</button>
             </form> : null}
         </div>
         

@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import {useMessage} from '../../Hooks/useMessage';
+import Spinner from '../Spinner/Spinner';
 
 const SchoolInfo = (props) => {
 
     const token = useSelector((state)=>state.auth.token);
 
     const [selectedSchool, setSelectedSchool] = useState("");
+    const [message, setMessage] = useMessage();
+    const [loading, setLoading] = useState(false);
 
     // Handler to send request to change teacher's school
     const submitSelectSchoolHandler = () => {
@@ -18,13 +22,19 @@ const SchoolInfo = (props) => {
             const data = {
                 school: selectedSchool,
             };
+            setLoading(true);
             axios.put('http://localhost:8000/api/v1/school/teacher-school-update/', data, {headers: headers})
                 .then(res => {
                     console.log(res);
                     props.getUserProfile();
+                    setMessage("School updated successfully.")
                 })
                 .catch(err => {
                     console.log(err);
+                    setMessage("There was a problem updating your school.")
+                })
+                .finally(()=>{
+                    setLoading(false);
                 })
         }
     }
@@ -41,10 +51,25 @@ const SchoolInfo = (props) => {
             {dropdown_items}
         </select>
     )
+
+    let submit_btn = (
+        <button className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold mt-4" onClick={submitSelectSchoolHandler} disabled={false}>Submit</button>
+    )
+    if (loading) {
+        submit_btn = (
+            <button 
+                className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold mt-4 mx-auto flex justify-center" 
+                onClick={submitSelectSchoolHandler} disabled={true}
+            >   
+                <Spinner />
+                Submit
+            </button>
+        )
+    }
     let select_school_div = (
         <div className="pb-2">
             {dropdown} <br/>
-            <button className="border-2 border-black rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-1 mt-2 text-white text-sm font-semibold" onClick={submitSelectSchoolHandler}>Submit</button>
+            {submit_btn}
         </div>
     )
 
@@ -53,6 +78,7 @@ const SchoolInfo = (props) => {
             <h2 className="text-md pb-2">School</h2>
             <p className="pb-4">{props.profile.teacher.school === null ? "You do not have a school yet!" : props.profile.teacher.school.name}</p>
             {select_school_div}
+            <p className="text-sm">{message}</p>
         </div>
     )
 

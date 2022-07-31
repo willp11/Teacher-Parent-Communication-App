@@ -65,7 +65,7 @@ const UserInfo = (props) => {
 
     const user_info_div = (
         <div className="rounded-md bg-white shadow-md mt-2 mb-4 p-4 min-h-[250px]">
-            <h2 className="pb-2 text-md">User Details</h2>
+            <h2 className="pb-4 text-md">User Details</h2>
             <div className="flex flex-row">
                 <div className="w-1/2 flex flex-col items-center justify-center">
                     <div className="relative">

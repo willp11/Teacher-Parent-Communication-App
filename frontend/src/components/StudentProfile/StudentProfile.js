@@ -201,7 +201,7 @@ const StudentProfile = () => {
         )
 
         student_profile_div = (
-            <div className="w-full sm:w-[600px] md:w-[750px] rounded-md border border-gray-300 shadow-sm bg-white p-2 text-center">
+            <div className="w-full sm:w-[600px] md:w-[750px] rounded-md border-2 border-gray-300 shadow-md bg-white p-2 text-center">
                 <h1 className="mb-2">{studentProfile.name}</h1>
                 {student_info_div}
                 {assignments_div}
@@ -211,7 +211,7 @@ const StudentProfile = () => {
 
     if (forbidden) {
         student_profile_div = (
-            <div className="w-full sm:w-[600px] md rounded-md border border-gray-300 shadow-sm bg-white p-2 text-center">
+            <div className="w-full sm:w-[600px] md rounded-md border-2 border-gray-300 shadow-md bg-white p-2 text-center">
                 <h2>Forbidden</h2>
                 <p className="m-2">You must be the student's parent or teacher to access their profile page.</p>
             </div>

@@ -4,12 +4,13 @@ import axios from 'axios';
 import starImg from '../../Assets/Images/star-sticker.jpg';
 import dinosaurImg from '../../Assets/Images/dinosaur-sticker.jpg';
 import catImg from '../../Assets/Images/cat-sticker.jpg';
+import {useMessage} from '../../Hooks/useMessage';
 
 const AwardSticker = (props) => {
     
     const token = useSelector((state)=>state.auth.token);
     const [selectedSticker, setSelectedSticker] = useState(null);
-    const [successMsg, setSuccessMsg] = useState("");
+    const [message, setMessage] = useMessage();
 
     // Award sticker function
     const awardSticker = () => {
@@ -26,7 +27,7 @@ const AwardSticker = (props) => {
             .then(res=>{
                 console.log(res);
                 setSelectedSticker(null);
-                setSuccessMsg(`Sticker awarded to ${props.name}`);
+                setMessage(`Sticker awarded to ${props.name}`);
             })
             .catch(err=>{
                 console.log(err);
@@ -46,8 +47,8 @@ const AwardSticker = (props) => {
                 <img src={dinosaurImg} alt="dinosaur" onClick={()=>setSelectedSticker(2)} className={selectedSticker === 2 ? selected_img_classname : img_classname} />
                 <img src={catImg} alt="cat" onClick={()=>setSelectedSticker(3)} className={selectedSticker === 3 ? selected_img_classname : img_classname} />
             </div>
-            <button className="w-24 rounded-full bg-sky-500 hover:bg-indigo-500 px-2 py-1 my-1 text-white font-bold border-2 border-black" onClick={awardSticker}>Submit</button>
-            <p style={{margin: "5px", fontSize: "0.9rem"}}>{successMsg}</p>
+            <button className="w-24 rounded bg-sky-500 hover:bg-indigo-500 p-2 my-1 text-white font-semibold" onClick={awardSticker}>Submit</button>
+            <p className="text-sm">{message}</p>
         </div>
     )
 }
