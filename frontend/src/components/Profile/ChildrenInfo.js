@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
 import { useState } from "react";
 import {useMessage} from '../../Hooks/useMessage';
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Spinner from '../Spinner/Spinner';
+import Child from "./Child";
 
 const ChildrenInfo = (props) => {
 
@@ -11,17 +11,11 @@ const ChildrenInfo = (props) => {
 
     const [message, setMessage] = useMessage();
     const [loading, setLoading] = useState(false);
-    const [inviteCode, setInviteCode] = useState("")
+    const [inviteCode, setInviteCode] = useState("");
 
     // Parent accounts only - list of their children
     let children_list = props.profile.parent.children.map(child => {
-        return (
-            <div key={child.id} className="border border-gray-300 rounded-md shadow-md w-64 mx-auto my-2 bg-sky-100">
-                <Link to={"/studentProfile/"+child.id}><h4 className="text-blue-700 underline">{child.name}</h4></Link>
-                <p>{child.school_class.school.name}</p>
-                <p>{child.school_class.name}</p>
-            </div>
-        )
+        return <Child key={child.id} child={child} getUserProfile={props.getUserProfile} />
     })
 
     // Add child handler

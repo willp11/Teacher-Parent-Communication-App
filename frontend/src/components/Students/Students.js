@@ -100,7 +100,7 @@ const Students = (props) => {
                 onClick={()=>showStudentModalHandler(idx)}
             >
                 <h3 className="pb-2 truncate">{student.name}</h3>
-                <img src={profile_img_src} className="h-[100px] w-[100px] mx-auto rounded-full" alt=""/>                
+                <img src={profile_img_src} className="h-[100px] w-[100px] mx-auto rounded-full" alt=""/>       
             </div>
         )
     })

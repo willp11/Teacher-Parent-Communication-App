@@ -4,7 +4,7 @@ const HelperList = (props) => {
 
     let helpers = props.helpers.map(helper=>{
         return (
-            <p className="my-1">{`${helper.parent.user.first_name} ${helper.parent.user.last_name}`}</p>
+            <p key={helper.id} className="my-1">{`${helper.parent.user.first_name} ${helper.parent.user.last_name}`}</p>
         )
     })
 

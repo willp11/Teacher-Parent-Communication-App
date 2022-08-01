@@ -203,7 +203,7 @@ const StudentProfile = () => {
             <div className="p-2">
                 <h2>Portfolio</h2>
                 <div className="flex flex-wrap">
-                    {assignments}
+                    {studentProfile.portfolio.length > 0 ? assignments : <p className="w-full text-center">{studentProfile.name} has no assignments yet.</p>}
                 </div>
             </div>
         )

@@ -169,7 +169,7 @@ const Story = (props) => {
             </div>
             <div className="flex justify-between items-center pt-2">
                 <p className="text-gray-600 text-sm font-semibold pl-2 cursor-pointer w-fit" onClick={toggleShowComments}>{comments.length} comments</p>
-                <UploadIcon className="h-[24px] w-[24px] cursor-pointer mr-2" onClick={showUploadFile}/>
+                {accountType === "teacher" ? <UploadIcon className="h-[24px] w-[24px] cursor-pointer mr-2" onClick={showUploadFile}/> : null}
                 <input type="file" className="hidden" onChange={(e)=>setImageToUpload(e.currentTarget.files[0])} ref={uploadButtonRef}/>
             </div>
             <div className="my-2 border-b-2 border-gray-600">

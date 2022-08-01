@@ -43,26 +43,28 @@ const Event = (props) => {
 
     // Register as helper for Event (parent accounts only)
     const registerHelper = () => {
-        const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Token ' + token
+        if (props.event.helpers_required - props.event.helpers.length > 0 ) {
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + token
+            }
+            const data = {
+                event: props.event.id
+            }
+            const url = 'http://localhost:8000/api/v1/school/helper-create/';
+            setLoading(true);
+            axios.post(url, data, {headers: headers})
+                .then(res=>{
+                    console.log(res);
+                    props.getClassInfo();
+                })
+                .catch(err=>{
+                    console.log(err);
+                })
+                .finally(()=>{
+                    setLoading(false);
+                })
         }
-        const data = {
-            event: props.event.id
-        }
-        const url = 'http://localhost:8000/api/v1/school/helper-create/';
-        setLoading(true);
-        axios.post(url, data, {headers: headers})
-            .then(res=>{
-                console.log(res);
-                props.getClassInfo();
-            })
-            .catch(err=>{
-                console.log(err);
-            })
-            .finally(()=>{
-                setLoading(false);
-            })
     }
 
     // Unregister as helper for Event (parent accounts only)
