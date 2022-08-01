@@ -506,16 +506,21 @@ class HelperCreateView(CreateAPIView):
         parent = get_object_or_404(Parent, user=self.request.user)
         # get event
         event = get_object_or_404(Event, pk=self.request.data['event'])
-        # check parent has child in the class
-        children = Student.objects.filter(parent=parent)
-        has_child_in_class = check_has_child_in_class(children, event.school_class)
-        if has_child_in_class == False:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-        # check not already signed up
-        helpers = Helper.objects.filter(parent=parent, event=event)
-        if len(helpers) > 0:
-            return Response(status=status.HTTP_403_FORBIDDEN)
-        serializer.save(event=event, parent=parent)
+        # check don't already have enough helpers
+        all_helpers = Helper.objects.filter(event=event)
+        if len(all_helpers) < event.helpers_required:
+            # check parent has child in the class
+            children = Student.objects.filter(parent=parent)
+            has_child_in_class = check_has_child_in_class(children, event.school_class)
+            if has_child_in_class == False:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+            # check not already signed up
+            helpers = Helper.objects.filter(parent=parent, event=event)
+            if len(helpers) > 0:
+                return Response(status=status.HTTP_403_FORBIDDEN)
+            serializer.save(event=event, parent=parent)
+        else:
+            return Response(status=status.HTTP_403_FORBIDDEN) 
 
 class HelperDeleteView(RetrieveDestroyAPIView):
     serializer_class = HelperSerializer
