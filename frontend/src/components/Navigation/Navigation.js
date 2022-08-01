@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Fragment } from 'react';
 import { Popover, Transition } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
+import Bell from '../Bell/Bell';
 
 const navigation_signed_out = [
     { name: 'Home', href: '/' },
@@ -15,6 +16,7 @@ const navigation_signed_in = [
     { name: 'Features', href: '/features' },
     { name: 'Profile', href: '/profile' },
     { name: 'Chat', href: '/chatHub' },
+    { name: <Bell height={32} width={32} quantity={1} />, href: '/notifications' }
 ]
 
 const Navigation = () => {
@@ -50,16 +52,16 @@ const Navigation = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="hidden md:block md:ml-10 md:pr-4 md:space-x-8">
-                            {navigation.map((item) => (
-                                <Link 
-                                    key={item.name}
-                                    to={item.href} 
-                                    className="font-medium text-gray-500 hover:text-gray-900"
-                                >
-                                    {item.name}
-                                </Link>
-                            ))}
+                            <div className="hidden md:ml-10 md:pr-4 md:space-x-8 md:flex md:justify-center md:items-center">
+                                {navigation.map((item) => (
+                                    <Link 
+                                        key={item.name}
+                                        to={item.href} 
+                                        className="font-medium text-gray-500 hover:text-gray-900"
+                                    >
+                                        {item.name}
+                                    </Link>
+                                ))}
                             <Link to={token === null ? "/login" : "/logout"} className="font-medium text-indigo-600 hover:text-indigo-500">{token === null ? "Log in" : "Log out"}</Link>
                             </div>
                         </nav>

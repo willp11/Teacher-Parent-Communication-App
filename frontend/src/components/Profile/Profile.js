@@ -15,7 +15,7 @@ import VerifyEmail from './VerifyEmail';
 import {createMenuDiv} from '../../Utils/utils';
 
 const teacher_menu_items = ["User Details", "Change Password", "School", "Classes"]
-const parent_menu_items = ["User Details", "Change Password", "Notifications", "Children"]
+const parent_menu_items = ["User Details", "Change Password", "Settings", "Children"]
 
 const Profile = () => {
 
@@ -130,7 +130,7 @@ const Profile = () => {
                 <div>
                     {componentToShow === "User Details" ? <UserInfo profile={profile} getUserProfile={getUserProfile} /> : null}
                     {componentToShow === "Change Password" ? <ChangePassword /> : null}
-                    {componentToShow === "Notifications" ? <NotificationSettings profile={profile} settings={notificationSettings} getUserProfile={getUserProfile} /> : null}
+                    {componentToShow === "Settings" ? <NotificationSettings profile={profile} settings={notificationSettings} getUserProfile={getUserProfile} /> : null}
                     {componentToShow === "Children" ? <ChildrenInfo profile={profile} getUserProfile={getUserProfile} /> : null}
                 </div>
             )
