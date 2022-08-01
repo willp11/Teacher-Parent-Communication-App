@@ -416,3 +416,16 @@ class StudentPortfolioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ('pk', 'name', 'parent', 'school_class', 'portfolio', 'stickers', 'invite_code')
+
+# In app notifications
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AppNotification
+        fields = '__all__'
+
+# Get all in app notifications for a given user
+class UserNotificationsSerializer(serializers.ModelSerializer):
+    notifications = NotificationSerializer(many=True)
+    class Meta:
+        model = CustomUser
+        fields = ('notifications',)

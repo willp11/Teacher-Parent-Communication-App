@@ -158,6 +158,9 @@ class AppNotification(models.Model):
     content = models.CharField(max_length=256)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return '{} to {} {}'.format(self.title, self.user.first_name, self.user.last_name)
+
 class NotificationMode(models.Model):
     APP = 'App'
     EMAIL = 'Email'

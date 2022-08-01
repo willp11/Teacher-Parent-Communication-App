@@ -58,4 +58,5 @@ urlpatterns = [
     path('sticker-create/', StickerCreateView.as_view(), name='sticker_create'),
     path('teacher-contacts-get/', TeacherContactsGetListView.as_view(), name='teacher_contacts_get'),
     path('parent-contacts-get/', ParentContactsGetListView.as_view(), name='parent_contacts_get'),
+    path('notifications-get/', NotificationsGetView.as_view(), name='notifications_get')
 ]

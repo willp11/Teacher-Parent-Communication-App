@@ -718,3 +718,10 @@ class ParentContactsGetListView(RetrieveAPIView):
     def get_object(self):
         parent = get_object_or_404(Parent, user=self.request.user)
         return parent
+
+class NotificationsGetView(RetrieveAPIView):
+    serializer_class = UserNotificationsSerializer
+    permission_classes = [IsAuthenticated, IsEmailVerified]
+
+    def get_object(self):
+        return self.request.user
