@@ -1,10 +1,13 @@
 import Navigation from "../Navigation/Navigation";
+import Notification from "./Notification";
 
 const Notifications = () => {
 
     let notifications_div = (
         <div>
-
+            <Notification title={"New Event"} content={"Birthday Party"} datetime={new Date()} />
+            <Notification title={"New Announcement"} content={"Bring spelling books."} datetime={new Date()} />
+            <Notification title={"New Story"} content={"Look at this activity we did today."} datetime={new Date()} />
         </div>
     )
 
