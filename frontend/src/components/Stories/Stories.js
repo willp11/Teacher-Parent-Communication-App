@@ -82,31 +82,33 @@ const Stories = (props) => {
             {showForm ? <ChevronUpIcon onClick={()=>setShowForm(false)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />
              : <ChevronDownIcon onClick={()=>setShowForm(true)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />}
 
-            {showForm ? <form onSubmit={story_formik.handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Type title..."
-                    name="title"
-                    value={story_formik.values.title}
-                    onChange={story_formik.handleChange}
-                    onBlur={story_formik.handleBlur}
-                    className="border border-gray-300 mt-2 h-10 w-full"
-                /> <br/>
-                {story_formik.errors.title ? <div className="text-sm w-full text-left pl-2 mt-1">{story_formik.errors.title} </div> : null}
+            {showForm ? 
+                <form onSubmit={story_formik.handleSubmit}>
+                    <input
+                        type="text"
+                        placeholder="Type title..."
+                        name="title"
+                        value={story_formik.values.title}
+                        onChange={story_formik.handleChange}
+                        onBlur={story_formik.handleBlur}
+                        className="border border-gray-300 mt-2 h-10 w-full"
+                    /> <br/>
+                    {story_formik.errors.title ? <div className="text-sm w-full text-left pl-2 mt-1">{story_formik.errors.title} </div> : null}
 
-                <textarea
-                    rows="3"
-                    name="content"
-                    placeholder="Type content..."
-                    value={story_formik.values.content}
-                    onChange={story_formik.handleChange}
-                    onBlur={story_formik.handleBlur}
-                    className="border border-gray-300 mt-2 w-full"
-                /> <br/>
-                {story_formik.errors.content ? <div className="text-sm w-full text-left pl-2">{story_formik.errors.content} </div> : null}
-                {submit_btn}
-                <p className="text-sm">{message}</p>
-            </form> : null}
+                    <textarea
+                        rows="3"
+                        name="content"
+                        placeholder="Type content..."
+                        value={story_formik.values.content}
+                        onChange={story_formik.handleChange}
+                        onBlur={story_formik.handleBlur}
+                        className="border border-gray-300 mt-2 w-full"
+                    /> <br/>
+                    {story_formik.errors.content ? <div className="text-sm w-full text-left pl-2">{story_formik.errors.content} </div> : null}
+                    {submit_btn}
+                    <p className="text-sm">{message}</p>
+                </form> 
+            : null}
         </div>
     )
 

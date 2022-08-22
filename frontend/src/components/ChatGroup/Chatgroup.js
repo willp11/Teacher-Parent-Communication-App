@@ -88,7 +88,7 @@ const ChatGroup = () => {
         }
     }
 
-    // Function to add received messages to messages state
+    // Function to add received messages to list so can be rendered by UI
     const writeMessage = (message) => {
         let obj = {
             sender: {user: message.user},

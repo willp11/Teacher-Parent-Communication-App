@@ -23,7 +23,7 @@ const VideoChat = () => {
     const [isReceivingCall, setIsReceivingCall] = useState(false);
     const [isInCall, setIsInCall] = useState(false);
 
-    // other otherUser is user id
+    // otherUser is user id
     const [otherUser, setOtherUser] = useState(null);
     const [otherUserName, setOtherUserName] = useState("");
     const [otherUserConnected, setOtherUserConnected] = useState(false);
@@ -246,7 +246,29 @@ const VideoChat = () => {
         } catch(e) {
             alert('getUserMedia() error: ' + e.name);
         }
-        
+    }
+    // Create peer connection and add local stream to connection. 
+    // Set functions to deal with getting ICE candidates (send to peer) and on stream added/removed events
+    const createPeerConnectionAddStream = (stream) => {
+        try {
+            // WHEN WE USE STUN AND TURN SERVERS WE PASS CONFIG AS ARG HERE
+            // peerConnection = new RTCPeerConnection(pcConfig);
+            
+            // create peer connection
+            let peerConnection = new RTCPeerConnection();
+            peerConnection.onicecandidate = handleIceCandidate;
+            peerConnection.onaddstream = handleRemoteStreamAdded;
+            peerConnection.onremovestream = handleRemoteStreamRemoved;
+
+            // add stream
+            peerConnection.addStream(stream);
+
+            return peerConnection;
+        } catch (e) {
+            console.log('Failed to create PeerConnection, exception: ' + e.message);
+            alert('Cannot create RTCPeerConnection object.');
+            return;
+        }
     }
 
     // Send connection offer to peer
@@ -275,29 +297,6 @@ const VideoChat = () => {
         }, (error) => {
             console.log(error);
         })
-    }
-
-    // Create peer connection and add local stream to connection. Set functions to deal with getting ICE candidates (send to peer) and on stream added/removed events
-    const createPeerConnectionAddStream = (stream) => {
-        try {
-            // WHEN WE USE STUN AND TURN SERVERS WE PASS CONFIG AS ARG HERE
-            // peerConnection = new RTCPeerConnection(pcConfig);
-            
-            // create peer connection
-            let peerConnection = new RTCPeerConnection();
-            peerConnection.onicecandidate = handleIceCandidate;
-            peerConnection.onaddstream = handleRemoteStreamAdded;
-            peerConnection.onremovestream = handleRemoteStreamRemoved;
-
-            // add stream
-            peerConnection.addStream(stream);
-
-            return peerConnection;
-        } catch (e) {
-            console.log('Failed to create PeerConnection, exception: ' + e.message);
-            alert('Cannot create RTCPeerConnection object.');
-            return;
-        }
     }
 
     // Send ICE candidates to peer

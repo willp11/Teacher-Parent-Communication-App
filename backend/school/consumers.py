@@ -184,8 +184,8 @@ class CallConsumer(AsyncWebsocketConsumer):
             text_data_json = json.loads(text_data)
             eventType = text_data_json['type']
             
+            # notify the callee we send a call_received event to their group
             if eventType == 'call':
-                # to notify the callee we send a call_received event to their group
                 await self.channel_layer.group_send(
                     self.other_room,
                     {
@@ -209,10 +209,8 @@ class CallConsumer(AsyncWebsocketConsumer):
                     }
                 )
 
+            # notify other user that the call is answered
             if eventType == 'answer_call':
-                # has received call from someone now notify the calling user
-                # we can notify to the group with the caller name
-
                 await self.channel_layer.group_send(
                     self.other_room,
                     {

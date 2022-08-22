@@ -69,6 +69,7 @@ const StudentProfile = () => {
     )
 
     if (studentProfile) {
+        console.log(studentProfile)
         // Parent info
         let parent_info = null;
         if (studentProfile.parent !== null) {
@@ -122,6 +123,15 @@ const StudentProfile = () => {
         )
 
         // School class info div
+        let school_info = null;
+        if (studentProfile.school_class.school !== null) {
+            school_info = (
+                <div className="my-2">
+                    <p className="text-xs text-gray-600">School</p>
+                    <p className="font-semibold">{studentProfile.school_class.school.name}. {studentProfile.school_class.school.city}, {studentProfile.school_class.school.country}.</p>
+                </div>
+            )
+        }
         let student_info_div = (
             <div className="w-full sm:w-[500px]  mx-auto bg-sky-100 rounded shadow border border-gray-300 p-2 my-2 text-left">
                 <div className="my-2">
@@ -132,10 +142,7 @@ const StudentProfile = () => {
                     <p className="text-xs text-gray-600">Teacher</p>
                     <p className="font-semibold">{studentProfile.school_class.teacher.user.first_name} {studentProfile.school_class.teacher.user.last_name}</p>
                 </div>
-                <div className="my-2">
-                    <p className="text-xs text-gray-600">School</p>
-                    <p className="font-semibold">{studentProfile.school_class.school.name}. {studentProfile.school_class.school.city}, {studentProfile.school_class.school.country}.</p>
-                </div>
+                {school_info}
                 {parent_info}
                 {stickers}
             </div>

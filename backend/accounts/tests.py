@@ -22,7 +22,7 @@ class UserApiViewsetTests(APITestCase):
         # set the client auth config
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
 
-    # Test the GET 'dj-rest-auth/user/' endpoint returns status code 200, correct fields and data content of fields are correct
+    # Test GET 'dj-rest-auth/user/' endpoint
     def test_getUserProfile(self):
         url = reverse('rest_user_details')
         response = self.client.get(url)
@@ -32,12 +32,17 @@ class UserApiViewsetTests(APITestCase):
         # check the data
         data = json.loads(response.content)
         # has correct fields
-        self.assertTrue('pk' in data)
+        self.assertTrue('id' in data)
         self.assertTrue('email' in data)
-        self.assertTrue('username' in data)
+        self.assertTrue('first_name' in data)
+        self.assertTrue('last_name' in data)
         self.assertTrue('email_verified' in data)
+        self.assertTrue('profile_picture' in data)
         # fields have correct values
-        self.assertEqual(data['pk'], self.user.pk)
-        self.assertEqual(data['username'], self.user.username)
+        self.assertEqual(data['id'], self.user.id)
         self.assertEqual(data['email'], self.user.email)
+        self.assertEqual(data['first_name'], self.user.first_name)
+        self.assertEqual(data['last_name'], self.user.last_name)
         self.assertEqual(data['email_verified'], self.user.email_verified)
+        self.assertEqual(data['profile_picture'], None)
+        

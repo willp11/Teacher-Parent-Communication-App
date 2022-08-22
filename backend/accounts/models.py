@@ -6,7 +6,7 @@ class CustomUser(AbstractUser):
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
 
     def __str__(self):
-        return '{} {}'.format(self.first_name, self.last_name)
+        return self.email
 
     # delete profile picture image if user is deleted
     def delete(self, using=None, keep_parents=False):

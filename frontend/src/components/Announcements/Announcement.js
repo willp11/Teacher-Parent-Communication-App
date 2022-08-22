@@ -36,7 +36,7 @@ const Announcement = (props) => {
 
     let edit_del_btn = (
         <div 
-            className="w-12 p-2 border-2 border-gray-300 bg-white cursor-pointer rounded-md flex items-center justify-center"
+            className="w-12 h-12 p-2 border-2 border-gray-300 bg-white cursor-pointer rounded-md flex items-center justify-center"
             onClick={toggleShowEditDelMenu}
         >
             <span><DotsHorizontalIcon className="h-[24px] w-[24px]" /></span>

@@ -2,61 +2,74 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path('profile-upload/', ProfilePictureUpdateView.as_view(), name='profile_upload'),
-    path('school-list-create/', SchoolCreateView.as_view(), name='school_create'),
-    path('parent-create/', ParentCreateView.as_view(), name='parent_create'),
-    path('teacher-create/', TeacherCreateView.as_view(), name='teacher_create'),
-    path('use-invite-code/', InviteCodeUseView.as_view(), name='use_invite_code'),
-    path('teacher-school-update/', TeacherSchoolUpdateView.as_view(), name='teacher_school_update'),
-    path('portfolio/<int:student>/', PortfolioListView.as_view(), name='portfolio'),
-    path('class/<int:pk>/', ClassDetailView.as_view(), name='class_detail'),
-    path('classes/', ClassListView.as_view(), name='class_list'),
-    path('class-create/', ClassCreateView.as_view(), name='class_create'),
-    path('student-create/', StudentCreateView.as_view(), name='student_create'),
-    path('student-image-upload/<int:pk>/', StudentImageUpdateView.as_view(), name='student_image_upload'),
-    path('student-delete/<int:pk>/', StudentDeleteView.as_view(), name='student_delete'),
-    path('student-update/<int:pk>/', StudentUpdateView.as_view(), name='student_update'),
-    path('announcement-create/', AnnouncementCreateView.as_view(), name='announcement_create'),
-    path('announcement-delete/<int:pk>/', AnnouncementDeleteView.as_view(), name='announcement_delete'),
-    path('announcement-update/<int:pk>/', AnnouncementUpdateView.as_view(), name='announcement_update'),
-    path('event-create/', EventCreateView.as_view(), name='event_create'),
-    path('event-delete/<int:pk>/', EventDeleteView.as_view(), name='event_delete'),
-    path('event-update/<int:pk>/', EventUpdateView.as_view(), name='event_update'),
-    path('story-create/', StoryCreateView.as_view(), name='story_create'),
-    path('story-media-create/', StoryMediaCreateView.as_view(), name='story_media_create'),
-    path('story-delete/<int:pk>/', StoryDeleteView.as_view(), name='story_delete'),
-    path('story-update/<int:pk>/', StoryUpdateView.as_view(), name='story_update'),
-    path('assignment-detail/<code>/', AssignmentDetailView.as_view(), name='assignment_detail'),
-    path('assignment-create/', AssignmentCreateView.as_view(), name='assignment_create'),
-    path('assignment-delete/<int:pk>/', AssignmentDeleteView.as_view(), name='assignment_delete'),
-    path('assignment-update/<int:pk>/', AssignmentUpdateView.as_view(), name='assignment_update'),
-    path('assignee-list/<int:pk>/', AssigneeListView.as_view(), name='assignee_list'),
-    path('assignee-create/<int:pk>/', AssigneeCreateView.as_view(), name='assignee_create'),
-    path('assignee-delete/<int:pk>/', AssigneeDeleteView.as_view(), name='assignee_delete'),
-    path('assignee-delete-list/<int:pk>/', AssigneeDeleteListView.as_view(), name='assignee_delete_list'),
-    path('assignment-response-create/', AssignmentResponseCreateView.as_view(), name='assignment_response_create'),
-    # path('assignment-media-create/', AssignmentMediaCreateView.as_view(), name='assignment_media_create'),
-    path('assignee-score-update/<int:pk>/', AssigneeScoreUpdateView.as_view(), name='assignee_score_update'),
-    path('assignee-in-portfolio-update/<int:pk>/', AssigneeInPortfolioUpdateView.as_view(), name='assignee_in_portfolio_update'),
-    path('student-portfolio-list/<int:pk>/', StudentPortfolioGetView.as_view(), name='student_portfolio_list'),
-    path('event-request-helpers/<int:pk>/', EventRequestHelpersUpdateView.as_view(), name='event_request_helpers'),
-    path('helper-create/', HelperCreateView.as_view(), name='helper_create'),
-    path('helper-delete/<int:pk>/', HelperDeleteView.as_view(), name='helper_delete'),
-    path('story-comment-create/', StoryCommentCreateView.as_view(), name='story_comment_create'),
-    path('story-comment-list/<int:pk>/', StoryCommentListView.as_view(), name='story_comment_list'),
-    path('story-comment-update/<int:pk>/', StoryCommentUpdateView.as_view(), name='story_comment_update'),
-    path('parent-settings-update/', ParentSettingsUpdateView.as_view(), name='parent_settings_update'),
-    path('chat-group-get/<int:pk>/', ChatGroupGetView.as_view(), name='chat_group_get'),
-    path('chat-group-user-get/', ChatGroupUserGetView.as_view(), name='chat_group_user_get'),
-    path('chat-group-create/', ChatGroupCreateView.as_view(), name='chat_group_create'),
-    path('chat-group-create-direct/', ChatGroupDirectCreateView.as_view(), name='chat_group_create_direct'),
-    path('chat-group-add-members/<int:pk>/', ChatGroupAddMembersView.as_view(), name='chat_group_add_members'),
-    path('chat-group-delete-member/<int:pk>/', ChatGroupDeleteMemberView.as_view(), name='chat_group_delete_member'),
-    path('chat-message-create/', MessageCreateView.as_view(), name='chat_message_create'),
-    path('chat-group-members-list/<int:pk>/', ChatGroupMembersList.as_view(), name='chat_group_members_list'),
-    path('chat-group-messages-list/<int:pk>/', ChatGroupMessageList.as_view(), name='chat_group_message_list'),
-    path('sticker-create/', StickerCreateView.as_view(), name='sticker_create'),
-    path('teacher-contacts-get/', TeacherContactsGetListView.as_view(), name='teacher_contacts_get'),
-    path('parent-contacts-get/', ParentContactsGetListView.as_view(), name='parent_contacts_get'),
-    path('notifications-get/', NotificationsGetView.as_view(), name='notifications_get')
+    # ANNOUNCEMENTS
+    path('announcement-create/', AnnouncementCreateView.as_view(), name='announcement_create'), # create new announcement
+    path('announcement-update/<int:pk>/', AnnouncementUpdateView.as_view(), name='announcement_update'), # edit announcement
+    path('announcement-delete/<int:pk>/', AnnouncementDeleteView.as_view(), name='announcement_delete'), # delete announcement
+
+    # ASSIGNMENTS
+    path('assignment-create/', AssignmentCreateView.as_view(), name='assignment_create'), # create new assignment
+    path('assignment-update/<int:pk>/', AssignmentUpdateView.as_view(), name='assignment_update'), # edit assignment
+    path('assignment-delete/<int:pk>/', AssignmentDeleteView.as_view(), name='assignment_delete'), # delete assignment
+    path('assignee-create/<int:pk>/', AssigneeCreateView.as_view(), name='assignee_create'), # assign students to assignment
+    path('assignee-delete-list/<int:pk>/', AssigneeDeleteListView.as_view(), name='assignee_delete_list'), # delete students from assignment
+    path('assignee-score-update/<int:pk>/', AssigneeScoreUpdateView.as_view(), name='assignee_score_update'), # update a student's score/feedback
+    path('assignee-list/<int:pk>/', AssigneeListView.as_view(), name='assignee_list'), # get list of all assigned students
+    path('assignment-detail/<code>/', AssignmentDetailView.as_view(), name='assignment_detail'), # get all assignment info (used on submit assignment page)
+    path('assignment-response-create/', AssignmentResponseCreateView.as_view(), name='assignment_response_create'), # student submits their assignment
+
+    # CHAT GROUPS
+    path('chat-group-get/<int:pk>/', ChatGroupGetView.as_view(), name='chat_group_get'), # get all data for the chat group
+    path('chat-group-add-members/<int:pk>/', ChatGroupAddMembersView.as_view(), name='chat_group_add_members'), # add members to the group
+    path('chat-group-user-get/', ChatGroupUserGetView.as_view(), name='chat_group_user_get'), # get all chat groups user is a member of
+    path('chat-group-create/', ChatGroupCreateView.as_view(), name='chat_group_create'), # create new chat group
+    path('chat-group-create-direct/', ChatGroupDirectCreateView.as_view(), name='chat_group_create_direct'), # create new direct message chat group
+    path('chat-group-members-list/<int:pk>/', ChatGroupMembersListView.as_view(), name='chat_group_members_list'), # get all group members (called inside hooks/useGroupMembers)
+    # path('chat-group-delete-member/<int:pk>/', ChatGroupDeleteMemberView.as_view(), name='chat_group_delete_member'), # no delete functionality implemented on frontend
+    
+    # EVENTS
+    path('event-create/', EventCreateView.as_view(), name='event_create'), # create new event
+    path('event-update/<int:pk>/', EventUpdateView.as_view(), name='event_update'), # edit event
+    path('event-delete/<int:pk>/', EventDeleteView.as_view(), name='event_delete'), # delete event
+    path('helper-create/', HelperCreateView.as_view(), name='helper_create'), # parent register as helper for event
+    path('helper-delete/<int:pk>/', HelperDeleteView.as_view(), name='helper_delete'), # parent unregister as helper for event
+
+    # NOTIFICATIONS
+    path('notifications-get/', NotificationsGetView.as_view(), name='notifications_get'), # get all user's notifications
+
+    # PROFILE PAGE
+    path('parent-create/', ParentCreateView.as_view(), name='parent_create'), # select parent account type
+    path('teacher-create/', TeacherCreateView.as_view(), name='teacher_create'), # select teacher account type
+    path('profile-upload/', ProfilePictureUpdateView.as_view(), name='profile_upload'), # upload profile picture
+    path('school-list-create/', SchoolCreateView.as_view(), name='school_create'), # get all schools and add new school to list
+    path('teacher-school-update/', TeacherSchoolUpdateView.as_view(), name='teacher_school_update'), # update teacher's school
+    path('class-create/', ClassCreateView.as_view(), name='class_create'), # teacher account create a new school class
+    path('use-invite-code/', InviteCodeUseView.as_view(), name='use_invite_code'), # add child to parent account by using child's invite code
+    path('parent-settings-update/', ParentSettingsUpdateView.as_view(), name='parent_settings_update'), # update parent account's settings
+
+    # SCHOOL CLASS PAGE
+    path('class/<int:pk>/', ClassDetailView.as_view(), name='class_detail'), # get all data for a school class
+
+    # STORIES
+    path('story-create/', StoryCreateView.as_view(), name='story_create'), # create a new story
+    path('story-update/<int:pk>/', StoryUpdateView.as_view(), name='story_update'), # edit story
+    path('story-delete/<int:pk>/', StoryDeleteView.as_view(), name='story_delete'), # delete story
+    path('story-media-create/', StoryMediaCreateView.as_view(), name='story_media_create'), # upload story images
+    path('story-comment-list/<int:pk>/', StoryCommentListView.as_view(), name='story_comment_list'), # get all comments for a story
+    path('story-comment-create/', StoryCommentCreateView.as_view(), name='story_comment_create'), # create a new comment
+    # path('story-comment-update/<int:pk>/', StoryCommentUpdateView.as_view(), name='story_comment_update'), # no edit comment functionality implemented on frontend
+
+    # STUDENTS
+    path('student-create/', StudentCreateView.as_view(), name='student_create'), # create new student
+    path('student-delete/<int:pk>/', StudentDeleteView.as_view(), name='student_delete'), # delete student
+    path('student-update/<int:pk>/', StudentNameUpdateView.as_view(), name='student_update'), # edit student's name
+    path('student-image-upload/<int:pk>/', StudentImageUpdateView.as_view(), name='student_image_upload'), # upload student profile picture
+    path('sticker-create/', StickerCreateView.as_view(), name='sticker_create'), # award a sticker to a student
+    
+    # STUDENT PORTFOLIO
+    path('student-portfolio-list/<int:pk>/', StudentPortfolioGetView.as_view(), name='student_portfolio_list'), # get student's portfolio of assignments
+
+    # CONTACTS - hooks/useContacts
+    path('teacher-contacts-get/', TeacherContactsGetListView.as_view(), name='teacher_contacts_get'), # get all a teacher account's contacts
+    path('parent-contacts-get/', ParentContactsGetListView.as_view(), name='parent_contacts_get'), # get all a parent account's contacts
 ]

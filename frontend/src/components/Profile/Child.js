@@ -75,10 +75,15 @@ const Child = (props) => {
         )
     }
 
+    let school_info = null;
+    if (props.child.school_class.school !== null) {
+        school_info = <p>{props.child.school_class.school.name}</p>
+    }
+
     return (
         <div key={props.child.id} className="border border-gray-300 rounded-md shadow-md w-64 mx-auto my-4 p-2 bg-sky-100">
             <Link to={"/studentProfile/"+props.child.id}><h4 className="text-blue-700 underline">{props.child.name}</h4></Link>
-            <p>{props.child.school_class.school.name}</p>
+            {school_info}
             <p>{props.child.school_class.name}</p>
 
             <div className="relative">

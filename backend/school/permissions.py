@@ -1,10 +1,34 @@
 from rest_framework.permissions import BasePermission
 from django.shortcuts import get_object_or_404
-from .models import ChatGroup, GroupMember, Student
+from .models import *
 
 class IsEmailVerified(BasePermission):
     def has_permission(self, request, view):
         if request.user.email_verified:
+            return True
+        return False
+
+class IsClassTeacher(BasePermission):
+    def has_permission(self, request, view):
+        teacher = get_object_or_404(Teacher, user=request.user)
+        view_name = view.get_view_name()
+        if view_name == "Announcement Update" or view_name == "Announcement Delete":
+            announcement = get_object_or_404(Announcement, pk=view.kwargs['pk'])
+            school_class = get_object_or_404(SchoolClass, pk=announcement.school_class.pk)
+        elif view_name == "Assignment Update" or view_name == "Assignment Delete":
+            assignment = get_object_or_404(Assignment, pk=view.kwargs['pk'])
+            school_class = get_object_or_404(SchoolClass, pk=assignment.school_class.pk)
+        elif view_name == "Event Update" or view_name == "Event Delete":
+            event = get_object_or_404(Event, pk=view.kwargs['pk'])
+            school_class = get_object_or_404(SchoolClass, pk=event.school_class.pk)
+        elif view_name == "Story Update" or view_name == "Story Delete":
+            story = get_object_or_404(Story, pk=view.kwargs['pk'])
+            school_class = get_object_or_404(SchoolClass, pk=story.school_class.pk)
+        elif view_name == "Student Update" or view_name == "Student Delete":
+            student = get_object_or_404(Student, pk=view.kwargs['pk'])
+            school_class = get_object_or_404(SchoolClass, pk=student.school_class.pk)
+
+        if school_class.teacher == teacher:
             return True
         return False
 
