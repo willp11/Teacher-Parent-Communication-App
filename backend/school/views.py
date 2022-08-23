@@ -6,20 +6,17 @@ from django.shortcuts import get_object_or_404
 from .serializers import *
 from .models import *
 from .utils import check_has_child_in_class, generate_invite_code
-from .permissions import IsEmailVerified, IsStudentParentOrTeacher, IsChatOwner, IsChatOwnerOrMember, IsClassTeacher
+from .permissions import *
 
 #######################################################################
 # ANNOUNCEMENTS
 #######################################################################
 class AnnouncementCreateView(CreateAPIView):
     serializer_class = AnnouncementSerializer
-    permission_classes = [IsAuthenticated, IsEmailVerified]
+    permission_classes = [IsAuthenticated, IsEmailVerified, IsClassTeacher]
 
     def perform_create(self, serializer):
-        # user must be a teacher
-        teacher = get_object_or_404(Teacher, user=self.request.user)
-        # user must be teacher of this class
-        school_class = get_object_or_404(SchoolClass, pk=self.request.data['school_class'], teacher=teacher)
+        school_class = SchoolClass.objects.get(pk=self.request.data['school_class'])
         serializer.save(school_class=school_class)
 
 class AnnouncementUpdateView(RetrieveUpdateAPIView):
@@ -43,13 +40,10 @@ class AnnouncementDeleteView(RetrieveDestroyAPIView):
 #######################################################################
 class AssignmentCreateView(CreateAPIView):
     serializer_class = AssignmentSerializer
-    permission_classes = [IsAuthenticated, IsEmailVerified]
+    permission_classes = [IsAuthenticated, IsEmailVerified, IsClassTeacher]
 
     def perform_create(self, serializer):
-        # user must be a teacher
-        teacher = get_object_or_404(Teacher, user=self.request.user)
-        # user must be teacher of this class
-        school_class = get_object_or_404(SchoolClass, pk=self.request.data['school_class'], teacher=teacher)
+        school_class = SchoolClass.objects.get(pk=self.request.data['school_class'])
         serializer.save(school_class=school_class)
 
 class AssignmentUpdateView(RetrieveUpdateAPIView):
@@ -70,7 +64,7 @@ class AssignmentDeleteView(RetrieveDestroyAPIView):
 
 class AssigneeCreateView(ListCreateAPIView):
     serializer_class = AssigneeCreateSerializer
-    permission_classes = [IsAuthenticated, IsEmailVerified]
+    permission_classes = [IsAuthenticated, IsEmailVerified, IsClassTeacher]
 
     def get_queryset(self):
         assignment = Assignment.objects.get(pk=self.kwargs['pk'])
@@ -78,12 +72,6 @@ class AssigneeCreateView(ListCreateAPIView):
 
     # override create so that we can pass a list
     def create(self, request, *args, **kwargs):
-        # check user is teacher of the class
-        teacher = get_object_or_404(Teacher, user=self.request.user)
-        assignment = get_object_or_404(Assignment, pk=self.kwargs['pk'])
-        if assignment.school_class.teacher != teacher:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-
         serializer = self.get_serializer(data=request.data, many=True)
         if serializer.is_valid():
             serializer.save()
@@ -95,21 +83,15 @@ class AssigneeCreateView(ListCreateAPIView):
 # list of assignees that we want to delete
 class AssigneeDeleteListView(ListAPIView, DestroyAPIView):
     serializer_class = AssigneeDeleteSerializer
-    permission_classes = [IsAuthenticated, IsEmailVerified]
+    permission_classes = [IsAuthenticated, IsEmailVerified, IsClassTeacher]
 
     def get_queryset(self):
-        assignment = get_object_or_404(Assignment, pk=self.kwargs['pk'])
+        assignment = Assignment.objects.get(pk=self.kwargs['pk'])
         return Assignee.objects.filter(assignment=assignment)
 
     # overwrite destroy so can pass in a list
     def destroy(self, request, *args, **kwargs):
-        # check user is teacher of the class
-        teacher = get_object_or_404(Teacher, user=self.request.user)
-        assignment = get_object_or_404(Assignment, pk=self.kwargs['pk'])
-        if assignment.school_class.teacher != teacher:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-
-        # get all instances - put in list to ensure we get all and don't just delete some
+        # get all instances
         assignment_objects = []
         for assignee in request.data:
             instance = get_object_or_404(Assignee, assignment=assignee['assignment'], student=assignee['student'])
@@ -122,15 +104,10 @@ class AssigneeDeleteListView(ListAPIView, DestroyAPIView):
 
 class AssigneeScoreUpdateView(RetrieveUpdateAPIView):
     serializer_class = AssigneeScoreUpdateSerializer
-    permission_classes = [IsAuthenticated, IsEmailVerified]
+    permission_classes = [IsAuthenticated, IsEmailVerified, IsAssignmentCreator]
 
     def get_object(self):
-        # check user is teacher of the class
-        teacher = get_object_or_404(Teacher, user=self.request.user)
-        assignee = get_object_or_404(Assignee, pk=self.kwargs['pk'])
-        assignment = get_object_or_404(Assignment, pk=assignee.assignment.pk)
-        if assignment.school_class.teacher != teacher:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        assignee = Assignee.objects.get(pk=self.kwargs['pk'])
         return assignee
 
     def perform_update(self, serializer):
@@ -264,13 +241,10 @@ class ChatGroupMembersListView(ListAPIView):
 #######################################################################
 class EventCreateView(CreateAPIView):
     serializer_class = EventCreateSerializer
-    permission_classes = [IsAuthenticated, IsEmailVerified]
+    permission_classes = [IsAuthenticated, IsEmailVerified, IsClassTeacher]
 
     def perform_create(self, serializer):
-        # user must be a teacher
-        teacher = get_object_or_404(Teacher, user=self.request.user)
-        # user must be teacher of this class
-        school_class = get_object_or_404(SchoolClass, pk=self.request.data['school_class'], teacher=teacher)
+        school_class = SchoolClass.objects.get(pk=self.request.data['school_class'])
         serializer.save(school_class=school_class)
 
 class EventUpdateView(RetrieveUpdateAPIView):
@@ -424,13 +398,10 @@ class ClassDetailView(RetrieveAPIView):
 #######################################################################
 class StoryCreateView(CreateAPIView):
     serializer_class = StoryCreateSerializer
-    permission_classes = [IsAuthenticated, IsEmailVerified]
+    permission_classes = [IsAuthenticated, IsEmailVerified, IsClassTeacher]
 
     def perform_create(self, serializer):
-        # user must be a teacher
-        teacher = get_object_or_404(Teacher, user=self.request.user)
-        # user must be teacher of this class
-        school_class = get_object_or_404(SchoolClass, pk=self.request.data['school_class'], teacher=teacher)
+        school_class = SchoolClass.objects.get(pk=self.request.data['school_class'])
         serializer.save(school_class=school_class)
 
 class StoryUpdateView(RetrieveUpdateAPIView):

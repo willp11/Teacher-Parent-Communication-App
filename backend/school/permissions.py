@@ -15,7 +15,7 @@ class IsClassTeacher(BasePermission):
         if view_name == "Announcement Update" or view_name == "Announcement Delete":
             announcement = get_object_or_404(Announcement, pk=view.kwargs['pk'])
             school_class = get_object_or_404(SchoolClass, pk=announcement.school_class.pk)
-        elif view_name == "Assignment Update" or view_name == "Assignment Delete":
+        elif view_name == "Assignment Update" or view_name == "Assignment Delete" or view_name == "Assignee Create" or view_name == "Assignee Delete List":
             assignment = get_object_or_404(Assignment, pk=view.kwargs['pk'])
             school_class = get_object_or_404(SchoolClass, pk=assignment.school_class.pk)
         elif view_name == "Event Update" or view_name == "Event Delete":
@@ -27,8 +27,20 @@ class IsClassTeacher(BasePermission):
         elif view_name == "Student Update" or view_name == "Student Delete":
             student = get_object_or_404(Student, pk=view.kwargs['pk'])
             school_class = get_object_or_404(SchoolClass, pk=student.school_class.pk)
+        elif view_name == "Announcement Create" or view_name == "Assignment Create" or view_name == "Event Create" or view_name == "Story Create":
+            school_class = get_object_or_404(SchoolClass, pk=request.data['school_class'], teacher=teacher)
 
         if school_class.teacher == teacher:
+            return True
+        return False
+
+class IsAssignmentCreator(BasePermission):
+    def has_permission(self, request, view):
+        teacher = get_object_or_404(Teacher, user=request.user)
+        assignee = get_object_or_404(Assignee, pk=view.kwargs['pk'])
+        assignment = get_object_or_404(Assignment, pk=assignee.assignment.pk)
+
+        if assignment.school_class.teacher == teacher:
             return True
         return False
 

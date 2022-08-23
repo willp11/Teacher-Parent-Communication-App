@@ -34,6 +34,15 @@ class SchoolClass(models.Model):
     def __str__(self):
         return self.name
 
+class Announcement(models.Model):
+    title = models.CharField(max_length=100)
+    content = models.CharField(max_length=1024)
+    school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE, related_name='announcements')
+    date = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
 class Student(models.Model):
     name = models.CharField(max_length=100)
     parent = models.ForeignKey(Parent, on_delete=models.SET_NULL, related_name='children', null=True, blank=True)
@@ -91,10 +100,6 @@ class AssignmentResponse(models.Model):
     image = models.ImageField(upload_to='assignment_media/', null=True, blank=True)
     video = models.FileField(upload_to='assignment_media/', null=True, blank=True)
 
-# class AssignmentMedia(models.Model):
-#     assignee = models.ForeignKey(Assignee, on_delete=models.CASCADE, related_name='assignment_media')
-#     file = models.FileField(upload_to="assignment_media/")
-    
 class Story(models.Model):
     title = models.CharField(max_length=100)
     content = models.CharField(max_length=1024)
@@ -117,15 +122,6 @@ class StoryComment(models.Model):
 
     def __str__(self):
         return '{} comment on {}'.format(self.author.username, self.story.title)
-
-class Announcement(models.Model):
-    title = models.CharField(max_length=100)
-    content = models.CharField(max_length=1024)
-    school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE, related_name='announcements')
-    date = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.title
 
 class Event(models.Model):
     name = models.CharField(max_length=100)
