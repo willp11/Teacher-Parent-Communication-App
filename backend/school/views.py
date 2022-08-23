@@ -521,7 +521,7 @@ class StudentDeleteView(RetrieveDestroyAPIView):
 
 class StudentNameUpdateView(RetrieveUpdateAPIView):
     serializer_class = StudentNameSerializer
-    permission_classes = [IsAuthenticated, IsEmailVerified, IsClassTeacher]
+    permission_classes = [IsAuthenticated, IsEmailVerified]
 
     def get_object(self):
         student = Student.objects.get(pk=self.kwargs['pk'])

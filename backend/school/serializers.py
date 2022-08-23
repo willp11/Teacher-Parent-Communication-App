@@ -419,11 +419,12 @@ class PortfolioItemSerializer(serializers.ModelSerializer):
 
 # StudentPortfolioGetView
 class StudentPortfolioSerializer(serializers.ModelSerializer):
+    parent = ParentNameSerializer()
+    school_class = StudentsClassInfoSerializer()
     portfolio = PortfolioItemSerializer(many=True)
     stickers = StickerSerializer(many=True)
     invite_code = InviteCodeOnlySerializer()
-    school_class = StudentsClassInfoSerializer()
-    parent = ParentNameSerializer()
+
     class Meta:
         model = Student
         fields = ('pk', 'name', 'parent', 'school_class', 'portfolio', 'stickers', 'invite_code')

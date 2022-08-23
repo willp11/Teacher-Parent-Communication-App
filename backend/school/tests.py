@@ -398,6 +398,93 @@ class SchoolTests(APITestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(StoryComment.objects.filter(content='wow looks good', story=self.story).count(), 1)
 
+    # POST student-create/
+    def test_studentCreate(self):
+        url = reverse('student_create')
+        data = {'name': 'Billy', 'school_class': self.school_class.pk}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Student.objects.filter(name="Billy", school_class=self.school_class.pk).count(), 1)
+
+    # PUT student-update/<int:pk>/
+    def test_studentUpdate(self):
+        url = reverse('student_update', kwargs={'pk': self.student.pk})
+        data = {'name': 'Barry'}
+        response = self.client.put(url, data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Student.objects.filter(pk=self.student.pk, name='Barry').count(), 1)
+
+    # DELETE student-delete/<int:pk>/
+    def test_studentDelete(self):
+        url = reverse('student_delete', kwargs={'pk': self.student.pk})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(Student.objects.filter(pk=self.student.pk).count(), 0)
+
+    # GET student-portfolio-list/<int:pk>/
+    # portfolio: name, parent, school_class, portfolio: [{assignment, assignment_responses: []}], stickers: [], invite_code: {code}
+    def test_studentPortfolioGet(self):
+        url = reverse('student_portfolio_list', kwargs={'pk': self.student.pk})
+        response = self.client.get(url)
+        data = json.loads(response.content)
+        self.assertTrue('name' in data)
+        self.assertTrue('parent' in data)
+        self.assertTrue('school_class' in data)
+        self.assertTrue('portfolio' in data)
+        self.assertTrue('stickers' in data)
+        self.assertTrue('invite_code' in data)
+
+    # GET teacher-contacts-get/
+    # {school_classes: [
+    #   {'id', 
+    #   'name', 
+    #   'students': [{'name', 'parent': {user: {first_name, last_name}} }]
+    # ]}
+    def test_teacherContactsGet(self):
+        url = reverse('teacher_contacts_get')
+        response = self.client.get(url)
+        data = json.loads(response.content)
+        self.assertTrue('school_classes' in data)
+        self.assertTrue('id' in data['school_classes'][0])
+        self.assertTrue('name' in data['school_classes'][0])
+        self.assertTrue('students' in data['school_classes'][0])
+        self.assertTrue('name' in data['school_classes'][0]['students'][0])
+        self.assertTrue('parent' in data['school_classes'][0]['students'][0])
+        self.assertTrue('user' in data['school_classes'][0]['students'][0]['parent'])
+        self.assertTrue('first_name' in data['school_classes'][0]['students'][0]['parent']['user'])
+        self.assertTrue('last_name' in data['school_classes'][0]['students'][0]['parent']['user'])
+
+    # GET parent-contacts-get/
+    # {'id', '
+    # 'children': [
+    #   {'id', 
+    #   'name', 
+    #   'school_class': 
+    #       {'id', 
+    #       'name', 
+#           'teacher': {user: {first_name, last_name}}, 
+#           'students': [{'name', 'parent': {user: {first_name, last_name}}}], 
+    #   }
+    # ]}
+    def test_parentContactsGet(self):
+        url = reverse('parent_contacts_get')
+        response = self.client.get(url)
+        data = json.loads(response.content)
+        self.assertTrue('id' in data)
+        self.assertTrue('children' in data)
+        self.assertTrue('id' in data['children'][0])
+        self.assertTrue('name' in data['children'][0])
+        self.assertTrue('school_class' in data['children'][0])
+        self.assertTrue('id' in data['children'][0]['school_class'])
+        self.assertTrue('name' in data['children'][0]['school_class'])
+        self.assertTrue('teacher' in data['children'][0]['school_class'])
+        self.assertTrue('students' in data['children'][0]['school_class'])
+        self.assertTrue('name' in data['children'][0]['school_class']['students'][0])
+        self.assertTrue('parent' in data['children'][0]['school_class']['students'][0])
+        self.assertTrue('user' in data['children'][0]['school_class']['students'][0]['parent'])
+        self.assertTrue('first_name' in data['children'][0]['school_class']['students'][0]['parent']['user'])
+        self.assertTrue('last_name' in data['children'][0]['school_class']['students'][0]['parent']['user'])
+
     # POST parent-create/ (at end as need account that doesn't already have a parent instance relation)
     def test_parentCreate(self):
         # create new user
