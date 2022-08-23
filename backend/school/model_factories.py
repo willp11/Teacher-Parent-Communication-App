@@ -1,4 +1,3 @@
-from multiprocessing import parent_process
 import factory
 from .models import *
 import datetime
@@ -127,3 +126,18 @@ class ParentSettingsFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = ParentSettings
+
+class StoryFactory(factory.django.DjangoModelFactory):
+    title = "Test Story"
+    content = "A test story"
+    school_class = factory.SubFactory(SchoolClassFactory)
+
+    class Meta:
+        model = Story
+
+class StoryCommentFactory(factory.django.DjangoModelFactory):
+    story = factory.SubFactory(StoryFactory)
+    content = "A comment"
+
+    class Meta:
+        model = StoryComment

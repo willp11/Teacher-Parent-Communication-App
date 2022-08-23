@@ -24,6 +24,7 @@ class SchoolTests(APITestCase):
     group_member = None
     event = None
     helper = None
+    story = None
 
     def setUp(self):
         # clear the User table
@@ -55,8 +56,9 @@ class SchoolTests(APITestCase):
         self.message = MessageFactory.create(sender=self.group_member, group=self.chat_group)
         self.event = EventFactory.create(school_class=self.school_class)
         self.helper = HelperFactory.create(parent=self.parent, event=self.event)
-        self.parentSettings = ParentSettingsFactory(parent=self.parent)
-        # NotificationModeFactory.create(name='App')
+        self.parentSettings = ParentSettingsFactory.create(parent=self.parent)
+        self.story = StoryFactory.create(school_class=self.school_class)
+        self.storyComment = StoryCommentFactory.create(author=self.user, story=self.story)
 
     # All endpoints prefixed by /api/v1/school/
     # GET requests, check status code and correct data is returned
@@ -340,6 +342,61 @@ class SchoolTests(APITestCase):
         response = self.client.put(url, data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(ParentSettings.objects.filter(parent=self.parent, notification_mode='App', message_received_notification=True, new_story_notification=True, new_announcement_notification=True, new_event_notification=True).count(), 1)
+
+    
+    # POST story-create/
+    def test_storyCreate(self):
+        url = reverse('story_create')
+        data = {'title': 'A new story', 'content': 'A new story content', 'school_class': self.school_class.pk}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Story.objects.filter(title='A new story', content='A new story content', school_class=self.school_class).count(), 1)
+
+    # PUT story-update/<int:pk>/
+    def test_storyUpdate(self):
+        url = reverse('story_update', kwargs={'pk': self.story.pk})
+        data = {'title': 'A new story!!', 'content': 'A new story content!!'}
+        response = self.client.put(url, data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Story.objects.filter(title='A new story!!', content='A new story content!!', school_class=self.school_class).count(), 1)
+
+    # DELETE story-delete/<int:pk>/
+    def test_storyDelete(self):
+        url = reverse('story_delete', kwargs={'pk': self.story.pk})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(Story.objects.filter(pk=self.story.pk).count(), 0)
+
+    # GET story-comment-list/<int:pk>/
+    # [{'id', 
+    # 'author':{'id','first_name','last_name'}, 
+    # 'content', 
+    # 'created_at', 
+    # 'updated_at', 
+    # 'story'}]
+    def test_storyCommentList(self):
+        url = reverse('story_comment_list', kwargs={'pk': self.story.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertTrue('id' in data[0])
+        self.assertTrue('author' in data[0])
+        self.assertTrue('content' in data[0])
+        self.assertTrue('created_at' in data[0])
+        self.assertTrue('updated_at' in data[0])
+        self.assertTrue('story' in data[0])
+        self.assertEqual(data[0]['id'], self.storyComment.id)
+        self.assertEqual(data[0]['author']['id'], self.user.id)
+        self.assertEqual(data[0]['content'], self.storyComment.content)
+        self.assertEqual(data[0]['story'], self.storyComment.story.pk)
+
+    # POST story-comment-create/
+    def test_storyCommentCreate(self):
+        url = reverse('story_comment_create')
+        data = {'content': 'wow looks good', 'story': self.story.id}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(StoryComment.objects.filter(content='wow looks good', story=self.story).count(), 1)
 
     # POST parent-create/ (at end as need account that doesn't already have a parent instance relation)
     def test_parentCreate(self):
