@@ -1,3 +1,4 @@
+from tkinter import TRUE
 from django.urls import reverse
 from rest_framework.test import APITestCase
 from accounts.models import CustomUser
@@ -16,6 +17,8 @@ class SchoolTests(APITestCase):
     announcement = None
     assignment = None
     student = None
+    student2 = None
+    invite_code = None
     assignee = None
     chat_group = None
     group_member = None
@@ -44,12 +47,16 @@ class SchoolTests(APITestCase):
         self.announcement = AnnouncementFactory.create(school_class=self.school_class)
         self.assignment = AssignmentFactory.create(school_class=self.school_class)
         self.student = StudentFactory.create(school_class=self.school_class, parent=self.parent)
+        self.student2 = StudentFactory.create(name="student2", school_class=self.school_class, parent=self.parent)
+        self.invite_code = InviteCodeFactory.create(student=self.student2)
         self.assignee = AssigneeFactory.create(assignment=self.assignment, student=self.student)
         self.chat_group = ChatGroupFactory.create(group_owner=self.user)
         self.group_member = GroupMemberFactory.create(user=self.user, group=self.chat_group)
         self.message = MessageFactory.create(sender=self.group_member, group=self.chat_group)
         self.event = EventFactory.create(school_class=self.school_class)
         self.helper = HelperFactory.create(parent=self.parent, event=self.event)
+        self.parentSettings = ParentSettingsFactory(parent=self.parent)
+        # NotificationModeFactory.create(name='App')
 
     # All endpoints prefixed by /api/v1/school/
     # GET requests, check status code and correct data is returned
@@ -291,3 +298,81 @@ class SchoolTests(APITestCase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 204)
         self.assertEqual(Helper.objects.filter(event=self.event.pk).count(), 0)
+
+    # GET, POST school-list-create/ and PUT teacher-school-update/
+    def test_schoolListCreate(self):
+        url = reverse('school_create')
+        # GET
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertTrue('id' in data[0])
+        self.assertTrue('name' in data[0])
+        self.assertTrue('country' in data[0])
+        self.assertTrue('city' in data[0])
+        # POST
+        data = {'name': 'Test School 2', 'country': 'UK', 'city': 'Manchester'}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(School.objects.filter(name='Test School 2', country='UK', city='Manchester').count(), 1)
+        
+        # Change school to the new school
+        url = reverse('teacher_school_update')
+        school = School.objects.filter(name='Test School 2', country='UK', city='Manchester')[0]
+        data = {'school': school.pk}
+        response = self.client.put(url, data)
+        self.assertEqual(response.status_code, 200)
+        teacher = Teacher.objects.get(user=self.user)
+        self.assertEqual(teacher.school.pk, school.pk)
+
+    # PUT use-invite-code/
+    def test_useInviteCode(self):
+        url = reverse('use_invite_code')
+        data = {'code': self.invite_code.code}
+        response = self.client.put(url, data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Student.objects.filter(name="student2", parent=self.parent).count(), 1)
+
+    # PUT parent-settings-update/
+    def test_parentSettingsUpdate(self):
+        url = reverse('parent_settings_update')
+        data = {'notification_mode': 'App', 'message_received_notification': True, 'new_story_notification': True, 'new_announcement_notification': True, 'new_event_notification': True}
+        response = self.client.put(url, data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(ParentSettings.objects.filter(parent=self.parent, notification_mode='App', message_received_notification=True, new_story_notification=True, new_announcement_notification=True, new_event_notification=True).count(), 1)
+
+    # POST parent-create/ (at end as need account that doesn't already have a parent instance relation)
+    def test_parentCreate(self):
+        # create new user
+        user = CustomUser.objects.create_user('test_user_2', 'test2@abc.com', 'test2')
+        user.email_verified = True
+        user.save()
+        # login
+        url = reverse('rest_login')
+        response = self.client.post(url, {"email": user.email, "password": "test2"}, format="json")
+        # create parent
+        url = reverse('parent_create')
+        data = {'user': user.pk}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Parent.objects.filter(user=user).count(), 1)
+        # logout
+        self.client.post(reverse('rest_logout'))
+
+    # POST teacher-create/
+    def test_teacherCreate(self):
+        # create new user
+        user = CustomUser.objects.create_user('test_user_2', 'test2@abc.com', 'test2')
+        user.email_verified = True
+        user.save()
+        # login
+        url = reverse('rest_login')
+        response = self.client.post(url, {"email": user.email, "password": "test2"}, format="json")
+        # create teacher
+        url = reverse('teacher_create')
+        data = {'user': user.pk}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Teacher.objects.filter(user=user).count(), 1)
+        # logout
+        self.client.post(reverse('rest_logout'))

@@ -1,3 +1,4 @@
+from multiprocessing import parent_process
 import factory
 from .models import *
 import datetime
@@ -100,3 +101,29 @@ class HelperFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Helper
+
+class NotificationModeFactory(factory.django.DjangoModelFactory):
+    name = 'App'
+
+    class Meta:
+        model = NotificationMode
+
+class InviteCodeFactory(factory.django.DjangoModelFactory):
+    student = factory.SubFactory(StudentFactory)
+    code = "AAAAAAAA"
+    parent = None
+    used = False
+
+    class Meta:
+        model = InviteCode
+
+class ParentSettingsFactory(factory.django.DjangoModelFactory):
+    parent = factory.SubFactory(ParentFactory)
+    notification_mode = factory.SubFactory(NotificationModeFactory)
+    message_received_notification = True
+    new_story_notification = False
+    new_announcement_notification = False
+    new_event_notification = False
+
+    class Meta:
+        model = ParentSettings
