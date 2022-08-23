@@ -1,6 +1,6 @@
-from ast import Store
 import factory
 from .models import *
+import datetime
 
 class SchoolFactory(factory.django.DjangoModelFactory):
     name = "Test School"
@@ -15,6 +15,11 @@ class TeacherFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Teacher
+
+class ParentFactory(factory.django.DjangoModelFactory):
+
+    class Meta:
+        model = Parent
 
 class SchoolClassFactory(factory.django.DjangoModelFactory):
     teacher = factory.SubFactory(TeacherFactory)
@@ -55,3 +60,43 @@ class AssigneeFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Assignee
+
+class ChatGroupFactory(factory.django.DjangoModelFactory):
+    name = "Test group"
+    direct_message = False
+
+    class Meta:
+        model = ChatGroup
+
+class GroupMemberFactory(factory.django.DjangoModelFactory):
+    group = factory.SubFactory(ChatGroupFactory)
+    connected_to_call = False
+    connected_to_chat = False
+
+    class Meta:
+        model = GroupMember
+
+class MessageFactory(factory.django.DjangoModelFactory):
+    sender = factory.SubFactory(GroupMemberFactory)
+    group = factory.SubFactory(ChatGroupFactory)
+    content = "hello"
+
+    class Meta:
+        model = Message
+
+class EventFactory(factory.django.DjangoModelFactory):
+    name = "Test event"
+    date = datetime.date.today()
+    description = "An event"
+    school_class = factory.SubFactory(SchoolClassFactory)
+    helpers_required = 2
+
+    class Meta:
+        model = Event
+
+class HelperFactory(factory.django.DjangoModelFactory):
+    parent = factory.SubFactory(ParentFactory)
+    event = factory.SubFactory(EventFactory)
+
+    class Meta:
+        model = Helper

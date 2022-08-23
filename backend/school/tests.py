@@ -4,17 +4,23 @@ from accounts.models import CustomUser
 from .serializers import *
 from .model_factories import *
 import json
+import datetime
 
 class SchoolTests(APITestCase):
     user = None
     token = None
     school = None
     teacher = None
+    parent = None
     school_class = None
     announcement = None
     assignment = None
     student = None
     assignee = None
+    chat_group = None
+    group_member = None
+    event = None
+    helper = None
 
     def setUp(self):
         # clear the User table
@@ -30,20 +36,20 @@ class SchoolTests(APITestCase):
         self.token = token
         # set the client auth config
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
-        # create school
+        # create db instances
         self.school = SchoolFactory.create()
-        # create teacher
         self.teacher = TeacherFactory.create(user=self.user, school=self.school)
-        # create class
+        self.parent = ParentFactory.create(user=self.user)
         self.school_class = SchoolClassFactory.create(teacher=self.teacher, school=self.school)
-        # create announcement
         self.announcement = AnnouncementFactory.create(school_class=self.school_class)
-        # create assignment
         self.assignment = AssignmentFactory.create(school_class=self.school_class)
-        # create student
-        self.student = StudentFactory.create(school_class=self.school_class)
-        # create assignee
-        self.assignee = AssigneeFactory(assignment=self.assignment, student=self.student)
+        self.student = StudentFactory.create(school_class=self.school_class, parent=self.parent)
+        self.assignee = AssigneeFactory.create(assignment=self.assignment, student=self.student)
+        self.chat_group = ChatGroupFactory.create(group_owner=self.user)
+        self.group_member = GroupMemberFactory.create(user=self.user, group=self.chat_group)
+        self.message = MessageFactory.create(sender=self.group_member, group=self.chat_group)
+        self.event = EventFactory.create(school_class=self.school_class)
+        self.helper = HelperFactory.create(parent=self.parent, event=self.event)
 
     # All endpoints prefixed by /api/v1/school/
     # GET requests, check status code and correct data is returned
@@ -161,6 +167,83 @@ class SchoolTests(APITestCase):
         self.assertEqual(data['assigned_students'][0]['submitted'], self.assignee.submitted)
         self.assertEqual(data['assigned_students'][0]['assignment_responses'], [])
 
+    # GET chat-group-get/<int:pk>/
+    # {'id', 'name', 'direct_message', 
+    # 'recipient': {'id', 'first_name', 'last_name'}, 
+    # 'group_owner': {'id', 'first_name', 'last_name'}, 
+    # 'chat_members': ['user',], 
+    # 'chat_messages': [{'sender': {'user'}, 'group', 'content', 'time'}]}
+    def test_chatGroupGet(self):
+        url = reverse('chat_group_get', kwargs={'pk': self.chat_group.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertTrue('id' in data)
+        self.assertTrue('name' in data)
+        self.assertTrue('direct_message' in data)
+        self.assertTrue('recipient' in data)
+        self.assertTrue('group_owner' in data)
+        self.assertTrue('chat_members' in data)
+        self.assertTrue('chat_messages' in data)
+        self.assertTrue('user' in data['chat_members'][0])
+        self.assertTrue('sender' in data['chat_messages'][0])
+        self.assertTrue('group' in data['chat_messages'][0])
+        self.assertTrue('content' in data['chat_messages'][0])
+        self.assertTrue('time' in data['chat_messages'][0])
+        self.assertEqual(data['id'], self.chat_group.id)
+        self.assertEqual(data['name'], self.chat_group.name)
+        self.assertEqual(data['direct_message'], self.chat_group.direct_message)
+        self.assertEqual(data['recipient'], self.chat_group.recipient)
+        self.assertEqual(data['group_owner']['id'], self.chat_group.group_owner.id)
+        self.assertEqual(data['chat_members'][0]['user']['id'], self.group_member.user.id)
+        self.assertEqual(data['chat_messages'][0]['sender']['user']['id'], self.message.sender.user.id)
+        self.assertEqual(data['chat_messages'][0]['group'], self.message.group.id)
+        self.assertEqual(data['chat_messages'][0]['content'], self.message.content)
+
+    # POST chat-group-add-members/<int:pk>/ - can't test due to list issue
+
+    # GET chat-group-user-get/
+    # {'chat_group_member': [{'user': {'first_name': 'last_name'}, 'group': {'id'}, 'connected_to_call', 'connected_to_chat'}]}
+    def test_chatGroupUserGet(self):
+        url = reverse('chat_group_user_get')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertTrue('chat_group_member' in data)
+        self.assertTrue('user' in data['chat_group_member'][0])
+        self.assertTrue('first_name' in data['chat_group_member'][0]['user'])
+        self.assertTrue('last_name' in data['chat_group_member'][0]['user'])
+        self.assertTrue('group' in data['chat_group_member'][0])
+        self.assertTrue('id' in data['chat_group_member'][0]['group'])
+        self.assertTrue('connected_to_call' in data['chat_group_member'][0])
+        self.assertTrue('connected_to_chat' in data['chat_group_member'][0])
+        self.assertEqual(data['chat_group_member'][0]['user']['first_name'], self.group_member.user.first_name)
+        self.assertEqual(data['chat_group_member'][0]['user']['last_name'], self.group_member.user.last_name)
+        self.assertEqual(data['chat_group_member'][0]['group']['id'], self.group_member.group.id)
+        self.assertEqual(data['chat_group_member'][0]['connected_to_call'], self.group_member.connected_to_call)
+        self.assertEqual(data['chat_group_member'][0]['connected_to_chat'], self.group_member.connected_to_chat)
+
+    # POST chat-group-create/
+    # creates both group and group member instances
+    def test_chatGroupCreate(self):
+        url = reverse('chat_group_create')
+        data = {'name': 'Test group'}
+        response = self.client.post(url, data)
+        res_data = json.loads(response.content)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(ChatGroup.objects.filter(id=res_data['id']).count(), 1)
+        self.assertEqual(GroupMember.objects.filter(user=self.user, group=res_data['id']).count(), 1)
+
+    # POST chat-group-create-direct/
+    def test_chatGroupCreateDirect(self):
+        url = reverse('chat_group_create')
+        data = {'name': 'Test group', 'direct': True}
+        response = self.client.post(url, data)
+        res_data = json.loads(response.content)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(ChatGroup.objects.filter(id=res_data['id']).count(), 1)
+        self.assertEqual(GroupMember.objects.filter(user=self.user, group=res_data['id']).count(), 1)
+
     # POST class-create/
     def test_schoolClassCreate(self):
         url = reverse('class_create')
@@ -168,3 +251,43 @@ class SchoolTests(APITestCase):
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(SchoolClass.objects.filter(school=self.teacher.school, teacher=self.teacher, name="Grade 6").count(), 1)
+
+    # POST event-create/
+    def test_eventCreate(self):
+        url = reverse('event_create')
+        today = datetime.date.today()
+        data = {"name": "new event", "date": today, "description": "an event", "school_class": self.school_class.pk, "helpers_required": 2}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Event.objects.filter(name="new event", description="an event", school_class=self.school_class, helpers_required=2).count(), 1)
+
+    # PUT event-update/<int:pk>/
+    def test_eventUpdate(self):
+        url = reverse('event_update', kwargs={'pk': self.event.pk})
+        today = datetime.date.today()
+        data = {"name": "new event!!", "date": today, "description": "an event!!", "helpers_required": 3}
+        response = self.client.put(url, data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Event.objects.filter(name="new event!!", description="an event!!", helpers_required=3, school_class=self.school_class).count(), 1)
+
+    # DELETE event-delete/<int:pk>/
+    def test_eventDelete(self):
+        url = reverse('event_delete', kwargs={'pk': self.event.pk})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(Event.objects.filter(pk=self.event.pk).count(), 0)
+
+    # POST helper-create/
+    def test_helperCreate(self):
+        url = reverse('helper_create')
+        data = {'event': self.event.pk}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Helper.objects.filter(parent=self.parent.id, event=self.event).count(), 1)
+
+    # DELETE helper-delete/<int:pk>/
+    def test_helperDelete(self):
+        url = reverse('helper_delete', kwargs={'pk': self.event.pk})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(Helper.objects.filter(event=self.event.pk).count(), 0)
