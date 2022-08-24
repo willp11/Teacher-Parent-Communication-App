@@ -4,6 +4,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
 from rest_framework.authtoken.models import Token
 from asgiref.sync import sync_to_async, async_to_sync
 from .models import Message, ChatGroup, GroupMember
+from .tasks import send_app_notifications
 
 @sync_to_async
 def get_user(token):
@@ -15,6 +16,7 @@ def save_message(chat_id, sender, message):
     sender_instance = GroupMember.objects.get(user=sender, group=group)
     message = Message.objects.create(sender=sender_instance, group=group, content=message)
     message.save()
+    send_app_notifications(sender, 'Message', group)
     return message
 
 # type = chat or call, value = True or False

@@ -217,3 +217,21 @@ class InviteCode(models.Model):
 
     def __str__(self):
         return self.code
+
+class ChatGroupNotification(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='chat_notifications')
+    MESSAGE = 'Message'
+    VIDEO = 'Video'
+    TYPE_CHOICES = [
+        (MESSAGE, 'Message'),
+        (VIDEO, 'Video')
+    ]
+    type = models.CharField(max_length=8, choices=TYPE_CHOICES, default=MESSAGE)
+    title = models.CharField(max_length=64)
+    group = models.ForeignKey(ChatGroup, on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(auto_now=True)
+    read = models.BooleanField(default=False)
+    qty_missed = models.IntegerField(default=1)
+
+    def __str__(self):
+        return '{} in {}'.format(self.user.first_name, self.group.name)
