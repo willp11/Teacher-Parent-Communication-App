@@ -21,7 +21,7 @@ const Notifications = () => {
         axios.get(url, {headers: headers})
             .then(res=>{
                 console.log(res);
-                setNotifications(res.data.notifications);
+                setNotifications(res.data.chat_notifications);
             })
             .catch(err=>{
                 console.log(err);
@@ -36,7 +36,15 @@ const Notifications = () => {
     }, [getNotifications])
 
     let notifications_div = notifications.map(notification=>{
-        return <Notification key={notification.id} title={notification.title} content={notification.content} datetime={new Date(notification.created_at)} />
+        return <Notification 
+            key={notification.id} 
+            type={notification.type}
+            title={notification.title}
+            group={notification.group}
+            updated_at={new Date(notification.updated_at)}
+            read={notification.read}
+            qty_missed={notification.qty_missed}
+        />
     })
 
     return (
