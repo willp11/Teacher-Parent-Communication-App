@@ -221,12 +221,14 @@ class InviteCode(models.Model):
 class ChatGroupNotification(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='chat_notifications')
     MESSAGE = 'Message'
-    VIDEO = 'Video'
+    IS_CALLING = 'IsCalling'
+    MISSED_CALL = 'MissedCall'
     TYPE_CHOICES = [
         (MESSAGE, 'Message'),
-        (VIDEO, 'Video')
+        (IS_CALLING, 'IsCalling'),
+        (MISSED_CALL, 'MissedCall')
     ]
-    type = models.CharField(max_length=8, choices=TYPE_CHOICES, default=MESSAGE)
+    type = models.CharField(max_length=16, choices=TYPE_CHOICES, default=MESSAGE)
     title = models.CharField(max_length=64)
     group = models.ForeignKey(ChatGroup, on_delete=models.CASCADE)
     updated_at = models.DateTimeField(auto_now=True)

@@ -1,6 +1,5 @@
-from email.headerregistry import Group
 import json
-from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
+from channels.generic.websocket import AsyncWebsocketConsumer
 from rest_framework.authtoken.models import Token
 from asgiref.sync import sync_to_async, async_to_sync
 from .models import Message, ChatGroup, GroupMember
@@ -18,6 +17,11 @@ def save_message(chat_id, sender, message):
     message.save()
     send_app_notifications(sender, 'Message', group)
     return message
+
+@sync_to_async
+def create_notification_task(chat_id, type, sender):
+    group = ChatGroup.objects.get(pk=chat_id)
+    send_app_notifications(sender, type, group)
 
 # type = chat or call, value = True or False
 @sync_to_async
@@ -128,7 +132,7 @@ class CallConsumer(AsyncWebsocketConsumer):
 
             await update_connected_status(self.chat_id, self.user, 'call', True)
 
-            other_user = await get_other_user(self.chat_id, self.user)
+            other_user = await get_other_user(self.chat_id, self.user) # groupMember instance
 
             self.other_user = other_user
             self.other_room = 'chat_%s_%s' % (self.other_user.user.id, self.chat_id)
@@ -157,6 +161,8 @@ class CallConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         try:
+            # update any isCalling notifications to missed call
+            await create_notification_task(self.chat_id, 'CallCancelled', self.user)
             # notify the other user that you have disconnected
             await self.channel_layer.group_send(
                 self.other_room,
@@ -188,6 +194,9 @@ class CallConsumer(AsyncWebsocketConsumer):
             
             # notify the callee we send a call_received event to their group
             if eventType == 'call':
+                # create an IsCalling notification
+                await create_notification_task(self.chat_id, 'IsCalling', self.user)
+
                 await self.channel_layer.group_send(
                     self.other_room,
                     {
@@ -201,6 +210,9 @@ class CallConsumer(AsyncWebsocketConsumer):
 
             # notify other user that the call is cancelled
             if eventType == 'cancel_call':
+                # update any IsCalling notifications to MissedCall
+                await create_notification_task(self.chat_id, 'CallCancelled', self.user)
+
                 await self.channel_layer.group_send(
                     self.other_room,
                     {

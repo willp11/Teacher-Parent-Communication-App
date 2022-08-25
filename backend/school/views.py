@@ -308,7 +308,6 @@ class NotificationsGetView(RetrieveAPIView):
     permission_classes = [IsAuthenticated, IsEmailVerified]
 
     def get_object(self):
-        print(self.request.user)
         return self.request.user
 
 class NotificationUpdateView(RetrieveUpdateAPIView):
