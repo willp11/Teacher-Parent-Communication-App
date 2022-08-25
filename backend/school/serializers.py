@@ -466,9 +466,16 @@ class ParentContactsSerializer(serializers.ModelSerializer):
 #######################################################################
 # NOTIFICATIONS
 #######################################################################
+# Need to nest group inside with all chat_members and direct_message 
+class GroupInfoNotificationsSerializer(serializers.ModelSerializer):
+    recipient = UserNameOnlySerializer()
+    class Meta:
+        model = ChatGroup
+        fields = ('id', 'name', 'direct_message', 'recipient')
+
 # UserNotificationsSerializer
 class ChatGroupNotificationSerializer(serializers.ModelSerializer):
-    group = ChatGroupCreateSerializer()
+    group = GroupInfoNotificationsSerializer()
     class Meta:
         model = ChatGroupNotification
         fields = '__all__'

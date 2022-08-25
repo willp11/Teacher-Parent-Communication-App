@@ -1,4 +1,5 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, ListCreateAPIView, DestroyAPIView, RetrieveUpdateAPIView, RetrieveDestroyAPIView
+from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
@@ -8,6 +9,7 @@ from .models import *
 from .utils import check_has_child_in_class, generate_invite_code
 from .permissions import *
 from .tasks import send_school_class_notifications
+from django.core.exceptions import ValidationError
 
 #######################################################################
 # ANNOUNCEMENTS
@@ -317,6 +319,37 @@ class NotificationUpdateView(RetrieveUpdateAPIView):
 
     def get_object(self):
         return ChatGroupNotification.objects.get(pk=self.kwargs['pk'], user=self.request.user)
+
+# Update list of ChatGroupNotification - used on chatGroup and videoCall pages - set notifications read=True
+class ChatGroupNotificationUpdateView(APIView):
+
+    def get_object(self, obj_id):
+        try:
+            return ChatGroupNotification.objects.get(id=obj_id)
+        except (ChatGroupNotification.DoesNotExist, ValidationError):
+            raise status.HTTP_400_BAD_REQUEST
+
+    def validate_ids(self, id_list):
+        for id in id_list:
+            try:
+                ChatGroupNotification.objects.get(id=id)
+            except (ChatGroupNotification.DoesNotExist, ValidationError):
+                raise status.HTTP_400_BAD_REQUEST
+        return True
+
+    def put(self, request, *args, **kwargs):
+        id_list = request.data['ids']
+        self.validate_ids(id_list=id_list)
+        instances = []
+        for id in id_list:
+            obj = self.get_object(obj_id=id)
+            obj.read = True
+            obj.save()
+            instances.append(obj)
+        serializer = ChatGroupNotificationSerializer(instances, many=True)
+        return Response(serializer.data)
+
+# Update list of SchoolClass - used on class page - set notifications read=True
 
 #######################################################################
 # PROFILE
