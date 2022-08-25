@@ -35,10 +35,6 @@ const Navigation = () => {
         return null;
     }, [notifications])
 
-    useEffect(()=>{
-        console.log(notifications);
-    }, [notifications])
-
     let navigation = navigation_signed_out;
     if (token !== null) {
         navigation = navigation_signed_in;

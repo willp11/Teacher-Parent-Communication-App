@@ -1,12 +1,39 @@
 import Navigation from "../Navigation/Navigation";
 import Notification from "./Notification";
 import { useNotifications } from "../../Hooks/useNotifications";
+import { useEffect, useMemo } from "react";
 
 const Notifications = () => {
 
     const {notifications, loading} = useNotifications();
 
-    let notifications_div = notifications.map(notification=>{
+    // TO DO
+    // Sort notifications - show unread at top and read below, sorted by last updated
+    const sortedNotifications = useMemo(()=>{
+        let all = [];
+        let read = [];
+        let unread = [];
+        const notifs = [...notifications];
+        notifs.forEach((n)=>{
+            if (n.read) {
+                read.push(n);
+            } else {
+                unread.push(n);
+            }
+        })
+        read.sort((a,b)=>{
+            return Date.parse(b.updated_at) - Date.parse(a.updated_at)
+        })
+        unread.sort((a,b)=>{
+            return Date.parse(b.updated_at) - Date.parse(a.updated_at)
+        })
+        all.push(...unread);
+        all.push(...read);
+        
+        return all;
+    }, [notifications]);
+
+    let notifications_div = sortedNotifications.map(notification=>{
         return <Notification 
             key={notification.id} 
             type={notification.type}
