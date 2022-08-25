@@ -36,6 +36,7 @@ urlpatterns = [
 
     # NOTIFICATIONS
     path('notifications-get/', NotificationsGetView.as_view(), name='notifications_get'), # get all user's notifications
+    path('notification-update/<int:pk>/', NotificationUpdateView.as_view(), name='notifications_get'), # update a notification
 
     # PROFILE PAGE
     path('parent-create/', ParentCreateView.as_view(), name='parent_create'), # select parent account type

@@ -173,7 +173,7 @@ class UserChatGroupsSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ('chat_group_member',)
 
-# Used by ChatGroupCreateView
+# Used by ChatGroupCreateView, ChatGroupNotificationSerializer
 class ChatGroupCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChatGroup
@@ -218,17 +218,24 @@ class EventSerializer(serializers.ModelSerializer):
 # NOTIFICATIONS
 #######################################################################
 # UserNotificationsSerializer
-class NotificationSerializer(serializers.ModelSerializer):
+class ChatGroupNotificationSerializer(serializers.ModelSerializer):
+    group = ChatGroupCreateSerializer()
     class Meta:
-        model = AppNotification
+        model = ChatGroupNotification
         fields = '__all__'
 
 # NotificationsGetView
 class UserNotificationsSerializer(serializers.ModelSerializer):
-    notifications = NotificationSerializer(many=True)
+    chat_notifications = ChatGroupNotificationSerializer(many=True)
     class Meta:
         model = CustomUser
-        fields = ('notifications',)
+        fields = ('chat_notifications',)
+
+# NotificationUpdateView
+class NotificationUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChatGroupNotification
+        fields = ('read',)
 
 #######################################################################
 # PROFILE

@@ -148,14 +148,14 @@ class Sticker(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='stickers')
     type = models.ForeignKey(StickerType, on_delete=models.CASCADE)
 
-class AppNotification(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notifications')
-    title = models.CharField(max_length=100)
-    content = models.CharField(max_length=256)
-    created_at = models.DateTimeField(auto_now_add=True)
+# class AppNotification(models.Model):
+#     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notifications')
+#     title = models.CharField(max_length=100)
+#     content = models.CharField(max_length=256)
+#     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return '{} to {} {}'.format(self.title, self.user.first_name, self.user.last_name)
+#     def __str__(self):
+#         return '{} to {} {}'.format(self.title, self.user.first_name, self.user.last_name)
 
 class NotificationMode(models.Model):
     APP = 'App'

@@ -5,21 +5,21 @@ from .models import *
 @shared_task
 def send_app_notifications(sender, type, group):
     # notification = {type, title, group, time, read_at, qty_missed}
-    # e.g. {type:'message', title: 'Unread messages', chatGroup: pk, time: '12:00:00', read_at: '11:30:00', qty_missed: 4,} onClick=navigate to chat group
-    # e.g. {type:'call', title: 'Missed call', chatGroup: pk, time: '11:30:00', read_at: null, qty_missed: 1} onClick=navigate to call
-    # e.g. {type:'event', title: 'New event', schoolClass: pk, time: '11:30:00', read_at: '11:02:00', qty_missed: 1} onClick=navigate to events
+    # e.g. {type:'message', title: 'Unread messages', chatGroup: pk, time: '12:00:00', read: False, qty_missed: 4} onClick=navigate to chat group
+    # e.g. {type:'call', title: 'Missed call', chatGroup: pk, time: '11:30:00', read: False, qty_missed: 1} onClick=navigate to call
+    # e.g. {type:'event', title: 'New event', schoolClass: pk, time: '11:30:00', read_at: False, qty_missed: 1} onClick=navigate to events
 
-    print("sending notification")
+    print("Sending {} notification".format(type))
 
     if type == 'Message':
         group_members = GroupMember.objects.filter(group=group)
         for member in group_members:
-            if member.user != sender:
+            if member.user != sender and member.connected_to_chat == False:
                 # find notification object
                 notifications = ChatGroupNotification.objects.filter(user=member.user, type=type, group=group, read=False)
+
                 # create new notification object
                 if len(notifications) == 0:
-                    print("creating notification for {} in group {}".format(member.user, group))
                     new_notification = ChatGroupNotification(user=member.user, type='Message', title='New messages received', group=group)
                     new_notification.save()
                 # update notification object
@@ -30,9 +30,6 @@ def send_app_notifications(sender, type, group):
                 else:
                     raise Exception('Should not have multiple unread notifications for same user and chat group')
 
-
-                # create notification object
-                # notification = ChatGroupNotification()
 
     # type = message, call, announcement, story, event
     # foreign key ChatGroup for message notifications
