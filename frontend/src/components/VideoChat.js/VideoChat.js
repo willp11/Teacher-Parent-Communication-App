@@ -367,10 +367,13 @@ const VideoChat = () => {
     // Function for disconnecting from websocket manually (user clicks disconnect button)
     const disconnect = () => {
         if (socketRef.current !== null) {
+            setConnected(false)
+            setIsCalling(false)
+            setIsInCall(false)
+            setIsReceivingCall(false)
+            stop()
             socketRef.current.close()
             socketRef.current = null
-            setConnected(false)
-            stop()
         }
     }
 
@@ -385,11 +388,19 @@ const VideoChat = () => {
         <video className="w-[500px]" id="remoteVideo" autoPlay playsInline ref={remoteVideoRef} />
     )
 
+    let callDivCursor = "cursor-pointer";
+    if (!otherUserConnected) callDivCursor = "cursor-not-allowed";
     const callDiv = (
         <div id="call" className="w-full">
             <div className="bg-white w-full sm:w-[500px] mx-auto my-2 px-2 py-4 border border-gray-300 rounded shadow-md flex flex-col items-center justify-start">
                 <h2>Send Call</h2>
-                <button className="w-32 rounded p-2 mt-2 text-white font-semibold bg-sky-500 hover:bg-indigo-500" onClick={call}>Call</button>
+                    <button 
+                        className={`w-32 rounded p-2 mt-2 text-white font-semibold bg-sky-500 hover:bg-indigo-500 ${callDivCursor}`}
+                        onClick={call}
+                        disabled={!otherUserConnected}
+                    >
+                            Call
+                    </button>
             </div>
         </div>
     )
@@ -426,7 +437,7 @@ const VideoChat = () => {
     )
 
     const videosDiv = (
-        <div id="videos" className={isInCall ? "text-center" : "hidden"}>
+        <div id="videos" className={isInCall && connected ? "text-center" : "hidden"}>
             <div className="absolute top-4 right-2">
                 {localVideo}
             </div>

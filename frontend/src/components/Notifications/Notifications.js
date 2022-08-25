@@ -7,7 +7,6 @@ const Notifications = () => {
 
     const {notifications, loading} = useNotifications();
 
-    // TO DO
     // Sort notifications - show unread at top and read below, sorted by last updated
     const sortedNotifications = useMemo(()=>{
         let all = [];
@@ -38,7 +37,8 @@ const Notifications = () => {
             key={notification.id} 
             type={notification.type}
             title={notification.title}
-            group={notification.group}
+            group={notification?.group}
+            school_class={notification?.school_class}
             updated_at={new Date(notification.updated_at)}
             read={notification.read}
             qty_missed={notification.qty_missed}
