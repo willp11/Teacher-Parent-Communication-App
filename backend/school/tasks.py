@@ -1,9 +1,9 @@
 from celery import shared_task
 from .models import *
 
-# Tasks to create notifications
+# Create message and missed call notifications - used by the chat/call consumers
 @shared_task
-def send_app_notifications(sender, type, group):
+def send_chat_group_notifications(sender, type, group):
     # ChatGroupNotification = {type, title, group, updated_at, read, qty_missed}
     # SchoolClassNotification = {type, title, school_class, updated_at, read, qty_missed}
 
@@ -42,9 +42,47 @@ def send_app_notifications(sender, type, group):
                     notification.type = type
                     notification.title = "Missed call"
                     notification.save()
+        
 
 
     # type = message, call, announcement, story, event
     # foreign key ChatGroup for message notifications
     # foreign key SchoolClass for event, announcement, story notifications
     # => two tables: ChatGroupNotification, SchoolClassNotification
+
+
+# Create event, announcement, story  - used by the views when teacher creates new
+@shared_task
+def send_school_class_notifications(user, type, school_class):
+    try:
+        # check user is the teacher of the school_class
+        if user != school_class.teacher.user:
+            raise Exception('Not authorized')
+        
+        # get eligible parents
+        parents = []
+        students = Student.objects.filter(school_class=school_class)
+        for student in students:
+            if student.parent != None:
+                parent_settings = ParentSettings.objects.get(parent=student.parent)
+                if type == 'Announcement':
+                    title = "New announcement"
+                    if parent_settings.new_announcement_notification == True:
+                        parents.append(student.parent)
+                if type == 'Event':
+                    title = "New event"
+                    if parent_settings.new_event_notification == True:
+                        parents.append(student.parent)
+                if type == 'Story':
+                    title = "New story"
+                    if parent_settings.new_story_notification == True:
+                        parents.append(student.parent)
+            
+        # create notification for each parent
+        for parent in parents:
+            print(parent)
+            new_notification = SchoolClassNotification(user=parent.user, type=type, title=title, school_class=school_class)
+            new_notification.save()
+    except:
+        print("error sending school class notifications")
+

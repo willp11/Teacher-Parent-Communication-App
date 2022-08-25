@@ -237,3 +237,22 @@ class ChatGroupNotification(models.Model):
 
     def __str__(self):
         return '{} in {}'.format(self.user.first_name, self.group.name)
+
+class SchoolClassNotification(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='school_class_notifications')
+
+    EVENT = 'Event'
+    STORY = 'Story'
+    ANNOUNCEMENT = 'Announcement'
+    TYPE_CHOICES = [
+        (EVENT, 'Message'),
+        (STORY, 'IsCalling'),
+        (ANNOUNCEMENT, 'MissedCall')
+    ]
+    type = models.CharField(max_length=16, choices=TYPE_CHOICES, default=ANNOUNCEMENT)
+
+    title = models.CharField(max_length=64)
+    school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(auto_now=True)
+    read = models.BooleanField(default=False)
+    qty_missed = models.IntegerField(default=1)

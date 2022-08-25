@@ -7,7 +7,7 @@ from .serializers import *
 from .models import *
 from .utils import check_has_child_in_class, generate_invite_code
 from .permissions import *
-from .tasks import send_app_notifications
+from .tasks import send_school_class_notifications
 
 #######################################################################
 # ANNOUNCEMENTS
@@ -17,9 +17,9 @@ class AnnouncementCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated, IsEmailVerified, IsClassTeacher]
 
     def perform_create(self, serializer):
-        send_app_notifications()
         school_class = SchoolClass.objects.get(pk=self.request.data['school_class'])
         serializer.save(school_class=school_class)
+        send_school_class_notifications(self.request.user, "Announcement", school_class)
 
 class AnnouncementUpdateView(RetrieveUpdateAPIView):
     serializer_class = AnnouncementUpdateSerializer
@@ -248,6 +248,7 @@ class EventCreateView(CreateAPIView):
     def perform_create(self, serializer):
         school_class = SchoolClass.objects.get(pk=self.request.data['school_class'])
         serializer.save(school_class=school_class)
+        send_school_class_notifications(self.request.user, "Event", school_class)
 
 class EventUpdateView(RetrieveUpdateAPIView):
     serializer_class = EventUpdateSerializer
@@ -412,6 +413,7 @@ class StoryCreateView(CreateAPIView):
     def perform_create(self, serializer):
         school_class = SchoolClass.objects.get(pk=self.request.data['school_class'])
         serializer.save(school_class=school_class)
+        send_school_class_notifications(self.request.user, "Story", school_class)
 
 class StoryUpdateView(RetrieveUpdateAPIView):
     serializer_class = StoryUpdateSerializer

@@ -215,29 +215,6 @@ class EventSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'date', 'description', 'school_class', 'helpers_required', 'helpers')
 
 #######################################################################
-# NOTIFICATIONS
-#######################################################################
-# UserNotificationsSerializer
-class ChatGroupNotificationSerializer(serializers.ModelSerializer):
-    group = ChatGroupCreateSerializer()
-    class Meta:
-        model = ChatGroupNotification
-        fields = '__all__'
-
-# NotificationsGetView
-class UserNotificationsSerializer(serializers.ModelSerializer):
-    chat_notifications = ChatGroupNotificationSerializer(many=True)
-    class Meta:
-        model = CustomUser
-        fields = ('chat_notifications',)
-
-# NotificationUpdateView
-class NotificationUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ChatGroupNotification
-        fields = ('read',)
-
-#######################################################################
 # PROFILE
 #######################################################################
 # ParentCreateView
@@ -485,3 +462,33 @@ class ParentContactsSerializer(serializers.ModelSerializer):
         model = Parent
         fields = ('id', 'children')
 
+
+#######################################################################
+# NOTIFICATIONS
+#######################################################################
+# UserNotificationsSerializer
+class ChatGroupNotificationSerializer(serializers.ModelSerializer):
+    group = ChatGroupCreateSerializer()
+    class Meta:
+        model = ChatGroupNotification
+        fields = '__all__'
+
+class SchoolClassNotificationSerializer(serializers.ModelSerializer):
+    school_class = SchoolClassSerializer()
+    class Meta:
+        model = SchoolClassNotification
+        fields = '__all__'
+
+# NotificationsGetView
+class UserNotificationsSerializer(serializers.ModelSerializer):
+    chat_notifications = ChatGroupNotificationSerializer(many=True)
+    school_class_notifications = SchoolClassNotificationSerializer(many=True)
+    class Meta:
+        model = CustomUser
+        fields = ('chat_notifications', 'school_class_notifications')
+
+# NotificationUpdateView
+class NotificationUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChatGroupNotification
+        fields = ('read',)
