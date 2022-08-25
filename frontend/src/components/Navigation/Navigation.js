@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Fragment } from 'react';
+import { Fragment, useEffect, useMemo } from 'react';
 import { Popover, Transition } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
 import Bell from '../Bell/Bell';
+import { useNotifications } from '../../Hooks/useNotifications';
 
 const navigation_signed_out = [
     { name: 'Home', href: '/' },
@@ -16,16 +17,32 @@ const navigation_signed_in = [
     { name: 'Features', href: '/features' },
     { name: 'Profile', href: '/profile' },
     { name: 'Chat', href: '/chatHub' },
-    { name: <Bell quantity={1} />, href: '/notifications' }
+    { name: null, href: '/notifications' }
 ]
 
 const Navigation = () => {
 
     const token = useSelector((state)=>state.auth.token);
 
+    const {notifications} = useNotifications();
+    // const [qtyNotifications, setQtyNotifications] = useState(null);
+    const qtyNotifications = useMemo(()=>{
+        let count = 0;
+        notifications.forEach((notification)=>{
+            if (!notification.read) count += notification.qty_missed
+        })
+        if (count > 0) return count
+        return null;
+    }, [notifications])
+
+    useEffect(()=>{
+        console.log(notifications);
+    }, [notifications])
+
     let navigation = navigation_signed_out;
     if (token !== null) {
         navigation = navigation_signed_in;
+        navigation[4].name = <Bell quantity={qtyNotifications} />
     }
 
     return (

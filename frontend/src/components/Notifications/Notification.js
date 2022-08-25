@@ -1,7 +1,14 @@
+import { useNavigate } from "react-router-dom";
 
 const Notification = (props) => {
+
+    const navigate = useNavigate();
+
+    let bg_color = "bg-white";
+    if (!props.read) bg_color = "bg-sky-100";
+
     return (
-        <div className="w-full border border-gray-300 bg-sky-50 shadow-md rounded p-2">
+        <div className={`w-full border border-gray-300 ${bg_color} shadow-md rounded p-2 cursor-pointer`} onClick={()=>navigate(`/chatGroup/${props.group.id}`)}>
             <div className="w-full flex justify-between items-center mb-1">
                 <div className="flex items-center">
                     <h3 className="font-semibold mr-4">{props.title}</h3>

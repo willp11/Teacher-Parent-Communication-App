@@ -1,11 +1,12 @@
 import { useParams } from 'react-router-dom';
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import MemberList from './MemberList';
 import Navigation from '../Navigation/Navigation';
 import Messages from './Messages';
 import { useGroupMembers } from '../../Hooks/useGroupMembers';
+import { useNotifications } from '../../Hooks/useNotifications';
 
 const ChatGroup = () => {
 
@@ -24,6 +25,33 @@ const ChatGroup = () => {
     // keep socket in ref so doesn't set null, so we can close it on unmount
     const socketRef = useRef(null)
 
+    const {notifications, getNotifications} = useNotifications();
+
+    const notificationId = useMemo(()=>{
+        let notifId = null;
+        notifications.forEach((notification)=>{
+            if (notification.group.id === parseInt(id)) notifId = notification.id;
+        })
+        return notifId;
+    }, [notifications])
+
+    const setNotificationsRead = async () => {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token
+        }
+        const url = `http://127.0.0.1:8000/api/v1/school/notification-update/${notificationId}/`
+        const data = {read: true}
+        try {
+            console.log("updating notification as read")
+            const res = await axios.put(url, data, {headers: headers});
+            console.log(res);
+            getNotifications();
+        } catch(err) {
+            console.log(err);
+        }
+    }
+
     // connect to websocket - called inside getGroupData
     const connectSocket = useCallback(() => {
         const chatSocket = new WebSocket(
@@ -32,7 +60,8 @@ const ChatGroup = () => {
         // print that we have connected successfully
         chatSocket.onopen = function(e) {
             console.log("opened socket", chatSocket);
-            socketRef.current = chatSocket
+            socketRef.current = chatSocket;
+            setNotificationsRead()
         }
         // when receive new message, write to chat log div
         chatSocket.onmessage = function(e) {

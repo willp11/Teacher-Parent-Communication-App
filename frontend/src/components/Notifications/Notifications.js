@@ -1,39 +1,10 @@
 import Navigation from "../Navigation/Navigation";
 import Notification from "./Notification";
-import { useSelector } from "react-redux";
-import { useCallback, useEffect, useState } from "react";
-import axios from 'axios';
+import { useNotifications } from "../../Hooks/useNotifications";
 
 const Notifications = () => {
 
-    const token = useSelector(state=>state.auth.token);
-    const [loading, setLoading] = useState(false);
-
-    const [notifications, setNotifications] = useState([]);
-    
-    const getNotifications = useCallback(()=>{
-        const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Token ' + token
-        }
-        const url = 'http://localhost:8000/api/v1/school/notifications-get/';
-        setLoading(true);
-        axios.get(url, {headers: headers})
-            .then(res=>{
-                console.log(res);
-                setNotifications(res.data.chat_notifications);
-            })
-            .catch(err=>{
-                console.log(err);
-            })
-            .finally(()=>{
-                setLoading(false);
-            })
-    }, [token])
-
-    useEffect(()=>{
-        getNotifications()
-    }, [getNotifications])
+    const {notifications, loading} = useNotifications();
 
     let notifications_div = notifications.map(notification=>{
         return <Notification 

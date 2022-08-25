@@ -26,31 +26,34 @@ import ChatGroup from './components/ChatGroup/ChatGroup';
 import VideoChat from './components/VideoChat.js/VideoChat';
 import SubmitAssignment from './components/Assignments/SubmitAssignment';
 import Notifications from './components/Notifications/Notifications';
+import { NotificationsProvider } from './Hooks/useNotifications';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <Provider store={store}>
-    <PersistGate persistor={persistor} loading={null}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/features" element={<Features />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/resetPassword" element={<ForgotPassword/>} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/logout" element={<Logout />} />
-          <Route path="/class/:id" element={<SchoolClass />} />
-          <Route path="/studentProfile/:id" element={<StudentProfile />} />
-          <Route path="/chatHub" element={<ChatHub />} />
-          <Route path="/chatGroup/:id" element={<ChatGroup />} />
-          <Route path="/videoChat/:id" element={<VideoChat />} />
-          <Route path="/assignment/:code" element={<SubmitAssignment />} />
-          <Route path="/notifications" element={<Notifications />} />
-        </Routes>
-      </BrowserRouter>
-    </PersistGate>
-  </Provider>
+    <Provider store={store}>
+        <PersistGate persistor={persistor} loading={null}>
+            <NotificationsProvider>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/features" element={<Features />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/resetPassword" element={<ForgotPassword/>} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/logout" element={<Logout />} />
+                        <Route path="/class/:id" element={<SchoolClass />} />
+                        <Route path="/studentProfile/:id" element={<StudentProfile />} />
+                        <Route path="/chatHub" element={<ChatHub />} />
+                        <Route path="/chatGroup/:id" element={<ChatGroup />} />
+                        <Route path="/videoChat/:id" element={<VideoChat />} />
+                        <Route path="/assignment/:code" element={<SubmitAssignment />} />
+                        <Route path="/notifications" element={<Notifications />} />
+                    </Routes>
+                </BrowserRouter>
+            </NotificationsProvider>
+        </PersistGate>
+    </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function
