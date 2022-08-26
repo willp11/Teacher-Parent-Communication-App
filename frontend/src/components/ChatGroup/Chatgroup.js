@@ -6,17 +6,21 @@ import MemberList from './MemberList';
 import Navigation from '../Navigation/Navigation';
 import Messages from './Messages';
 import { useGroupMembers } from '../../Hooks/useGroupMembers';
-import { useNotifications } from '../../Hooks/useNotifications';
 
 const ChatGroup = () => {
 
     const { id } = useParams();
     const token = useSelector((state)=>state.auth.token);
+    const userId = useSelector((state)=>state.auth.account.id);
 
     const [group, setGroup] = useState(null);
     const [messages, setMessages] = useState([]);
 
     const {groupMembers, setGroupMembers, getGroupMembers} = useGroupMembers(token, id);
+
+    useEffect(()=>{
+        console.log(userId);
+    }, [groupMembers, userId])
 
     // receive new messages, we update the refs and pass to messages component so it can render new messages and scroll down
     const messagesRef = useRef();
@@ -117,7 +121,7 @@ const ChatGroup = () => {
                     <h1 className="font-white drop-shadow-lg text-white">{group.direct_message ? "Direct Message" : group.name}</h1>
                 </div>
                 <div className="w-[calc(100%-1rem)] mx-auto flex flex-col items-center">
-                    <MemberList groupId={id} members={groupMembers} direct={group.direct_message} getGroupMembers={getGroupMembers} />
+                    <MemberList groupId={id} members={groupMembers} direct={group.direct_message} getGroupMembers={getGroupMembers} userId={userId} />
                     <Messages groupId={id} messages={messages} sendMessage={sendMessage} newMessage={messageCountRef.current}/>
                 </div>
             </div>

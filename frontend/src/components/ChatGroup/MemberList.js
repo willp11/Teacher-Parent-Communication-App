@@ -1,17 +1,31 @@
 import AddMembers from './AddMembers';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { WifiIcon } from "@heroicons/react/outline";
 
 const MemberList = (props) => {
 
     const [showAddMembers, setShowAddMembers] = useState(false);
 
     let member_list = props.members.map((member)=>{
+        let connected_status = member.connected_to_chat;
+        if (member.user.id === props.userId) {
+            connected_status = true;
+        }
+        let stroke = 'stroke-red-500';
+        if (connected_status) {
+            stroke = 'stroke-green-500';
+        }
         return (
-            <div key={member.user.id}>
+            <div key={member.user.id} className="flex items-center justify-between w-36 mx-auto my-2">
                 <p>{member.user.first_name} {member.user.last_name}</p>
+                <WifiIcon className={`h-6 w-6 mr-4 ${stroke}`} />
             </div>
         )
-    })
+    });
+
+    useEffect(()=>{
+        console.log(props.members)
+    }, [])
     
     let add_member_btn = (
         <button 
