@@ -16,52 +16,56 @@ const Messages = (props) => {
     let last_msg_sender = null;
     let show_name = true;
     let messages_div = props.messages.map((msg)=>{
-        // deal with messages where sender left the group
-        if (msg.sender === null || msg.sender === undefined) {
-            msg.sender = {user: {id: 0, first_name: "User left the group"}}
-        }
-
-        // check if message was sent by same - determines whether to show name
-        if (last_msg_sender === msg.sender.user.id) {
-            show_name = false;
+        if (msg.content !== undefined) {
+                // deal with messages where sender left the group
+                if (msg.sender === null || msg.sender === undefined) {
+                    msg.sender = {user: {id: 0, first_name: "User left the group"}}
+                }
+    
+                // check if message was sent by same - determines whether to show name
+                if (last_msg_sender === msg.sender.user?.id) {
+                    show_name = false;
+                } else {
+                    show_name = true;
+                }
+                last_msg_sender = msg.sender.user?.id;
+                let last_sender = (
+                    <div className="flex align-center justify-start pl-2">
+                        <p className="text-sm text-gray-500 mb-1">{msg.sender.user?.first_name}</p>
+                    </div>
+                )
+                let msg_content = (
+                    <div className="w-2/3 rounded-lg bg-gray-300 p-2 flex align-center justify-start text-left">
+                        {msg?.content}
+                    </div>
+                )
+    
+                // check if the message author is the user - if yes, change colours
+                if (account.id === msg.sender.user?.id) {
+                    last_sender = (
+                        <div className="w-full flex justify-end">
+                            <div className="w-2/3 flex align-center justify-start pl-2">
+                                <p className="text-sm text-gray-500 mb-1">You</p>
+                            </div>
+                        </div>
+                    )
+                    msg_content = (
+                        <div className="w-full flex justify-end">
+                            <div className="w-2/3 rounded-lg bg-sky-500 text-white p-2 flex align-center justify-start text-left">
+                                {msg?.content}
+                            </div>
+                        </div>
+                    )
+                }
+                return (
+                    <div className="my-2" key={msg.id}>
+                        {show_name ? last_sender : null}
+                        {msg_content}
+                    </div>
+                )
         } else {
-            show_name = true;
+            return null;
         }
-        last_msg_sender = msg.sender.user.id;
-        let last_sender = (
-            <div className="flex align-center justify-start pl-2">
-                <p className="text-sm text-gray-500 mb-1">{msg.sender.user.first_name}</p>
-            </div>
-        )
-        let msg_content = (
-            <div className="w-2/3 rounded-lg bg-gray-300 p-2 flex align-center justify-start text-left">
-                {msg.content}
-            </div>
-        )
-
-        // check if the message author is the user - if yes, change colours
-        if (account.id === msg.sender.user.id) {
-            last_sender = (
-                <div className="w-full flex justify-end">
-                    <div className="w-2/3 flex align-center justify-start pl-2">
-                        <p className="text-sm text-gray-500 mb-1">You</p>
-                    </div>
-                </div>
-            )
-            msg_content = (
-                <div className="w-full flex justify-end">
-                    <div className="w-2/3 rounded-lg bg-sky-500 text-white p-2 flex align-center justify-start text-left">
-                        {msg.content}
-                    </div>
-                </div>
-            )
-        }
-        return (
-            <div className="my-2" key={msg.id}>
-                {show_name ? last_sender : null}
-                {msg_content}
-            </div>
-        )
     })
 
     // On component mount - scroll to bottom

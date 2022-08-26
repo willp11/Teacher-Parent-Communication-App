@@ -18,9 +18,32 @@ const ChatGroup = () => {
 
     const {groupMembers, setGroupMembers, getGroupMembers} = useGroupMembers(token, id);
 
+    const groupMembersRef = useRef();
+
+    // after re-render group members, update ref
     useEffect(()=>{
-        console.log(userId);
-    }, [groupMembers, userId])
+        groupMembersRef.current = groupMembers;
+    }, [groupMembers]);
+
+    // update group member's connection status
+    const updateGroupMembers = (event) => {
+        // need to ref (not state) otherwise it is stale reference in the call from websocket.onmessage
+        let members = [...groupMembersRef.current];
+        groupMembersRef.current.forEach((member, index)=>{
+            if (member.user.id === event.data.user) {
+                if (event.type === 'user_connected') {
+                    console.log("user connected")
+                    members[index].connected_to_chat = true;
+                } else if (event.type === 'user_disconnected') {
+                    console.log("user disconnected")
+                    members[index].connected_to_chat = false;
+                }     
+            }
+        })
+        // update state to force re-render
+        setGroupMembers(members);
+        console.log(event.type)
+    }
 
     // receive new messages, we update the refs and pass to messages component so it can render new messages and scroll down
     const messagesRef = useRef();
@@ -42,7 +65,11 @@ const ChatGroup = () => {
         // when receive new message, write to chat log div
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            writeMessage(data)
+            if (data.type === 'chat_message') {
+                writeMessage(data);
+            } else if (data.type === 'user_connected' || data.type === 'user_disconnected') {
+                updateGroupMembers(data)
+            }
         };
         // if socket closes write error message to console
         chatSocket.onclose = function(e) {
@@ -63,13 +90,14 @@ const ChatGroup = () => {
                 setGroup(res.data);
                 setMessages(res.data.chat_messages);
                 setGroupMembers(res.data.chat_members);
+                // groupMembersRef.current = res.data.chat_members
                 messagesRef.current = res.data.chat_messages;
                 connectSocket();
             })
             .catch(err=>{
                 console.log(err);
             })
-    }, [token, id, connectSocket, setGroupMembers])
+    }, [token, id, connectSocket])
 
     // On Mount - get group data, also connects to websocket inside getGroupData then function. On unmount close the socket
     useEffect(()=>{

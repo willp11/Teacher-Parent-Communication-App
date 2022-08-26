@@ -6,6 +6,11 @@ const MemberList = (props) => {
 
     const [showAddMembers, setShowAddMembers] = useState(false);
 
+    useEffect(()=>{
+        console.log("re-render")
+        console.log(props.members)
+    }, [props.members])
+
     let member_list = props.members.map((member)=>{
         let connected_status = member.connected_to_chat;
         if (member.user.id === props.userId) {
@@ -22,10 +27,6 @@ const MemberList = (props) => {
             </div>
         )
     });
-
-    useEffect(()=>{
-        console.log(props.members)
-    }, [])
     
     let add_member_btn = (
         <button 
