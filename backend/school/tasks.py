@@ -17,18 +17,16 @@ def send_chat_group_notifications(sender, type, group):
                     new_notification = ChatGroupNotification(user=member.user, type=type, title='New messages received', group=group)
                     new_notification.save()
 
-                    # TO DO
                     # check if user wants email notification for new message
-                    # check if user has parent instance -> parentSettings instance
-                    # if new message setting == true => send email
-                    # parent_query = Parent.objects.filter()
-                    # send_mail(
-                    #     'Message received',
-                    #     'You have unread messages',
-                    #     'admin@app.com',
-                    #     ['parent@test.com'],
-                    #     fail_silently=True
-                    # )
+                    parent_settings = Settings.objects.get(user=member.user)
+                    if parent_settings.message_received_notification == True:
+                        send_mail(
+                            'Message received',
+                            'You have unread messages',
+                            'admin@app.com',
+                            ['parent@test.com'],
+                            fail_silently=True
+                        )
                 # update notification object
                 elif len(notifications) == 1:
                     notification = notifications[0]
@@ -64,38 +62,48 @@ def send_school_class_notifications(user, type, school_class):
         
         # get eligible parents
         parents = []
+        parent_emails = []
         students = Student.objects.filter(school_class=school_class)
+
+        if type == 'Announcement':
+            title = "New announcement"
+            content = 'There is a new class announcement'
+        if type == 'Event':
+            title = "New event"
+            content = 'There is a new class event'
+        if type == 'Story':
+            title = "New story"
+            content = 'There is a new class story'
+
         for student in students:
             # send in-app notifications to all parents
             parents.append(student.parent)
             # check settings whether to send email
             if student.parent != None:
-                # parent_settings = ParentSettings.objects.get(parent=student.parent)
-                parent_settings = Settings.objects.get(parent=student.parent.user)
+                parent_settings = Settings.objects.get(user=student.parent.user)
                 if type == 'Announcement':
-                    title = "New announcement"
-                    parents.append(student.parent)
                     if parent_settings.new_announcement_notification == True:
-                        # TO DO
-                        # send email
-                        pass
+                        parent_emails.append(student.parent.user.email)
                 if type == 'Event':
-                    title = "New event"
                     if parent_settings.new_event_notification == True:
-                        # TO DO
-                        # send email
-                        pass
+                        parent_emails.append(student.parent.user.email)
                 if type == 'Story':
-                    title = "New story"
                     if parent_settings.new_story_notification == True:
-                        # TO DO
-                        # send email
-                        pass
-            
+                        parent_emails.append(student.parent.user.email)
+        
         # create notification for each parent
         for parent in parents:
             new_notification = SchoolClassNotification(user=parent.user, type=type, title=title, school_class=school_class)
             new_notification.save()
+
+        # send emails to parents
+        send_mail(
+            title,
+            content,
+            'admin@app.com',
+            parent_emails,
+            fail_silently=True
+        )
     except:
         print("error sending school class notifications")
 
