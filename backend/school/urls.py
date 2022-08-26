@@ -35,9 +35,10 @@ urlpatterns = [
     path('helper-delete/<int:pk>/', HelperDeleteView.as_view(), name='helper_delete'), # parent unregister as helper for event
 
     # NOTIFICATIONS
-    path('notifications-get/', NotificationsGetView.as_view(), name='notifications_get'), # get all user's notifications
-    path('notification-update/<int:pk>/', NotificationUpdateView.as_view(), name='notifications_get'), # update a notification
-    path('notification-chat-update-list/<int:pk>/', ChatGroupNotificationUpdateView.as_view(), name='notifications_get'), # update list of ChatGroupNotification
+    path('notifications-get/', UnreadNotificationsGetView.as_view(), name='notifications_get'), # get all user's unread notifications
+    path('chat-notification-update/<int:pk>/', ChatNotificationUpdateView.as_view(), name='chat_notification_update'), # update a single chat notification
+    path('class-notification-update/<int:pk>/', ClassNotificationUpdateView.as_view(), name='class_notification_update'), # update a single school class notification
+    path('all-notifications-update/', AllNotificationUpdateView.as_view(), name='all_notifications_update'), # update all notifications read=True
 
     # PROFILE PAGE
     path('parent-create/', ParentCreateView.as_view(), name='parent_create'), # select parent account type

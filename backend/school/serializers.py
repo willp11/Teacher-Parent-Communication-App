@@ -473,29 +473,28 @@ class GroupInfoNotificationsSerializer(serializers.ModelSerializer):
         model = ChatGroup
         fields = ('id', 'name', 'direct_message', 'recipient')
 
-# UserNotificationsSerializer
+# UnreadNotificationsGetView, AllNotificationUpdateView
 class ChatGroupNotificationSerializer(serializers.ModelSerializer):
     group = GroupInfoNotificationsSerializer()
     class Meta:
         model = ChatGroupNotification
         fields = '__all__'
 
+# UnreadNotificationsGetView, AllNotificationUpdateView
 class SchoolClassNotificationSerializer(serializers.ModelSerializer):
     school_class = SchoolClassSerializer()
     class Meta:
         model = SchoolClassNotification
         fields = '__all__'
 
-# NotificationsGetView
-class UserNotificationsSerializer(serializers.ModelSerializer):
-    chat_notifications = ChatGroupNotificationSerializer(many=True)
-    school_class_notifications = SchoolClassNotificationSerializer(many=True)
-    class Meta:
-        model = CustomUser
-        fields = ('chat_notifications', 'school_class_notifications')
-
-# NotificationUpdateView
-class NotificationUpdateSerializer(serializers.ModelSerializer):
+# ChatNotificationUpdateView
+class ChatNotificationUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChatGroupNotification
+        fields = ('read',)
+
+# ClassNotificationUpdateView
+class ClassNotificationUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SchoolClassNotification
         fields = ('read',)

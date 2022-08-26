@@ -306,50 +306,73 @@ class HelperDeleteView(RetrieveDestroyAPIView):
 #######################################################################
 # NOTIFICATIONS
 #######################################################################
-class NotificationsGetView(RetrieveAPIView):
-    serializer_class = UserNotificationsSerializer
-    permission_classes = [IsAuthenticated, IsEmailVerified]
 
-    def get_object(self):
-        return self.request.user
+# Get only unread notifications for the user
+class UnreadNotificationsGetView(APIView):
 
-class NotificationUpdateView(RetrieveUpdateAPIView):
-    serializer_class = NotificationUpdateSerializer
+    def get_chat_queryset(self, user):
+        try:
+            return ChatGroupNotification.objects.filter(user=user, read=False)
+        except:
+            raise status.HTTP_400_BAD_REQUEST
+
+    def get_schoolclass_queryset(self, user):
+        try:
+            return SchoolClassNotification.objects.filter(user=user, read=False)
+        except:
+            raise status.HTTP_400_BAD_REQUEST
+
+    def get(self, request, *args, **kwargs):
+        chat_instances = self.get_chat_queryset(request.user)
+        chat_serializer = ChatGroupNotificationSerializer(chat_instances, many=True)
+        schoolclass_instances = self.get_schoolclass_queryset(request.user)
+        schoolclass_serializer = SchoolClassNotificationSerializer(schoolclass_instances, many=True)
+        all_instances = []
+        all_instances.extend(chat_serializer.data)
+        all_instances.extend(schoolclass_serializer.data)
+        return Response(all_instances)
+
+# Update one chat notification
+class ChatNotificationUpdateView(RetrieveUpdateAPIView):
+    serializer_class = ChatNotificationUpdateSerializer
     permission_classes = [IsAuthenticated, IsEmailVerified]
 
     def get_object(self):
         return ChatGroupNotification.objects.get(pk=self.kwargs['pk'], user=self.request.user)
 
-# Update list of ChatGroupNotification - used on chatGroup and videoCall pages - set notifications read=True
-class ChatGroupNotificationUpdateView(APIView):
+# Update one school class notification
+class ClassNotificationUpdateView(RetrieveUpdateAPIView):
+    serializer_class = ClassNotificationUpdateSerializer
+    permission_classes = [IsAuthenticated, IsEmailVerified]
 
-    def get_object(self, obj_id):
+    def get_object(self):
+        return SchoolClassNotification.objects.get(pk=self.kwargs['pk'], user=self.request.user)
+
+# Update all notifications for user, set read=True
+class AllNotificationUpdateView(APIView):
+
+    def get_chat_queryset(self, user):
         try:
-            return ChatGroupNotification.objects.get(id=obj_id)
-        except (ChatGroupNotification.DoesNotExist, ValidationError):
+            return ChatGroupNotification.objects.filter(user=user, read=False)
+        except ValidationError:
             raise status.HTTP_400_BAD_REQUEST
 
-    def validate_ids(self, id_list):
-        for id in id_list:
-            try:
-                ChatGroupNotification.objects.get(id=id)
-            except (ChatGroupNotification.DoesNotExist, ValidationError):
-                raise status.HTTP_400_BAD_REQUEST
-        return True
+    def get_schoolclass_queryset(self, user):
+        try:
+            return SchoolClassNotification.objects.filter(user=user, read=False)
+        except ValidationError:
+            raise status.HTTP_400_BAD_REQUEST
 
     def put(self, request, *args, **kwargs):
-        id_list = request.data['ids']
-        self.validate_ids(id_list=id_list)
+        chat_instances = self.get_chat_queryset(request.user)
+        school_class_instances = self.get_schoolclass_queryset(request.user)
         instances = []
-        for id in id_list:
-            obj = self.get_object(obj_id=id)
+        instances.extend(chat_instances)
+        instances.extend(school_class_instances)
+        for obj in instances:
             obj.read = True
             obj.save()
-            instances.append(obj)
-        serializer = ChatGroupNotificationSerializer(instances, many=True)
-        return Response(serializer.data)
-
-# Update list of SchoolClass - used on class page - set notifications read=True
+        return Response(data="success", status=200)
 
 #######################################################################
 # PROFILE
