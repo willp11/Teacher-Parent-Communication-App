@@ -172,7 +172,7 @@ class NotificationMode(models.Model):
         return self.name
 
 class ParentSettings(models.Model):
-    parent = models.OneToOneField(Parent, on_delete=models.CASCADE, related_name='settings')
+    parent = models.OneToOneField(Parent, on_delete=models.CASCADE, related_name='parent_settings')
     notification_mode = models.ForeignKey(NotificationMode, on_delete=models.SET_DEFAULT, default='App')
     message_received_notification = models.BooleanField(default=True)
     new_story_notification = models.BooleanField(default=False)
@@ -181,6 +181,17 @@ class ParentSettings(models.Model):
 
     def __str__(self):
         return self.parent.user.username
+
+# new settings
+class Settings(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='settings')
+    message_received_notification = models.BooleanField(default=True)
+    new_story_notification = models.BooleanField(default=False)
+    new_announcement_notification = models.BooleanField(default=False)
+    new_event_notification = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user.email
 
 class ChatGroup(models.Model):
     name = models.CharField(max_length=100)

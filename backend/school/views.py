@@ -22,7 +22,7 @@ class AnnouncementCreateView(CreateAPIView):
         school_class = SchoolClass.objects.get(pk=self.request.data['school_class'])
         serializer.save(school_class=school_class)
         send_school_class_notifications(self.request.user, "Announcement", school_class)
-
+        
 class AnnouncementUpdateView(RetrieveUpdateAPIView):
     serializer_class = AnnouncementUpdateSerializer
     permission_classes = [IsAuthenticated, IsEmailVerified, IsClassTeacher]

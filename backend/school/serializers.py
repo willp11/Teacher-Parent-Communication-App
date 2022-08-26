@@ -267,6 +267,12 @@ class ParentSettingsSerializer(serializers.ModelSerializer):
         model = ParentSettings
         exclude = ('parent',)
 
+# SettingsUpdateView
+class SettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Settings
+        exclude = ('user',)
+
 # Used by StudentSerializer
 class SchoolClassSerializer(serializers.ModelSerializer):
     teacher = TeacherNameSerializer()
@@ -284,7 +290,7 @@ class StudentSerializer(serializers.ModelSerializer):
 
 # Used by UserProfileSerializer
 class ParentSerializer(serializers.ModelSerializer):
-    settings = ParentSettingsSerializer()
+    parent_settings = ParentSettingsSerializer()
     children = StudentSerializer(many=True)
     class Meta:
         model = Parent
