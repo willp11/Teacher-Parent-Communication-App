@@ -8,6 +8,7 @@ import { BellIcon } from "@heroicons/react/outline";
 const NotificationSettings = (props) => {
 
     const token = useSelector((state)=>state.auth.token);
+    const accountType = useSelector((state)=>state.auth.accountType);
 
     const [editSettingsMode, setEditSettingsMode] = useState(false);
     const [editedParentSettings, setEditedParentSettings] = useState(null);
@@ -38,7 +39,7 @@ const NotificationSettings = (props) => {
             'Authorization': 'Token ' + token
         };
         setLoading(true);
-        axios.put('http://localhost:8000/api/v1/school/parent-settings-update/', editedParentSettings, {headers: headers})
+        axios.put('http://localhost:8000/api/v1/school/settings-update/', editedParentSettings, {headers: headers})
             .then(res => {
                 console.log(res);
                 props.getUserProfile();
@@ -71,23 +72,28 @@ const NotificationSettings = (props) => {
                 <button disabled className={props.profile.settings.message_received_notification === false ? "selected" : "unselected"}>No</button>
             </div>
             
-            <div>
-                <h4 className="text-gray-700 text-sm">New Announcement</h4>
-                <button disabled className={props.profile.settings.new_announcement_notification === true ? "selected" : "unselected"}>Yes</button>
-                <button disabled className={props.profile.settings.new_announcement_notification === false ? "selected" : "unselected"}>No</button>
-            </div>
+            {(accountType === 'parent')
+                && <>
+                    <div>
+                        <h4 className="text-gray-700 text-sm">New Announcement</h4>
+                        <button disabled className={props.profile.settings.new_announcement_notification === true ? "selected" : "unselected"}>Yes</button>
+                        <button disabled className={props.profile.settings.new_announcement_notification === false ? "selected" : "unselected"}>No</button>
+                    </div>
+                    
+                    <div>
+                        <h4 className="text-gray-700 text-sm">New Story</h4>
+                        <button disabled className={props.profile.settings.new_story_notification === true ? "selected" : "unselected"}>Yes</button>
+                        <button disabled className={props.profile.settings.new_story_notification === false ? "selected" : "unselected"}>No</button>
+                    </div>
+                    
+                    <div className="mb-4">
+                        <h4 className="text-gray-700 text-sm" >New Event</h4>
+                        <button disabled className={props.profile.settings.new_event_notification === true ? "selected" : "unselected"}>Yes</button>
+                        <button disabled className={props.profile.settings.new_event_notification === false ? "selected" : "unselected"}>No</button>
+                    </div>
+                </>
+            }
             
-            <div>
-                <h4 className="text-gray-700 text-sm">New Story</h4>
-                <button disabled className={props.profile.settings.new_story_notification === true ? "selected" : "unselected"}>Yes</button>
-                <button disabled className={props.profile.settings.new_story_notification === false ? "selected" : "unselected"}>No</button>
-            </div>
-            
-            <div className="mb-4">
-                <h4 className="text-gray-700 text-sm" >New Event</h4>
-                <button disabled className={props.profile.settings.new_event_notification === true ? "selected" : "unselected"}>Yes</button>
-                <button disabled className={props.profile.settings.new_event_notification === false ? "selected" : "unselected"}>No</button>
-            </div>
             <button className="w-32 rounded bg-sky-500 hover:bg-indigo-500 px-2 py-2 text-white font-semibold m-2" onClick={()=>setEditSettingsMode(true)}>Edit Settings</button>
             <p className="text-sm">{message}</p>
         </div>
@@ -122,41 +128,46 @@ const NotificationSettings = (props) => {
                     <h4 className="text-gray-700 text-sm">New Message</h4>
                     <button 
                         onClick={()=>editParentSettingsHandler("message_received_notification", true)}
-                        className={editedParentSettings.message_received_notification === true ? "selected" : "unselected"}>Yes</button>
+                        className={editedParentSettings?.message_received_notification === true ? "selected" : "unselected"}>Yes</button>
                     <button 
                         onClick={()=>editParentSettingsHandler("message_received_notification", false)}
-                        className={editedParentSettings.message_received_notification === false ? "selected" : "unselected"}>No</button>
+                        className={editedParentSettings?.message_received_notification === false ? "selected" : "unselected"}>No</button>
                 </div>
                 
-                <div>
-                    <h4 className="text-gray-700 text-sm">New Announcement</h4>
-                    <button 
-                        onClick={()=>editParentSettingsHandler("new_announcement_notification", true)}
-                        className={editedParentSettings.new_announcement_notification === true ? "selected" : "unselected"}>Yes</button>
-                    <button 
-                        onClick={()=>editParentSettingsHandler("new_announcement_notification", false)}
-                        className={editedParentSettings.new_announcement_notification === false ? "selected" : "unselected"}>No</button>
-                </div>
-                
-                <div>
-                    <h4 className="text-gray-700 text-sm">New Story</h4>
-                    <button 
-                        onClick={()=>editParentSettingsHandler("new_story_notification", true)}
-                        className={editedParentSettings.new_story_notification === true ? "selected" : "unselected"}>Yes</button>
-                    <button 
-                        onClick={()=>editParentSettingsHandler("new_story_notification", false)}
-                        className={editedParentSettings.new_story_notification === false ? "selected" : "unselected"}>No</button>
-                </div>
-                
-                <div className="mb-4">
-                    <h4 className="text-gray-700 text-sm">New Event</h4>
-                    <button 
-                        onClick={()=>editParentSettingsHandler("new_event_notification", true)}
-                        className={editedParentSettings.new_event_notification === true ? "selected" : "unselected"}>Yes</button>
-                    <button 
-                        onClick={()=>editParentSettingsHandler("new_event_notification", false)}
-                        className={editedParentSettings.new_event_notification === false ? "selected" : "unselected"}>No</button>
-                </div>
+                {(accountType === 'parent')
+                    && 
+                    <>
+                        <div>
+                            <h4 className="text-gray-700 text-sm">New Announcement</h4>
+                            <button 
+                                onClick={()=>editParentSettingsHandler("new_announcement_notification", true)}
+                                className={editedParentSettings.new_announcement_notification === true ? "selected" : "unselected"}>Yes</button>
+                            <button 
+                                onClick={()=>editParentSettingsHandler("new_announcement_notification", false)}
+                                className={editedParentSettings.new_announcement_notification === false ? "selected" : "unselected"}>No</button>
+                        </div>
+                        
+                        <div>
+                            <h4 className="text-gray-700 text-sm">New Story</h4>
+                            <button 
+                                onClick={()=>editParentSettingsHandler("new_story_notification", true)}
+                                className={editedParentSettings.new_story_notification === true ? "selected" : "unselected"}>Yes</button>
+                            <button 
+                                onClick={()=>editParentSettingsHandler("new_story_notification", false)}
+                                className={editedParentSettings.new_story_notification === false ? "selected" : "unselected"}>No</button>
+                        </div>
+                        
+                        <div className="mb-4">
+                            <h4 className="text-gray-700 text-sm">New Event</h4>
+                            <button 
+                                onClick={()=>editParentSettingsHandler("new_event_notification", true)}
+                                className={editedParentSettings.new_event_notification === true ? "selected" : "unselected"}>Yes</button>
+                            <button 
+                                onClick={()=>editParentSettingsHandler("new_event_notification", false)}
+                                className={editedParentSettings.new_event_notification === false ? "selected" : "unselected"}>No</button>
+                        </div>
+                    </>
+                }
                 {loading ? null : <button className="w-24 rounded bg-red-600 hover:bg-red-700 py-2 text-white font-semibold m-2" onClick={cancelEditParentSettings}>Cancel</button>}
                 {submit_btn}
                 <p className="text-sm">{message}</p>

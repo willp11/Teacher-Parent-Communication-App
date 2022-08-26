@@ -58,9 +58,7 @@ const Profile = () => {
                     accountType = "parent"
                 }
                 dispatch(authSlice.actions.setAccount({account: res.data, accountType}));
-                if (res.data.parent !== null) {
-                    setNotificationSettings(res.data.settings);
-                }
+                setNotificationSettings(res.data.settings);
             })
             .catch(err=>{
                 console.log(err);
