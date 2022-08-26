@@ -78,7 +78,6 @@ const Story = (props) => {
         const url = 'http://localhost:8000/api/v1/school/story-comment-list/' + props.story.id + '/';
         axios.get(url, {headers: headers})
             .then(res=>{
-                console.log(res);
                 setComments(res.data);
             })
             .catch(err=>{

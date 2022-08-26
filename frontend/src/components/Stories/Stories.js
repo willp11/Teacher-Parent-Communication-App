@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import * as Yup from 'yup';
 import axios from "axios";
 import Story from "./Story";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 import {useMessage} from "../../Hooks/useMessage";
 import Spinner from '../Spinner/Spinner';
@@ -16,6 +16,15 @@ const Stories = (props) => {
     const [showForm, setShowForm] = useState(false);
     const [message, setMessage] = useMessage();
     const [loading, setLoading] = useState(false);
+
+    // sort stories - newest first
+    const sortedStories = useMemo(()=>{
+        let stories = [...props.stories]
+        stories.sort((a,b)=>{
+            return Date.parse(b.date) - Date.parse(a.date)
+        })
+        return stories;
+    }, [props.stories])
 
     // CREATE STORY FUNCTION
     const handleCreateStory = (title, content, actions) => {
@@ -112,9 +121,12 @@ const Stories = (props) => {
         </div>
     )
 
-    let stories = props.stories.map((story)=>{
-        return <Story story={story} handleDelete={props.handleDelete} key={story.id} getClassInfo={props.getClassInfo}/>
-    });
+    let stories = null;
+    if (sortedStories !== undefined && sortedStories !== null) {
+        stories = sortedStories.map((story)=>{
+            return <Story story={story} handleDelete={props.handleDelete} key={story.id} getClassInfo={props.getClassInfo}/>
+        });
+    }
 
     let stories_div = (
         <div>

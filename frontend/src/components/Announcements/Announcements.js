@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import axios from "axios";
 import { useSelector } from "react-redux";
 import Announcement from "./Announcement";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 import { useMessage } from "../../Hooks/useMessage";
 import Spinner from "../Spinner/Spinner";
@@ -16,6 +16,15 @@ const Announcements = (props) => {
     const [showForm, setShowForm] = useState(false);
     const [message, setMessage] = useMessage();
     const [loading, setLoading] = useState(false);
+
+    // sort announcements - newest first
+    const sortedAnnouncements = useMemo(()=>{
+        let announcements = [...props.announcements]
+        announcements.sort((a,b)=>{
+            return Date.parse(b.date) - Date.parse(a.date)
+        })
+        return announcements;
+    }, [props.announcements])
 
     // CREATE ANNOUNCEMENT FUNCTION
     const handleCreateAnnouncement = (title, content, actions) => {
@@ -111,9 +120,12 @@ const Announcements = (props) => {
     )
 
     // ANNOUNCEMENTS
-    let announcements = props.announcements.map((announcement)=>{
-        return <Announcement announcement={announcement} key={announcement.id} handleDelete={props.handleDelete} getClassInfo={props.getClassInfo} />
-    });
+    let announcements = null;
+    if (sortedAnnouncements !== undefined && sortedAnnouncements !== null) {
+        announcements = sortedAnnouncements.map((announcement)=>{
+            return <Announcement announcement={announcement} key={announcement.id} handleDelete={props.handleDelete} getClassInfo={props.getClassInfo} />
+        });   
+    }
 
     let announcements_div = (
         <div>

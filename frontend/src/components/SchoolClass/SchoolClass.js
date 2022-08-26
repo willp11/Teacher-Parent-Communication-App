@@ -9,7 +9,6 @@ import Stories from '../Stories/Stories';
 import Students from '../Students/Students';
 import Assignments from '../Assignments/Assignments';
 import { createMenuDiv } from '../../Utils/utils';
-import { useNotifications } from '../../Hooks/useNotifications';
 
 const teacher_menu_items = ["Classroom", "Stories", "Announcements", "Events", "Assignments"]
 const parent_menu_items = ["Stories", "Announcements", "Events"]
@@ -21,30 +20,14 @@ const SchoolClass = () => {
     const accountType = useSelector((state) => state.auth.accountType);
 
     const [schoolClass, setSchoolClass] = useState(null);
-    const [componentToShow, setComponentToShow] = useState("Stories")
+    const [componentToShow, setComponentToShow] = useState("Stories");
 
-    const {notifications} = useNotifications();
-
-    const notificationsToSetRead = useMemo(()=>{
-        let notifs = [];
-        let valid_types = ['Event', 'Announcement', 'Story']
-        notifications.forEach((notification)=>{
-            if (valid_types.includes(notification.type) && !notification.read) {
-                notifs.push(notification);
-            }
-        })
-        return notifs;
-    }, [notifications])
-
-    useEffect(()=>{
-        console.log(notificationsToSetRead)
-        // TO DO
-        // set the notifications to read
-        const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Token ' + token
-        }
-    }, [notificationsToSetRead])
+    // sort the stories, announcements, events
+    // const schoolClass = useMemo(()=>{
+    //     let sortedData = {...schoolClassData};
+    //     console.log(sortedData);
+    //     return sortedData;
+    // }, [schoolClassData])
 
     // GET CLASS DATA FUNCTION
     const getClassInfo = useCallback(() => {
