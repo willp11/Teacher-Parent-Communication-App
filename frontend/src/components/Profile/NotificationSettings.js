@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import Spinner from "../Spinner/Spinner";
 import {useMessage} from '../../Hooks/useMessage';
+import { BellIcon } from "@heroicons/react/outline";
 
 const NotificationSettings = (props) => {
 
@@ -26,7 +27,7 @@ const NotificationSettings = (props) => {
 
     // Cancel updating settings
     const cancelEditParentSettings = () => {
-        setEditedParentSettings(props.profile.parent.settings);
+        setEditedParentSettings(props.profile.settings);
         setEditSettingsMode(false);
     }
 
@@ -57,36 +58,35 @@ const NotificationSettings = (props) => {
     let notification_settings = (
         <div className="rounded-md shadow-md bg-white mt-2 mb-4 p-2 pb-4">
             <h2 className="py-2 text-md">Notification Settings</h2>
-            <p className="mb-2 text-sm">How would you like to receive notifications?</p>
-            <div>
-                <button disabled className={props.profile.parent.settings.notification_mode === "App" ? "selected" : "unselected"}>App</button>
-                <button disabled className={props.profile.parent.settings.notification_mode === "Email" ? "selected" : "unselected"}>Email</button>
-                <button disabled className={props.profile.parent.settings.notification_mode === "SMS" ? "selected" : "unselected"}>SMS</button>
+            <div className="flex justify-center items-center">
+                <p className="text-sm">All users receive App notifications. Press </p>
+                <BellIcon className='h-6 w-6' />
+                <p className="text-sm"> at top to view.</p>
             </div>
-
-            <p className="mt-4 mb-2 text-sm">When would you like to receive notifications?</p>
+            
+            <p className="mt-2 mb-2 text-sm">When would you like to receive <b>E-mails</b>?</p>
             <div>
                 <h4 className="text-gray-700 text-sm">New Message</h4>
-                <button disabled className={props.profile.parent.settings.message_received_notification === true ? "selected" : "unselected"}>Yes</button>
-                <button disabled className={props.profile.parent.settings.message_received_notification === false ? "selected" : "unselected"}>No</button>
+                <button disabled className={props.profile.settings.message_received_notification === true ? "selected" : "unselected"}>Yes</button>
+                <button disabled className={props.profile.settings.message_received_notification === false ? "selected" : "unselected"}>No</button>
             </div>
             
             <div>
                 <h4 className="text-gray-700 text-sm">New Announcement</h4>
-                <button disabled className={props.profile.parent.settings.new_announcement_notification === true ? "selected" : "unselected"}>Yes</button>
-                <button disabled className={props.profile.parent.settings.new_announcement_notification === false ? "selected" : "unselected"}>No</button>
+                <button disabled className={props.profile.settings.new_announcement_notification === true ? "selected" : "unselected"}>Yes</button>
+                <button disabled className={props.profile.settings.new_announcement_notification === false ? "selected" : "unselected"}>No</button>
             </div>
             
             <div>
                 <h4 className="text-gray-700 text-sm">New Story</h4>
-                <button disabled className={props.profile.parent.settings.new_story_notification === true ? "selected" : "unselected"}>Yes</button>
-                <button disabled className={props.profile.parent.settings.new_story_notification === false ? "selected" : "unselected"}>No</button>
+                <button disabled className={props.profile.settings.new_story_notification === true ? "selected" : "unselected"}>Yes</button>
+                <button disabled className={props.profile.settings.new_story_notification === false ? "selected" : "unselected"}>No</button>
             </div>
             
             <div className="mb-4">
                 <h4 className="text-gray-700 text-sm" >New Event</h4>
-                <button disabled className={props.profile.parent.settings.new_event_notification === true ? "selected" : "unselected"}>Yes</button>
-                <button disabled className={props.profile.parent.settings.new_event_notification === false ? "selected" : "unselected"}>No</button>
+                <button disabled className={props.profile.settings.new_event_notification === true ? "selected" : "unselected"}>Yes</button>
+                <button disabled className={props.profile.settings.new_event_notification === false ? "selected" : "unselected"}>No</button>
             </div>
             <button className="w-32 rounded bg-sky-500 hover:bg-indigo-500 px-2 py-2 text-white font-semibold m-2" onClick={()=>setEditSettingsMode(true)}>Edit Settings</button>
             <p className="text-sm">{message}</p>
@@ -111,19 +111,13 @@ const NotificationSettings = (props) => {
         notification_settings = (
             <div className="rounded-md shadow-md bg-white mt-2 mb-4 p-2 pb-4">
                 <h2 className="py-2 text-md">Notification Settings</h2>
-                <p className="mb-2 text-sm">How would you like to receive notifications?</p>
-                <div>
-                    <button 
-                        onClick={()=>editParentSettingsHandler("notification_mode", "App")}
-                        className={editedParentSettings.notification_mode === "App" ? "selected" : "unselected"}>App</button>
-                    <button 
-                        onClick={()=>editParentSettingsHandler("notification_mode", "Email")}    
-                        className={editedParentSettings.notification_mode === "Email" ? "selected" : "unselected"}>Email</button>
-                    <button 
-                        onClick={()=>editParentSettingsHandler("notification_mode", "SMS")}
-                        className={editedParentSettings.notification_mode === "SMS" ? "selected" : "unselected"}>SMS</button>
+                <div className="flex justify-center items-center">
+                    <p className="text-sm">All users receive App notifications. Press </p>
+                    <BellIcon className='h-6 w-6' />
+                    <p className="text-sm"> at top to view.</p>
                 </div>
-                <p className="mt-4 mb-2 text-sm">When would you like to receive notifications?</p>
+                
+                <p className="mt-2 mb-2 text-sm">When would you like to receive <b>E-mails</b>?</p>
                 <div>
                     <h4 className="text-gray-700 text-sm">New Message</h4>
                     <button 

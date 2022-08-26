@@ -32,17 +32,14 @@ const ChatGroup = () => {
         groupMembersRef.current.forEach((member, index)=>{
             if (member.user.id === event.data.user) {
                 if (event.type === 'user_connected') {
-                    console.log("user connected")
                     members[index].connected_to_chat = true;
                 } else if (event.type === 'user_disconnected') {
-                    console.log("user disconnected")
                     members[index].connected_to_chat = false;
                 }     
             }
         })
         // update state to force re-render
         setGroupMembers(members);
-        console.log(event.type)
     }
 
     // receive new messages, we update the refs and pass to messages component so it can render new messages and scroll down

@@ -1,24 +1,23 @@
-import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
 const Notification = (props) => {
 
-    const navigate = useNavigate();
     const token = useSelector((state)=>state.auth.token);
 
     const setNotificationRead = async (type) => {
         let endpoint = '';
         if (type === 'Announcement' || type === 'Event' || type === 'Story') {
             endpoint = 'class-notification-update';
-        } else if (type === 'Message' || type === 'IsCalling' || type === 'MissedCall') {
+        } else if (type === 'Message' || type === 'IsCalling' || type === 'MissedCall' || type === 'CallCancelled') {
             endpoint = 'chat-notification-update';
         }
         const headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
         }
+        console.log(type);
         const url = `http://127.0.0.1:8000/api/v1/school/${endpoint}/${props.id}/`
         const data = {read: true}
         try {

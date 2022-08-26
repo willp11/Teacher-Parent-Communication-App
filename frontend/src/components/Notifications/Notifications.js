@@ -50,10 +50,19 @@ const Notifications = () => {
         }
     }
 
+    let clearAllCursor = "cursor-pointer";
+    if (notifications.length === 0) clearAllCursor = "cursor-not-allowed";
+
     return (
         <div className="w-full sm:w-[620px] h-[500px] bg-white text-center mt-2 border border-gray-300 rounded shadow-lg overflow-auto z-20">
             <h2 className="mt-2">Notifications</h2>
-            <button className="border border-gray-red-300 bg-red-600 text-white font-semibold py-1 px-2 rounded hover:bg-red-700 my-2" onClick={clearAllHandler}>Clear All</button>
+            <button 
+                className={`border border-gray-red-300 bg-red-600 text-white font-semibold py-1 px-2 rounded hover:bg-red-700 my-2 ${clearAllCursor}`} 
+                onClick={clearAllHandler}
+                disabled={notifications.length === 0}
+            >
+                Clear All
+            </button>
             {loading ? <p>Loading...</p> : notifications_div}
         </div>
     )
