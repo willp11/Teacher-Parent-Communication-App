@@ -30,8 +30,7 @@ export const useNotifications = () => {
             setLoading(true);
             const res = await axios.get(url, {headers: headers});
             console.log(res.data)
-            let notifs = [...res.data.chat_notifications, ...res.data.school_class_notifications];
-            setNotifications(notifs);
+            setNotifications(res.data);
         } catch(err) {
             console.log(err);
         } finally {

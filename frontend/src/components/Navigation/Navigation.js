@@ -29,7 +29,7 @@ const Navigation = () => {
     const qtyNotifications = useMemo(()=>{
         let count = 0;
         notifications.forEach((notification)=>{
-            if (!notification.read) count += notification.qty_missed
+            if (!notification.read) count += 1
         })
         if (count > 0) return count
         return null;

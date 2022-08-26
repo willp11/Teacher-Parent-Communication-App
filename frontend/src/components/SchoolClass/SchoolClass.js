@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import Navigation from '../Navigation/Navigation';
@@ -9,6 +9,7 @@ import Stories from '../Stories/Stories';
 import Students from '../Students/Students';
 import Assignments from '../Assignments/Assignments';
 import { createMenuDiv } from '../../Utils/utils';
+import { useNotifications } from '../../Hooks/useNotifications';
 
 const teacher_menu_items = ["Classroom", "Announcements", "Stories", "Events", "Assignments"]
 const parent_menu_items = ["Announcements", "Stories", "Events"]
@@ -21,6 +22,29 @@ const SchoolClass = () => {
 
     const [schoolClass, setSchoolClass] = useState(null);
     const [componentToShow, setComponentToShow] = useState("Stories")
+
+    const {notifications} = useNotifications();
+
+    const notificationsToSetRead = useMemo(()=>{
+        let notifs = [];
+        let valid_types = ['Event', 'Announcement', 'Story']
+        notifications.forEach((notification)=>{
+            if (valid_types.includes(notification.type) && !notification.read) {
+                notifs.push(notification);
+            }
+        })
+        return notifs;
+    }, [notifications])
+
+    useEffect(()=>{
+        console.log(notificationsToSetRead)
+        // TO DO
+        // set the notifications to read
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token
+        }
+    }, [notificationsToSetRead])
 
     // GET CLASS DATA FUNCTION
     const getClassInfo = useCallback(() => {
