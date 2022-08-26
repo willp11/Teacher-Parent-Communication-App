@@ -69,12 +69,34 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.accept()
 
             await update_connected_status(self.room_name, self.user, 'chat', True)
+
+            # tell group that user is connected
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'user_connected',
+                    'data': {
+                        'user': self.user.id,
+                    }
+                }
+            )
         except:
             print("error connecting to websocket")
 
     async def disconnect(self, close_code):
         try:
             await update_connected_status(self.room_name, self.user, 'chat', False)
+
+            # tell group that user is disconnected
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'user_disconnected',
+                    'data': {
+                        'user': self.user.id,
+                    }
+                }
+            )
 
             await self.channel_layer.group_discard(
                 self.room_group_name,
@@ -87,7 +109,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         try:
             text_data_json = json.loads(text_data)
             message = text_data_json['message']
-
             message_instance = await save_message(self.room_name, self.user, message)
 
             await self.channel_layer.group_send(
@@ -99,6 +120,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     'user': {'id': self.user.id, 'first_name': self.user.first_name, 'last_name': self.user.last_name}
                 }
             )
+            
         except:
             print("error receiving message")
 
@@ -108,9 +130,22 @@ class ChatConsumer(AsyncWebsocketConsumer):
         id = event['id']
 
         await self.send(text_data=json.dumps({
+            'type': 'chat_message',
             'id': id,
             'message': message,
             'user': user
+        }))
+
+    async def user_connected(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'user_connected',
+            'data': event['data']
+        }))
+
+    async def user_disconnected(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'user_disconnected',
+            'data': event['data']
         }))
 
 # Video Chat

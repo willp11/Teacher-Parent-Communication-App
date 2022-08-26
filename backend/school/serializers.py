@@ -42,7 +42,7 @@ class ChatGroupMemberNameSerializer(serializers.ModelSerializer):
     user = UserNameOnlySerializer()
     class Meta:
         model = GroupMember
-        fields = ('user',)
+        fields = ('id', 'user', 'group', 'connected_to_call', 'connected_to_chat')
 
 # Used by ChatGroupSerializer
 class MessageSerializer(serializers.ModelSerializer):
@@ -311,13 +311,6 @@ class StoryMediaSerializer(serializers.ModelSerializer):
         model = StoryMedia
         fields = '__all__'
 
-# ClassDetailSerializer, StoryDeleteView
-class StorySerializer(serializers.ModelSerializer):
-    story_images = StoryMediaSerializer(many=True)
-    class Meta:
-        model = Story
-        fields = '__all__'
-
 # StoryCommentListView
 class StoryCommentListSerializer(serializers.ModelSerializer):
     author = UserNameOnlySerializer()
@@ -330,6 +323,13 @@ class StoryCommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = StoryComment
         fields = ('content', 'story')
+
+# ClassDetailSerializer, StoryDeleteView
+class StorySerializer(serializers.ModelSerializer):
+    story_images = StoryMediaSerializer(many=True)
+    class Meta:
+        model = Story
+        fields = '__all__'
 
 # Unused - Haven't implemented updating comments on frontend
 # class StoryCommentUpdateSerializer(serializers.ModelSerializer):
