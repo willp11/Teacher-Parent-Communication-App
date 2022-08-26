@@ -25,27 +25,6 @@ const ChatGroup = () => {
     // keep socket in ref so doesn't set null, so we can close it on unmount
     const socketRef = useRef(null)
 
-
-    // MOVE TO NOTIFICATION COMPONENT
-    // const {getNotifications} = useNotifications();
-    // const setNotificationRead = async (notificationId) => {
-    //     const headers = {
-    //         'Content-Type': 'application/json',
-    //         'Authorization': 'Token ' + token
-    //     }
-    //     const url = `http://127.0.0.1:8000/api/v1/school/chat-notification-update/${notificationId}/`
-    //     const data = {read: true}
-    //     try {
-    //         console.log("updating notification as read")
-    //         const res = await axios.put(url, data, {headers: headers});
-    //         console.log(res);
-    //         getNotifications();
-    //     } catch(err) {
-    //         console.log(err);
-    //     }
-    // }
-    /////////////
-
     // connect to websocket - called inside getGroupData
     const connectSocket = useCallback(() => {
         const chatSocket = new WebSocket(

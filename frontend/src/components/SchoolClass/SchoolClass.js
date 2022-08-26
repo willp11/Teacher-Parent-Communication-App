@@ -11,8 +11,8 @@ import Assignments from '../Assignments/Assignments';
 import { createMenuDiv } from '../../Utils/utils';
 import { useNotifications } from '../../Hooks/useNotifications';
 
-const teacher_menu_items = ["Classroom", "Announcements", "Stories", "Events", "Assignments"]
-const parent_menu_items = ["Announcements", "Stories", "Events"]
+const teacher_menu_items = ["Classroom", "Stories", "Announcements", "Events", "Assignments"]
+const parent_menu_items = ["Stories", "Announcements", "Events"]
 
 const SchoolClass = () => {
 

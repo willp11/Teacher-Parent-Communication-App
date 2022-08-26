@@ -2,7 +2,7 @@ import { BellIcon } from "@heroicons/react/outline";
 
 const Bell = (props) => {
     return (
-        <div className={`relative h-[28px] w-[28px]`}>
+        <div className={`relative h-[28px] w-[28px] cursor-pointer`}>
             <BellIcon className={`h-[28px] w-[28px]`} />
             {
                 props.quantity &&

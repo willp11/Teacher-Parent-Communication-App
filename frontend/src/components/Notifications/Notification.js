@@ -22,7 +22,6 @@ const Notification = (props) => {
         const url = `http://127.0.0.1:8000/api/v1/school/${endpoint}/${props.id}/`
         const data = {read: true}
         try {
-            console.log("updating notification as read")
             const res = await axios.put(url, data, {headers: headers});
             console.log(res);
             props.getNotifications();
@@ -41,16 +40,16 @@ const Notification = (props) => {
     if (props.school_class) group_name = props.school_class?.name
 
     return (
-        <div className={`w-full border border-gray-300 bg-gray-50 shadow-md rounded p-2 cursor-pointer`}>
+        <div className={`w-full border border-gray-300 bg-gray-50 shadow-md rounded p-2`}>
             <div className="w-full flex justify-between items-center">
                 <div className="flex items-center">
                     <h3 className="text-lg font-semibold mr-2">{props.title}</h3>
                     <h3 className="font-semibold text-gray-500">({props.qty_missed})</h3>
                 </div>
-                <button className="border border-gray-300 bg-white py-1 px-2 rounded hover:border-red-500" onClick={()=>setNotificationRead(props.type)}>Clear</button>
+                <button className="border border-gray-red-300 bg-red-600 text-white text-sm font-semibold py-1 px-2 rounded hover:bg-red-700" onClick={()=>setNotificationRead(props.type)}>Clear</button>
             </div>
             <div className="w-full flex justify-between items-center">
-                <Link to={navigate_dst}><p className="text-base">{group_name}</p></Link>
+                <Link to={navigate_dst}><p className="text-base text-blue-500 underline font-semibold">{group_name}</p></Link>
                 <p className="text-sm">{`${props.updated_at.toLocaleDateString()} - ${props.updated_at.toLocaleTimeString()}`}</p>
             </div>
         </div>
