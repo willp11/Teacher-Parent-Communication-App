@@ -49,6 +49,7 @@ urlpatterns = [
     path('class-create/', ClassCreateView.as_view(), name='class_create'), # teacher account create a new school class
     path('use-invite-code/', InviteCodeUseView.as_view(), name='use_invite_code'), # add child to parent account by using child's invite code
     path('parent-settings-update/', ParentSettingsUpdateView.as_view(), name='parent_settings_update'), # update parent account's settings
+    path('settings-update/', SettingsUpdateView.as_view(), name='settings_update'), # update parent account's settings
 
     # SCHOOL CLASS PAGE
     path('class/<int:pk>/', ClassDetailView.as_view(), name='class_detail'), # get all data for a school class

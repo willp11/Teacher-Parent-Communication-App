@@ -70,7 +70,8 @@ def send_school_class_notifications(user, type, school_class):
             parents.append(student.parent)
             # check settings whether to send email
             if student.parent != None:
-                parent_settings = ParentSettings.objects.get(parent=student.parent)
+                # parent_settings = ParentSettings.objects.get(parent=student.parent)
+                parent_settings = Settings.objects.get(parent=student.parent.user)
                 if type == 'Announcement':
                     title = "New announcement"
                     parents.append(student.parent)

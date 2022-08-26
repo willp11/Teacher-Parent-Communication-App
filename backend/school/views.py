@@ -22,7 +22,7 @@ class AnnouncementCreateView(CreateAPIView):
         school_class = SchoolClass.objects.get(pk=self.request.data['school_class'])
         serializer.save(school_class=school_class)
         send_school_class_notifications(self.request.user, "Announcement", school_class)
-        
+
 class AnnouncementUpdateView(RetrieveUpdateAPIView):
     serializer_class = AnnouncementUpdateSerializer
     permission_classes = [IsAuthenticated, IsEmailVerified, IsClassTeacher]
@@ -446,6 +446,14 @@ class ParentSettingsUpdateView(RetrieveUpdateAPIView):
     def get_object(self):
         parent = get_object_or_404(Parent, user=self.request.user)
         settings = get_object_or_404(ParentSettings, parent=parent)
+        return settings
+
+class SettingsUpdateView(RetrieveUpdateAPIView):
+    serializer_class = SettingsSerializer
+    permission_classes = [IsAuthenticated, IsEmailVerified]
+
+    def get_object(self):
+        settings = get_object_or_404(Settings, user=self.request.user)
         return settings
 
 #######################################################################
