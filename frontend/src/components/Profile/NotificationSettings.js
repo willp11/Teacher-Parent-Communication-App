@@ -65,7 +65,7 @@ const NotificationSettings = (props) => {
                 <p className="text-sm"> at top to view.</p>
             </div>
             
-            <p className="mt-2 mb-2 text-sm">When would you like to receive <b>E-mails</b>?</p>
+            <p className="mt-2 mb-4 text-sm">When would you like to receive <b>E-mails</b>?</p>
             <div>
                 <h4 className="text-gray-700 text-sm">New Message</h4>
                 <button disabled className={props.profile.settings.message_received_notification === true ? "selected" : "unselected"}>Yes</button>
@@ -94,7 +94,7 @@ const NotificationSettings = (props) => {
                 </>
             }
             
-            <button className="w-32 rounded bg-sky-500 hover:bg-indigo-500 px-2 py-2 text-white font-semibold m-2" onClick={()=>setEditSettingsMode(true)}>Edit Settings</button>
+            <button className="w-32 rounded bg-sky-500 hover:bg-indigo-500 px-2 py-2 text-white font-semibold my-4" onClick={()=>setEditSettingsMode(true)}>Edit Settings</button>
             <p className="text-sm">{message}</p>
         </div>
     )
@@ -123,7 +123,7 @@ const NotificationSettings = (props) => {
                     <p className="text-sm"> at top to view.</p>
                 </div>
                 
-                <p className="mt-2 mb-2 text-sm">When would you like to receive <b>E-mails</b>?</p>
+                <p className="mt-2 mb-4 text-sm">When would you like to receive <b>E-mails</b>?</p>
                 <div>
                     <h4 className="text-gray-700 text-sm">New Message</h4>
                     <button 
@@ -168,7 +168,7 @@ const NotificationSettings = (props) => {
                         </div>
                     </>
                 }
-                {loading ? null : <button className="w-24 rounded bg-red-600 hover:bg-red-700 py-2 text-white font-semibold m-2" onClick={cancelEditParentSettings}>Cancel</button>}
+                {loading ? null : <button className="w-24 rounded bg-red-600 hover:bg-red-700 py-2 text-white font-semibold my-4" onClick={cancelEditParentSettings}>Cancel</button>}
                 {submit_btn}
                 <p className="text-sm">{message}</p>
             </div>

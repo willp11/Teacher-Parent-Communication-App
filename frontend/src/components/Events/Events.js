@@ -233,7 +233,7 @@ const Events = (props) => {
         return <button key={type} className={style} onClick={()=>setSelectedEventType(type)}>{type}</button>
     })
     let buttons_div = (
-        <div className="w-[calc(100%-1rem)] sm:w-[500px] mx-auto flex justify-evenly mt-4">
+        <div className="w-[calc(100%-1rem)] sm:w-[500px] mx-auto flex justify-evenly mt-2">
             {buttons}
         </div>
     )

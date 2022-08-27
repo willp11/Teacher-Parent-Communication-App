@@ -77,7 +77,7 @@ const StudentProfile = () => {
                 <div className="my-2">
                     <p className="text-xs text-gray-600">Parent</p>
                     <p className="font-semibold">{studentProfile.parent.user.first_name} {studentProfile.parent.user.last_name}</p>
-                    <button className="bg-sky-500 hover:bg-indigo-500 rounded text-white font-semibold px-2 py-1 mt-1 text-sm" onClick={()=>navigate('/chatHub')}>Message</button>
+                    {/* <button className="bg-sky-500 hover:bg-indigo-500 rounded text-white font-semibold px-2 py-1 mt-1 text-sm" onClick={()=>navigate('/chatHub')}>Message</button> */}
                 </div>
             )
         } else {
