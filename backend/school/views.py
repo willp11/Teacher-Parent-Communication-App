@@ -382,8 +382,8 @@ class ParentCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated, IsEmailVerified]
 
     def perform_create(self, serializer):
-        parent = serializer.save(user=self.request.user)
-        settings = ParentSettings(parent=parent)
+        serializer.save(user=self.request.user)
+        settings = Settings(user=self.request.user)
         settings.save()
 
 class TeacherCreateView(CreateAPIView):
@@ -392,6 +392,8 @@ class TeacherCreateView(CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+        settings = Settings(user=self.request.user)
+        settings.save()
 
 class ProfilePictureUpdateView(RetrieveUpdateAPIView):
     serializer_class = ProfilePictureSerializer
