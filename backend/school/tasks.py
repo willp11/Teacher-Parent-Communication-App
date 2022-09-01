@@ -55,55 +55,55 @@ def send_chat_group_notifications(sender, type, group):
 # Create event, announcement, story  - used by the views when teacher creates new
 @shared_task
 def send_school_class_notifications(user, type, school_class):
-    try:
-        # check user is the teacher of the school_class
-        if user != school_class.teacher.user:
-            raise Exception('Not authorized')
-        
-        # get eligible parents
-        parents = []
-        parent_emails = []
-        students = Student.objects.filter(school_class=school_class)
+    # try:
+    # check user is the teacher of the school_class
+    if user != school_class.teacher.user:
+        raise Exception('Not authorized')
+    
+    # get eligible parents
+    parents = []
+    parent_emails = []
+    students = Student.objects.filter(school_class=school_class)
 
-        if type == 'Announcement':
-            title = "New announcement"
-            content = 'There is a new class announcement'
-        if type == 'Event':
-            title = "New event"
-            content = 'There is a new class event'
-        if type == 'Story':
-            title = "New story"
-            content = 'There is a new class story'
+    if type == 'Announcement':
+        title = "New announcement"
+        content = 'There is a new class announcement'
+    if type == 'Event':
+        title = "New event"
+        content = 'There is a new class event'
+    if type == 'Story':
+        title = "New story"
+        content = 'There is a new class story'
 
-        for student in students:
-            # send in-app notifications to all parents
+    for student in students:
+        if student.parent != None:
+            # get list of all parents of students in the class
             parents.append(student.parent)
             # check settings whether to send email
-            if student.parent != None:
-                parent_settings = Settings.objects.get(user=student.parent.user)
-                if type == 'Announcement':
-                    if parent_settings.new_announcement_notification == True:
-                        parent_emails.append(student.parent.user.email)
-                if type == 'Event':
-                    if parent_settings.new_event_notification == True:
-                        parent_emails.append(student.parent.user.email)
-                if type == 'Story':
-                    if parent_settings.new_story_notification == True:
-                        parent_emails.append(student.parent.user.email)
-        
-        # create notification for each parent
-        for parent in parents:
-            new_notification = SchoolClassNotification(user=parent.user, type=type, title=title, school_class=school_class)
-            new_notification.save()
+            parent_settings = Settings.objects.get(user=student.parent.user)
+            if type == 'Announcement':
+                if parent_settings.new_announcement_notification == True:
+                    parent_emails.append(student.parent.user.email)
+            if type == 'Event':
+                if parent_settings.new_event_notification == True:
+                    parent_emails.append(student.parent.user.email)
+            if type == 'Story':
+                if parent_settings.new_story_notification == True:
+                    parent_emails.append(student.parent.user.email)
+    
+    # create notification for each parent
+    for parent in parents:
+        new_notification = SchoolClassNotification(user=parent.user, type=type, title=title, school_class=school_class)
+        new_notification.save()
 
-        # send emails to parents
-        send_mail(
-            title,
-            content,
-            'admin@app.com',
-            parent_emails,
-            fail_silently=True
-        )
-    except:
-        print("error sending school class notifications")
+    # send emails to parents
+    send_mail(
+        title,
+        content,
+        'admin@app.com',
+        parent_emails,
+        fail_silently=True
+    )
+    # except:
+    #     print("error sending school class notifications")
 

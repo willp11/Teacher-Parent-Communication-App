@@ -58,9 +58,11 @@ const Navigation = () => {
                                         className="h-8 w-auto sm:h-10"
                                         src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
                                     />
-                                    <div className="relative md:hidden" onClick={toggleShowNotifications}>
-                                        <Bell quantity={qtyNotifications} />
-                                    </div>
+                                    {token !== null && 
+                                        <div className="relative md:hidden" onClick={toggleShowNotifications}>
+                                            <Bell quantity={qtyNotifications} />
+                                        </div>
+                                    }
                                     <div className="-mr-2 flex items-center md:hidden">
                                         <Popover.Button className="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
                                             <span className="sr-only">Open main menu</span>
@@ -79,9 +81,11 @@ const Navigation = () => {
                                         {item.name}
                                     </Link>
                                 ))}
-                                <div className="relative" onClick={toggleShowNotifications}>
-                                    <Bell quantity={qtyNotifications} />
-                                </div>
+                                {token !== null && 
+                                    <div className="relative" onClick={toggleShowNotifications}>
+                                        <Bell quantity={qtyNotifications} />
+                                    </div>
+                                }
                                 <Link to={token === null ? "/login" : "/logout"} className="font-medium text-indigo-600 hover:text-indigo-500">{token === null ? "Log in" : "Log out"}</Link>
                             </div>
                             {
