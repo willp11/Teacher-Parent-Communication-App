@@ -1,4 +1,5 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, ListCreateAPIView, DestroyAPIView, RetrieveUpdateAPIView, RetrieveDestroyAPIView
+from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
@@ -7,6 +8,8 @@ from .serializers import *
 from .models import *
 from .utils import check_has_child_in_class, generate_invite_code
 from .permissions import *
+from .tasks import send_school_class_notifications
+from django.core.exceptions import ValidationError
 
 #######################################################################
 # ANNOUNCEMENTS
@@ -18,6 +21,7 @@ class AnnouncementCreateView(CreateAPIView):
     def perform_create(self, serializer):
         school_class = SchoolClass.objects.get(pk=self.request.data['school_class'])
         serializer.save(school_class=school_class)
+        send_school_class_notifications(self.request.user, "Announcement", school_class)
 
 class AnnouncementUpdateView(RetrieveUpdateAPIView):
     serializer_class = AnnouncementUpdateSerializer
@@ -246,6 +250,7 @@ class EventCreateView(CreateAPIView):
     def perform_create(self, serializer):
         school_class = SchoolClass.objects.get(pk=self.request.data['school_class'])
         serializer.save(school_class=school_class)
+        send_school_class_notifications(self.request.user, "Event", school_class)
 
 class EventUpdateView(RetrieveUpdateAPIView):
     serializer_class = EventUpdateSerializer
@@ -301,12 +306,73 @@ class HelperDeleteView(RetrieveDestroyAPIView):
 #######################################################################
 # NOTIFICATIONS
 #######################################################################
-class NotificationsGetView(RetrieveAPIView):
-    serializer_class = UserNotificationsSerializer
+
+# Get only unread notifications for the user
+class UnreadNotificationsGetView(APIView):
+
+    def get_chat_queryset(self, user):
+        try:
+            return ChatGroupNotification.objects.filter(user=user, read=False)
+        except:
+            raise status.HTTP_400_BAD_REQUEST
+
+    def get_schoolclass_queryset(self, user):
+        try:
+            return SchoolClassNotification.objects.filter(user=user, read=False)
+        except:
+            raise status.HTTP_400_BAD_REQUEST
+
+    def get(self, request, *args, **kwargs):
+        chat_instances = self.get_chat_queryset(request.user)
+        chat_serializer = ChatGroupNotificationSerializer(chat_instances, many=True)
+        schoolclass_instances = self.get_schoolclass_queryset(request.user)
+        schoolclass_serializer = SchoolClassNotificationSerializer(schoolclass_instances, many=True)
+        all_instances = []
+        all_instances.extend(chat_serializer.data)
+        all_instances.extend(schoolclass_serializer.data)
+        return Response(all_instances)
+
+# Update one chat notification
+class ChatNotificationUpdateView(RetrieveUpdateAPIView):
+    serializer_class = ChatNotificationUpdateSerializer
     permission_classes = [IsAuthenticated, IsEmailVerified]
 
     def get_object(self):
-        return self.request.user
+        return ChatGroupNotification.objects.get(pk=self.kwargs['pk'], user=self.request.user)
+
+# Update one school class notification
+class ClassNotificationUpdateView(RetrieveUpdateAPIView):
+    serializer_class = ClassNotificationUpdateSerializer
+    permission_classes = [IsAuthenticated, IsEmailVerified]
+
+    def get_object(self):
+        return SchoolClassNotification.objects.get(pk=self.kwargs['pk'], user=self.request.user)
+
+# Update all notifications for user, set read=True
+class AllNotificationUpdateView(APIView):
+
+    def get_chat_queryset(self, user):
+        try:
+            return ChatGroupNotification.objects.filter(user=user, read=False)
+        except ValidationError:
+            raise status.HTTP_400_BAD_REQUEST
+
+    def get_schoolclass_queryset(self, user):
+        try:
+            return SchoolClassNotification.objects.filter(user=user, read=False)
+        except ValidationError:
+            raise status.HTTP_400_BAD_REQUEST
+
+    def put(self, request, *args, **kwargs):
+        chat_instances = self.get_chat_queryset(request.user)
+        school_class_instances = self.get_schoolclass_queryset(request.user)
+        instances = []
+        instances.extend(chat_instances)
+        instances.extend(school_class_instances)
+        for obj in instances:
+            obj.read = True
+            obj.save()
+        return Response(data="success", status=200)
 
 #######################################################################
 # PROFILE
@@ -316,8 +382,8 @@ class ParentCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated, IsEmailVerified]
 
     def perform_create(self, serializer):
-        parent = serializer.save(user=self.request.user)
-        settings = ParentSettings(parent=parent)
+        serializer.save(user=self.request.user)
+        settings = Settings(user=self.request.user)
         settings.save()
 
 class TeacherCreateView(CreateAPIView):
@@ -326,6 +392,8 @@ class TeacherCreateView(CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+        settings = Settings(user=self.request.user)
+        settings.save()
 
 class ProfilePictureUpdateView(RetrieveUpdateAPIView):
     serializer_class = ProfilePictureSerializer
@@ -382,6 +450,14 @@ class ParentSettingsUpdateView(RetrieveUpdateAPIView):
         settings = get_object_or_404(ParentSettings, parent=parent)
         return settings
 
+class SettingsUpdateView(RetrieveUpdateAPIView):
+    serializer_class = SettingsSerializer
+    permission_classes = [IsAuthenticated, IsEmailVerified]
+
+    def get_object(self):
+        settings = get_object_or_404(Settings, user=self.request.user)
+        return settings
+
 #######################################################################
 # SCHOOL CLASS
 #######################################################################
@@ -403,6 +479,7 @@ class StoryCreateView(CreateAPIView):
     def perform_create(self, serializer):
         school_class = SchoolClass.objects.get(pk=self.request.data['school_class'])
         serializer.save(school_class=school_class)
+        send_school_class_notifications(self.request.user, "Story", school_class)
 
 class StoryUpdateView(RetrieveUpdateAPIView):
     serializer_class = StoryUpdateSerializer

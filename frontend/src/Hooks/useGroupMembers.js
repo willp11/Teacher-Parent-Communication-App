@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 
 export const useGroupMembers = (token, id) => {
 
     const [groupMembers, setGroupMembers] = useState([]);
     const [loadingMembers, setLoadingMembers] = useState(false);
+    // const groupMembersRef = useRef([]);
 
     // Get list of members for chat group and video chat
     // called again when adding new members from AddMembers
@@ -19,6 +20,7 @@ export const useGroupMembers = (token, id) => {
             .then(res=>{
                 console.log(res);
                 setGroupMembers(res.data);
+                // groupMembersRef.current = res.data;
             })
             .catch(err=>{
                 console.log(err);

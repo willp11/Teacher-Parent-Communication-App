@@ -53,6 +53,7 @@ const StoryComments = (props) => {
                     onChange={comment_formik.handleChange}
                     onBlur={comment_formik.handleBlur}
                     className="border border-gray-300 w-[calc(100%-6rem)] h-12"
+                    autocomplete="off"
                 />
                 <button type="submit" className="w-24 rounded-md bg-sky-500 hover:bg-indigo-500 p-2 my-2 text-white font-bold border-2 border-black">Post</button>
             </form>
@@ -74,7 +75,12 @@ const StoryComments = (props) => {
 
     return (
         <div className="mt-2">
-            {props.showComments ? comments_list_div : null}
+
+            {props.showComments && 
+            <div className="max-h-[16rem] overflow-auto">
+                {comments_list_div} 
+            </div>
+            }
             {props.writeComment ? create_comment_form : null}
         </div>
     )

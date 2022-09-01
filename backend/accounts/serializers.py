@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import CustomUser
-from school.serializers import TeacherSerializer, ParentSerializer
+from school.serializers import TeacherSerializer, ParentSerializer, SettingsSerializer
 from dj_rest_auth.serializers import PasswordResetSerializer, LoginSerializer
 from .forms import CustomAllAuthPasswordResetForm
 from dj_rest_auth.registration.serializers import RegisterSerializer
@@ -22,10 +22,11 @@ class LoginSerializerNew(LoginSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     teacher = TeacherSerializer()
     parent = ParentSerializer()
+    settings = SettingsSerializer()
     
     class Meta:
         model = CustomUser
-        fields = ('id', 'email', 'first_name', 'last_name', 'email_verified', 'profile_picture', 'teacher', 'parent')
+        fields = ('id', 'email', 'first_name', 'last_name', 'email_verified', 'profile_picture', 'teacher', 'parent', 'settings')
 
 class CustomPasswordResetSerializer(PasswordResetSerializer):
     @property

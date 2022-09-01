@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import Navigation from '../Navigation/Navigation';
@@ -10,8 +10,8 @@ import Students from '../Students/Students';
 import Assignments from '../Assignments/Assignments';
 import { createMenuDiv } from '../../Utils/utils';
 
-const teacher_menu_items = ["Classroom", "Announcements", "Stories", "Events", "Assignments"]
-const parent_menu_items = ["Announcements", "Stories", "Events"]
+const teacher_menu_items = ["Classroom", "Stories", "Announcements", "Events", "Assignments"]
+const parent_menu_items = ["Stories", "Announcements", "Events"]
 
 const SchoolClass = () => {
 
@@ -20,7 +20,14 @@ const SchoolClass = () => {
     const accountType = useSelector((state) => state.auth.accountType);
 
     const [schoolClass, setSchoolClass] = useState(null);
-    const [componentToShow, setComponentToShow] = useState("Stories")
+    const [componentToShow, setComponentToShow] = useState("Stories");
+
+    // sort the stories, announcements, events
+    // const schoolClass = useMemo(()=>{
+    //     let sortedData = {...schoolClassData};
+    //     console.log(sortedData);
+    //     return sortedData;
+    // }, [schoolClassData])
 
     // GET CLASS DATA FUNCTION
     const getClassInfo = useCallback(() => {

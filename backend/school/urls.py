@@ -35,7 +35,10 @@ urlpatterns = [
     path('helper-delete/<int:pk>/', HelperDeleteView.as_view(), name='helper_delete'), # parent unregister as helper for event
 
     # NOTIFICATIONS
-    path('notifications-get/', NotificationsGetView.as_view(), name='notifications_get'), # get all user's notifications
+    path('notifications-get/', UnreadNotificationsGetView.as_view(), name='notifications_get'), # get all user's unread notifications
+    path('chat-notification-update/<int:pk>/', ChatNotificationUpdateView.as_view(), name='chat_notification_update'), # update a single chat notification
+    path('class-notification-update/<int:pk>/', ClassNotificationUpdateView.as_view(), name='class_notification_update'), # update a single school class notification
+    path('all-notifications-update/', AllNotificationUpdateView.as_view(), name='all_notifications_update'), # update all notifications read=True
 
     # PROFILE PAGE
     path('parent-create/', ParentCreateView.as_view(), name='parent_create'), # select parent account type
@@ -46,6 +49,7 @@ urlpatterns = [
     path('class-create/', ClassCreateView.as_view(), name='class_create'), # teacher account create a new school class
     path('use-invite-code/', InviteCodeUseView.as_view(), name='use_invite_code'), # add child to parent account by using child's invite code
     path('parent-settings-update/', ParentSettingsUpdateView.as_view(), name='parent_settings_update'), # update parent account's settings
+    path('settings-update/', SettingsUpdateView.as_view(), name='settings_update'), # update parent account's settings
 
     # SCHOOL CLASS PAGE
     path('class/<int:pk>/', ClassDetailView.as_view(), name='class_detail'), # get all data for a school class

@@ -15,7 +15,8 @@ const MemberList = (props) => {
         return (
             <div key={member.user.id} className="flex flex-col items-center justify-center">
                 <div className={`flex justify-between items-center mb-2 truncate mx-auto ${width}`}>
-                    <p className="w-full text-center">{member.user.id === account.id ? "You" : `${member.user.first_name} ${member.user.last_name}`}</p>
+                    {/* <p className="w-full text-center">{member.user.id === account.id ? "You" : `${member.user.first_name} ${member.user.last_name}`}</p> */}
+                    <p className="w-full text-center">{`${member.user.first_name} ${member.user.last_name}`}</p>
                     {props.connected ? <WifiIcon className={`h-[24px] w-[24px] ${stroke}`} /> : null}
                 </div>
             </div>

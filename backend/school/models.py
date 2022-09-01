@@ -148,14 +148,14 @@ class Sticker(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='stickers')
     type = models.ForeignKey(StickerType, on_delete=models.CASCADE)
 
-class AppNotification(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notifications')
-    title = models.CharField(max_length=100)
-    content = models.CharField(max_length=256)
-    created_at = models.DateTimeField(auto_now_add=True)
+# class AppNotification(models.Model):
+#     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='notifications')
+#     title = models.CharField(max_length=100)
+#     content = models.CharField(max_length=256)
+#     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return '{} to {} {}'.format(self.title, self.user.first_name, self.user.last_name)
+#     def __str__(self):
+#         return '{} to {} {}'.format(self.title, self.user.first_name, self.user.last_name)
 
 class NotificationMode(models.Model):
     APP = 'App'
@@ -172,7 +172,7 @@ class NotificationMode(models.Model):
         return self.name
 
 class ParentSettings(models.Model):
-    parent = models.OneToOneField(Parent, on_delete=models.CASCADE, related_name='settings')
+    parent = models.OneToOneField(Parent, on_delete=models.CASCADE, related_name='parent_settings')
     notification_mode = models.ForeignKey(NotificationMode, on_delete=models.SET_DEFAULT, default='App')
     message_received_notification = models.BooleanField(default=True)
     new_story_notification = models.BooleanField(default=False)
@@ -181,6 +181,17 @@ class ParentSettings(models.Model):
 
     def __str__(self):
         return self.parent.user.username
+
+# new settings
+class Settings(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='settings')
+    message_received_notification = models.BooleanField(default=True)
+    new_story_notification = models.BooleanField(default=False)
+    new_announcement_notification = models.BooleanField(default=False)
+    new_event_notification = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user.email
 
 class ChatGroup(models.Model):
     name = models.CharField(max_length=100)
@@ -217,3 +228,42 @@ class InviteCode(models.Model):
 
     def __str__(self):
         return self.code
+
+class ChatGroupNotification(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='chat_notifications')
+    MESSAGE = 'Message'
+    IS_CALLING = 'IsCalling'
+    MISSED_CALL = 'MissedCall'
+    TYPE_CHOICES = [
+        (MESSAGE, 'Message'),
+        (IS_CALLING, 'IsCalling'),
+        (MISSED_CALL, 'MissedCall')
+    ]
+    type = models.CharField(max_length=16, choices=TYPE_CHOICES, default=MESSAGE)
+    title = models.CharField(max_length=64)
+    group = models.ForeignKey(ChatGroup, on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(auto_now=True)
+    read = models.BooleanField(default=False)
+    qty_missed = models.IntegerField(default=1)
+
+    def __str__(self):
+        return '{} in {}'.format(self.user.first_name, self.group.name)
+
+class SchoolClassNotification(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='school_class_notifications')
+
+    EVENT = 'Event'
+    STORY = 'Story'
+    ANNOUNCEMENT = 'Announcement'
+    TYPE_CHOICES = [
+        (EVENT, 'Message'),
+        (STORY, 'IsCalling'),
+        (ANNOUNCEMENT, 'MissedCall')
+    ]
+    type = models.CharField(max_length=16, choices=TYPE_CHOICES, default=ANNOUNCEMENT)
+
+    title = models.CharField(max_length=64)
+    school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(auto_now=True)
+    read = models.BooleanField(default=False)
+    qty_missed = models.IntegerField(default=1)

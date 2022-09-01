@@ -42,7 +42,7 @@ class ChatGroupMemberNameSerializer(serializers.ModelSerializer):
     user = UserNameOnlySerializer()
     class Meta:
         model = GroupMember
-        fields = ('user',)
+        fields = ('id', 'user', 'group', 'connected_to_call', 'connected_to_chat')
 
 # Used by ChatGroupSerializer
 class MessageSerializer(serializers.ModelSerializer):
@@ -173,7 +173,7 @@ class UserChatGroupsSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ('chat_group_member',)
 
-# Used by ChatGroupCreateView
+# Used by ChatGroupCreateView, ChatGroupNotificationSerializer
 class ChatGroupCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChatGroup
@@ -213,22 +213,6 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ('id', 'name', 'date', 'description', 'school_class', 'helpers_required', 'helpers')
-
-#######################################################################
-# NOTIFICATIONS
-#######################################################################
-# UserNotificationsSerializer
-class NotificationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AppNotification
-        fields = '__all__'
-
-# NotificationsGetView
-class UserNotificationsSerializer(serializers.ModelSerializer):
-    notifications = NotificationSerializer(many=True)
-    class Meta:
-        model = CustomUser
-        fields = ('notifications',)
 
 #######################################################################
 # PROFILE
@@ -283,6 +267,12 @@ class ParentSettingsSerializer(serializers.ModelSerializer):
         model = ParentSettings
         exclude = ('parent',)
 
+# SettingsUpdateView
+class SettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Settings
+        exclude = ('user',)
+
 # Used by StudentSerializer
 class SchoolClassSerializer(serializers.ModelSerializer):
     teacher = TeacherNameSerializer()
@@ -300,7 +290,7 @@ class StudentSerializer(serializers.ModelSerializer):
 
 # Used by UserProfileSerializer
 class ParentSerializer(serializers.ModelSerializer):
-    settings = ParentSettingsSerializer()
+    parent_settings = ParentSettingsSerializer()
     children = StudentSerializer(many=True)
     class Meta:
         model = Parent
@@ -327,13 +317,6 @@ class StoryMediaSerializer(serializers.ModelSerializer):
         model = StoryMedia
         fields = '__all__'
 
-# ClassDetailSerializer, StoryDeleteView
-class StorySerializer(serializers.ModelSerializer):
-    story_images = StoryMediaSerializer(many=True)
-    class Meta:
-        model = Story
-        fields = '__all__'
-
 # StoryCommentListView
 class StoryCommentListSerializer(serializers.ModelSerializer):
     author = UserNameOnlySerializer()
@@ -346,6 +329,13 @@ class StoryCommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = StoryComment
         fields = ('content', 'story')
+
+# ClassDetailSerializer, StoryDeleteView
+class StorySerializer(serializers.ModelSerializer):
+    story_images = StoryMediaSerializer(many=True)
+    class Meta:
+        model = Story
+        fields = '__all__'
 
 # Unused - Haven't implemented updating comments on frontend
 # class StoryCommentUpdateSerializer(serializers.ModelSerializer):
@@ -478,3 +468,39 @@ class ParentContactsSerializer(serializers.ModelSerializer):
         model = Parent
         fields = ('id', 'children')
 
+
+#######################################################################
+# NOTIFICATIONS
+#######################################################################
+# Need to nest group inside with all chat_members and direct_message 
+class GroupInfoNotificationsSerializer(serializers.ModelSerializer):
+    recipient = UserNameOnlySerializer()
+    class Meta:
+        model = ChatGroup
+        fields = ('id', 'name', 'direct_message', 'recipient')
+
+# UnreadNotificationsGetView, AllNotificationUpdateView
+class ChatGroupNotificationSerializer(serializers.ModelSerializer):
+    group = GroupInfoNotificationsSerializer()
+    class Meta:
+        model = ChatGroupNotification
+        fields = '__all__'
+
+# UnreadNotificationsGetView, AllNotificationUpdateView
+class SchoolClassNotificationSerializer(serializers.ModelSerializer):
+    school_class = SchoolClassSerializer()
+    class Meta:
+        model = SchoolClassNotification
+        fields = '__all__'
+
+# ChatNotificationUpdateView
+class ChatNotificationUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChatGroupNotification
+        fields = ('read',)
+
+# ClassNotificationUpdateView
+class ClassNotificationUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SchoolClassNotification
+        fields = ('read',)

@@ -128,12 +128,12 @@ class SchoolTests(APITestCase):
         self.assertEqual(Assignee.objects.filter(pk=self.assignee.pk, score=5, feedback="needs work").count(), 1)
 
     # GET assignee-list/<int:pk>/
+    # {'id', 'student', 'feedback', 'score', 'submitted', 'assignment_responses'}
     def test_assigneeList(self):
         url = reverse('assignee_list', kwargs={'pk': self.assignment.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
-        # {'id', 'student', 'feedback', 'score', 'submitted', 'assignment_responses'}
         self.assertTrue('id' in data[0])
         self.assertTrue('student' in data[0])
         self.assertTrue('feedback' in data[0])
@@ -148,12 +148,12 @@ class SchoolTests(APITestCase):
         self.assertEqual(data[0]['assignment_responses'], [])
 
     # GET assignment-detail/<code>/
+    # {'title', 'description', 'maximum_score', 'response_format', 'assigned_students': [{'id', 'student', 'feedback', 'score', 'submitted', 'assignment_responses'}] }
     def test_assignmentDetail(self):
         url = reverse('assignment_detail',  kwargs={'code': self.assignment.code})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
-        # {'title', 'description', 'maximum_score', 'response_format', 'assigned_students': [{'id', 'student', 'feedback', 'score', 'submitted', 'assignment_responses'}] }
         self.assertTrue('title' in data)
         self.assertTrue('description' in data)
         self.assertTrue('maximum_score' in data)
