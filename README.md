@@ -1,10 +1,10 @@
-# django_auth_template
-Template for a Django project using User token authentication with email verification.
+# Teacher Parent Communication App
 
-Install the dependencies listed in requirements.txt with command: "pip install -r requirements.txt".
+You must run it on Linux/Unix OS as it uses Redis which is not available on Windows.
 
-To use this template, you need to create a .env file inside the backend directory containing settings.py.
+Pre-requisites:
+Node to run the frontend server.
+Python to run the backend.
 
-The .env file must contain your EMAIL_USER and EMAIL_PASSWORD values.
-
-It is using the Gmail smtp servers, adjust the values found in settings.py to use different email providers.
+Use npm or yarn to install frontend dependencies found in package.json.
+Use pip to install backend dependencies found in requirements.txt.
