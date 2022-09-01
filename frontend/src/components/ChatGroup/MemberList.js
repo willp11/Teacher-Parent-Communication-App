@@ -1,5 +1,5 @@
 import AddMembers from './AddMembers';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { WifiIcon } from "@heroicons/react/outline";
 
 const MemberList = (props) => {

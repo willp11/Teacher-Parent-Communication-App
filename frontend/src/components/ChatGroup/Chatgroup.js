@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import MemberList from './MemberList';
@@ -26,7 +26,7 @@ const ChatGroup = () => {
     }, [groupMembers]);
 
     // update group member's connection status
-    const updateGroupMembers = (event) => {
+    const updateGroupMembers = useCallback((event) => {
         // need to ref (not state) otherwise it is stale reference in the call from websocket.onmessage
         let members = [...groupMembersRef.current];
         groupMembersRef.current.forEach((member, index)=>{
@@ -40,7 +40,7 @@ const ChatGroup = () => {
         })
         // update state to force re-render
         setGroupMembers(members);
-    }
+    }, [groupMembersRef, setGroupMembers])
 
     // receive new messages, we update the refs and pass to messages component so it can render new messages and scroll down
     const messagesRef = useRef();
@@ -72,7 +72,7 @@ const ChatGroup = () => {
         chatSocket.onclose = function(e) {
             console.error('Chat socket closed unexpectedly');
         };
-    }, [id, token]);
+    }, [id, token, updateGroupMembers]);
 
     // Get all data for this chat group - then connect to sockets
     const getGroupData = useCallback(()=>{
@@ -94,7 +94,7 @@ const ChatGroup = () => {
             .catch(err=>{
                 console.log(err);
             })
-    }, [token, id, connectSocket])
+    }, [token, id, connectSocket, setGroupMembers])
 
     // On Mount - get group data, also connects to websocket inside getGroupData then function. On unmount close the socket
     useEffect(()=>{
