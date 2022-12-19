@@ -21,9 +21,9 @@ const features =   [
         icon: VideoCameraIcon,
     },
     {
-        name: 'In-App and Email Notifications',
+        name: 'Notifications',
         description:
-        'Receive notifications through your preferred mode of communication. We support both in App and Email notifications with customizable settings to suit your needs.',
+        "Receive notifications when your children have new class stories, receive messages or miss calls. With customizable settings to suit your needs.",
         icon: AnnotationIcon,
     },
 ]
