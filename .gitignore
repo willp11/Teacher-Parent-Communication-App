@@ -4,3 +4,4 @@ backend/db.sqlite3
 backend/images
 __pycache__/
 .env
+dump.rdb

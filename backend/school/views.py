@@ -350,7 +350,6 @@ class ClassNotificationUpdateView(RetrieveUpdateAPIView):
 
 # Update all notifications for user, set read=True
 class AllNotificationUpdateView(APIView):
-
     def get_chat_queryset(self, user):
         try:
             return ChatGroupNotification.objects.filter(user=user, read=False)
