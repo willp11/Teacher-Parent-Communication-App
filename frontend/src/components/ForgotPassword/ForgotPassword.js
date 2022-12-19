@@ -104,7 +104,7 @@ const ForgotPassword = () => {
     )
 
     return (
-        <div className="relative bg-slate-200 overflow-auto min-h-screen">
+        <div className="relative bg-slate-100 overflow-auto min-h-screen">
 
                 <Navigation />
                 <div className="w-full bg-indigo-500 text-white text-center py-2 mb-2">
