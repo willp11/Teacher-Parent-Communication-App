@@ -54,6 +54,7 @@ sqlparse==0.4.2
 Twisted==22.4.0
 txaio==22.2.1
 typing-extensions==4.3.0
+tzdata==2022.7
 urllib3==1.26.12
 vine==5.0.0
 wcwidth==0.2.5

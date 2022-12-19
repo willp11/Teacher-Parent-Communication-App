@@ -17,7 +17,7 @@ services:
       - db
              
   db:
-    image: postgres:10-alpine
+    image: postgres:11-alpine
     env_file:
       - ./.env
     ports:
@@ -25,6 +25,10 @@ services:
 
   redis:
     image: redis:alpine
+    expose:
+      - "6379"
+    ports:
+      - "6379:6379"
   celery:
     restart: always
     build:

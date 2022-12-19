@@ -1,14 +1,25 @@
-FROM python:3.7-alpine
- 
-ENV PYTHONUNBUFFERED 1
-COPY ./requirements.txt /requirements.txt
+FROM python:3.8.2-alpine
 
-RUN apk add --update --no-cache postgresql-client jpeg-dev
-RUN apk add --update --no-cache --virtual .tmp-build-deps \ 
-    gcc libc-dev linux-headers postgresql-dev musl-dev zlib zlib-dev
-RUN pip install -r /requirements.txt
-RUN apk del .tmp-build-deps
+ADD ./requirements.txt /app/requirements.txt
 
-RUN mkdir /app
-COPY ./backend /app
+RUN set -ex \
+    && apk add --no-cache --virtual .build-deps postgresql-dev build-base python3-dev libffi-dev freetype-dev \
+    && python -m venv /env \
+    && /env/bin/pip install --upgrade pip \
+    && /env/bin/pip install --upgrade setuptools \
+    && /env/bin/pip install --no-cache-dir -r /app/requirements.txt \
+    && runDeps="$(scanelf --needed --nobanner --recursive /env \
+        | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
+        | sort -u \
+        | xargs -r apk info --installed \
+        | sort -u)" \
+    && apk add --virtual rundeps $runDeps \
+    && apk del .build-deps
+
+ADD backend /app
 WORKDIR /app
+
+ENV VIRTUAL_ENV /env
+ENV PATH /env/bin:$PATH
+
+EXPOSE 8000
