@@ -26,15 +26,17 @@ export const useNotifications = () => {
             'Authorization': 'Token ' + token
         }
         const url = `${process.env.REACT_APP_API_URL}/api/v1/school/notifications-get/`;
-        try {
-            setLoading(true);
-            const res = await axios.get(url, {headers: headers});
-            console.log(res.data)
-            setNotifications(res.data);
-        } catch(err) {
-            console.log(err);
-        } finally {
-            setLoading(false);
+        if (token) {
+            try {
+                setLoading(true);
+                const res = await axios.get(url, {headers: headers});
+                console.log(res.data)
+                setNotifications(res.data);
+            } catch(err) {
+                console.log(err);
+            } finally {
+                setLoading(false);
+            }
         }
     }, [token, setLoading, setNotifications])
 
