@@ -91,51 +91,51 @@ const Profile = () => {
     // JSX
     let profile_div = null;
     let menu_div = null;
-    // USER MUST VERIFY EMAIL TO SEE PROFILE
-    if (profile.email_verified === false) {
-        profile_div = <VerifyEmail />
-    } else if (profile.email_verified === true) {
+    // USER MUST VERIFY EMAIL TO SEE PROFILE -- REMOVED AS WANT DEMO APP TO BE MORE ACCESSIBLE
+    // if (profile.email_verified === false) {
+    //     profile_div = <VerifyEmail />
+    // } else if (profile.email_verified === true) {
 
-        // NO ACCOUNT TYPE CHOSEN YET
-        if (profile.teacher === null && profile.parent === null) {
-            profile_div = (
-                <div>
-                    <SelectAccountType getUserProfile={getUserProfile} />
-                </div>
-            )
-        } 
+    // NO ACCOUNT TYPE CHOSEN YET
+    if (profile.teacher === null && profile.parent === null) {
+        profile_div = (
+            <div>
+                <SelectAccountType getUserProfile={getUserProfile} />
+            </div>
+        )
+    } 
 
-        // TEACHER ACCOUNT
-        else if (profile.teacher !== null) {
+    // TEACHER ACCOUNT
+    else if (profile.teacher !== null) {
 
-            menu_div = createMenuDiv(teacher_menu_items, componentToShow, setComponentToShow)
+        menu_div = createMenuDiv(teacher_menu_items, componentToShow, setComponentToShow)
 
-            profile_div = (
-                <div>
-                    {componentToShow === "User Details" ? <UserInfo profile={profile} getUserProfile={getUserProfile} /> : null}
-                    {componentToShow === "Change Password" ? <ChangePassword /> : null}
-                    {componentToShow === "Settings" ? <NotificationSettings profile={profile} settings={notificationSettings} getUserProfile={getUserProfile} /> : null}
-                    {componentToShow === "School" ? <SchoolInfo profile={profile} schools={schoolList} getUserProfile={getUserProfile} getSchoolList={getSchoolList} /> : null}
-                    {componentToShow === "Classes" ? <ClassesInfo profile={profile} getUserProfile={getUserProfile} /> : null}
-                </div>
-            )
-        } 
+        profile_div = (
+            <div>
+                {componentToShow === "User Details" ? <UserInfo profile={profile} getUserProfile={getUserProfile} /> : null}
+                {componentToShow === "Change Password" ? <ChangePassword /> : null}
+                {componentToShow === "Settings" ? <NotificationSettings profile={profile} settings={notificationSettings} getUserProfile={getUserProfile} /> : null}
+                {componentToShow === "School" ? <SchoolInfo profile={profile} schools={schoolList} getUserProfile={getUserProfile} getSchoolList={getSchoolList} /> : null}
+                {componentToShow === "Classes" ? <ClassesInfo profile={profile} getUserProfile={getUserProfile} /> : null}
+            </div>
+        )
+    } 
 
-        // PARENT ACCOUNT 
-        else if (profile.parent !== null) {
+    // PARENT ACCOUNT 
+    else if (profile.parent !== null) {
 
-            menu_div = createMenuDiv(parent_menu_items, componentToShow, setComponentToShow)
+        menu_div = createMenuDiv(parent_menu_items, componentToShow, setComponentToShow)
 
-            profile_div = (
-                <div>
-                    {componentToShow === "User Details" ? <UserInfo profile={profile} getUserProfile={getUserProfile} /> : null}
-                    {componentToShow === "Change Password" ? <ChangePassword /> : null}
-                    {componentToShow === "Settings" ? <NotificationSettings profile={profile} settings={notificationSettings} getUserProfile={getUserProfile} /> : null}
-                    {componentToShow === "Children" ? <ChildrenInfo profile={profile} getUserProfile={getUserProfile} /> : null}
-                </div>
-            )
-        }
+        profile_div = (
+            <div>
+                {componentToShow === "User Details" ? <UserInfo profile={profile} getUserProfile={getUserProfile} /> : null}
+                {componentToShow === "Change Password" ? <ChangePassword /> : null}
+                {componentToShow === "Settings" ? <NotificationSettings profile={profile} settings={notificationSettings} getUserProfile={getUserProfile} /> : null}
+                {componentToShow === "Children" ? <ChildrenInfo profile={profile} getUserProfile={getUserProfile} /> : null}
+            </div>
+        )
     }
+    // }
 
     return (
         <div className="relative bg-white h-screen overflow-auto">
