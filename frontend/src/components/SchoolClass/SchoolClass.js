@@ -25,7 +25,6 @@ const SchoolClass = () => {
     // sort the stories, announcements, events
     // const schoolClass = useMemo(()=>{
     //     let sortedData = {...schoolClassData};
-    //     console.log(sortedData);
     //     return sortedData;
     // }, [schoolClassData])
 
