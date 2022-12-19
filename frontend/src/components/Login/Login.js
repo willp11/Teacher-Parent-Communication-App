@@ -30,7 +30,7 @@ const Login = () => {
             password: password
         };
         setLoading(true);
-        axios.post('http://localhost:8000/api/v1/dj-rest-auth/login/', data)
+        axios.post(`${process.env.API_URL}/api/v1/dj-rest-auth/login/`, data)
             .then((res) => {
                 console.log(res.data);
                 dispatch(

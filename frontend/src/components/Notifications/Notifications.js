@@ -39,7 +39,7 @@ const Notifications = () => {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
         }
-        const url = 'http://127.0.0.1:8000/api/v1/school/all-notifications-update/';
+        const url = `${process.env.API_URL}/api/v1/school/all-notifications-update/`;
         const data = {};
         try {
             const res = await axios.put(url, data, {headers: headers});

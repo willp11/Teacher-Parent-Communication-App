@@ -20,7 +20,7 @@ const SelectAccountType = (props) => {
         const data = {
             user: account.id
         }
-        axios.post('http://localhost:8000/api/v1/school/parent-create/', data, {headers: headers})
+        axios.post(`${process.env.API_URL}/api/v1/school/parent-create/`, data, {headers: headers})
             .then(res=>{
                 console.log(res);
                 if (res.status === 201) {
@@ -43,7 +43,7 @@ const SelectAccountType = (props) => {
         const data = {
             school: null
         }
-        axios.post('http://localhost:8000/api/v1/school/teacher-create/', data, {headers: headers})
+        axios.post(`${process.env.API_URL}/api/v1/school/teacher-create/`, data, {headers: headers})
             .then(res=>{
                 console.log(res);
                 if (res.status === 201) {

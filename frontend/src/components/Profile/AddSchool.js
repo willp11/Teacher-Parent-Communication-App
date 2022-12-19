@@ -19,7 +19,7 @@ const AddSchool = (props) => {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
         }
-        const url = 'http://localhost:8000/api/v1/school/school-list-create/';
+        const url = `${process.env.API_URL}/api/v1/school/school-list-create/`;
         const data = {
             name,
             city,

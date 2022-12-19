@@ -33,7 +33,7 @@ const Register = () => {
             password1: password,
             password2: passwordConfirmation
         };
-        axios.post('http://localhost:8000/api/v1/dj-rest-auth/registration/', data)
+        axios.post(`${process.env.API_URL}/api/v1/dj-rest-auth/registration/`, data)
             .then((res) => {
                 dispatch(
                     authSlice.actions.setAuthToken({

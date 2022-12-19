@@ -35,7 +35,7 @@ const SchoolClass = () => {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
         }
-        const url = 'http://localhost:8000/api/v1/school/class/' + id + '/';
+        const url = `${process.env.API_URL}/api/v1/school/class/${id}/`;
         axios.get(url, {headers: headers})
             .then(res=>{
                 console.log(res);
@@ -57,7 +57,7 @@ const SchoolClass = () => {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
         }
-        const url = 'http://localhost:8000/api/v1/school/' + model + '-delete/' + id + '/';
+        const url = `${process.env.API_URL}/api/v1/school/${model}-delete/${id}/`;
         axios.delete(url, {headers: headers})
             .then(res=>{
                 console.log(res);

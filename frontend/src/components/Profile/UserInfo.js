@@ -25,7 +25,7 @@ const UserInfo = (props) => {
             'Content-Type': 'multipart/form-data',
             'Authorization': 'Token ' + token
         }
-        const url = 'http://localhost:8000/api/v1/school/profile-upload/';
+        const url = `${process.env.API_URL}/api/v1/school/profile-upload/`;
         const data = {
             profile_picture: profileToUpload
         }

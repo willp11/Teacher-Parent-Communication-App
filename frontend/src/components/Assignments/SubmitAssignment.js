@@ -26,7 +26,7 @@ const SubmitAssignment = () => {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
         }
-        const url = `http://127.0.0.1:8000/api/v1/school/assignment-detail/${code}/`
+        const url = `${process.env.API_URL}/api/v1/school/assignment-detail/${code}/`
         axios.get(url, {headers: headers})
             .then(res=>{
                 console.log(res);
@@ -52,7 +52,7 @@ const SubmitAssignment = () => {
                 'Content-Type': 'multipart/form-data',
                 'Authorization': 'Token ' + token
             }
-            const url = 'http://localhost:8000/api/v1/school/assignment-response-create/';
+            const url = `${process.env.API_URL}/api/v1/school/assignment-response-create/`;
             const data = {
                 assignee: selectedStudent.id,
                 text: textResponse,

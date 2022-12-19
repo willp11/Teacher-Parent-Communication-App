@@ -15,7 +15,7 @@ export const useGroupMembers = (token, id) => {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
         }
-        const url = `http://localhost:8000/api/v1/school/chat-group-members-list/${id}/`;
+        const url = `${process.env.API_URL}/api/v1/school/chat-group-members-list/${id}/`;
         axios.get(url, {headers: headers})
             .then(res=>{
                 console.log(res);

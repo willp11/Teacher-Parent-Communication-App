@@ -45,7 +45,7 @@ const Assignments = (props) => {
             school_class: props.classId,
             response_format
         }
-        const url = 'http://localhost:8000/api/v1/school/assignment-create/';
+        const url = `${process.env.API_URL}/api/v1/school/assignment-create/`;
         setLoading(true);
         axios.post(url, data, {headers: headers})
             .then(res=>{

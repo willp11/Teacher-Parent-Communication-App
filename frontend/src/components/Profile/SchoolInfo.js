@@ -24,7 +24,7 @@ const SchoolInfo = (props) => {
                 school: selectedSchool,
             };
             setLoading(true);
-            axios.put('http://localhost:8000/api/v1/school/teacher-school-update/', data, {headers: headers})
+            axios.put(`${process.env.API_URL}/api/v1/school/teacher-school-update/`, data, {headers: headers})
                 .then(res => {
                     console.log(res);
                     props.getUserProfile();

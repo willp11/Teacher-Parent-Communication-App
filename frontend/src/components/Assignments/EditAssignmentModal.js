@@ -24,7 +24,7 @@ const EditAssignmentModal = (props) => {
             maximum_score,
             response_format
         };
-        const url = 'http://localhost:8000/api/v1/school/assignment-update/' + props.assignment.id + '/';
+        const url = `${process.env.API_URL}/api/v1/school/assignment-update/${props.assignment.id}/`;
         setLoading(true);
         axios.put(url, data, {headers: headers})
             .then(res=>{

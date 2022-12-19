@@ -21,7 +21,7 @@ const Child = (props) => {
             'Content-Type': 'multipart/form-data',
             'Authorization': 'Token ' + token
         }
-        const url = `http://localhost:8000/api/v1/school/student-image-upload/${props.child.id}/`;
+        const url = `${process.env.API_URL}/api/v1/school/student-image-upload/${props.child.id}/`;
         const data = {
             image: imageToUpload
         }

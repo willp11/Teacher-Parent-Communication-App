@@ -26,7 +26,7 @@ const ChangePassword = () => {
 
         setLoading(true);
 
-        axios.post('http://localhost:8000/api/v1/dj-rest-auth/password/change/', data, {headers: headers})
+        axios.post(`${process.env.API_URL}/api/v1/dj-rest-auth/password/change/`, data, {headers: headers})
             .then(res=>{
                 console.log(res);
                 setMessages(["Password changed successfully."])

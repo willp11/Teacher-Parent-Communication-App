@@ -21,7 +21,7 @@ const EditStoryModal = (props) => {
             title, 
             content
         }
-        const url = 'http://localhost:8000/api/v1/school/story-update/' + props.story.id + '/';
+        const url = `${process.env.API_URL}/api/v1/school/story-update/${props.story.id}/`;
         setLoading(true);
         axios.put(url, data, {headers: headers})
             .then(res=>{

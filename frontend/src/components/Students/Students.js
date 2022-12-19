@@ -36,7 +36,7 @@ const Students = (props) => {
             name, 
             school_class: props.classId
         }
-        const url = 'http://localhost:8000/api/v1/school/student-create/';
+        const url = `${process.env.API_URL}/api/v1/school/student-create/`;
         axios.post(url, data, {headers: headers})
             .then(res=>{
                 console.log(res);

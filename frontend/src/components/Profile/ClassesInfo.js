@@ -23,7 +23,7 @@ const ClassesInfo = (props) => {
             name: newClassName.trim()
         }
         setLoading(true);
-        axios.post('http://localhost:8000/api/v1/school/class-create/', data, {headers: headers})
+        axios.post(`${process.env.API_URL}/api/v1/school/class-create/`, data, {headers: headers})
             .then(res=>{
                 console.log(res);
                 props.getUserProfile()

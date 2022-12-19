@@ -24,7 +24,7 @@ const EditEventsModal = (props) => {
             description,
             helpers_required
         };
-        const url = 'http://localhost:8000/api/v1/school/event-update/' + props.event.id + '/';
+        const url = `${process.env.API_URL}/api/v1/school/event-update/${props.event.id}/`;
         setLoading(true);
         axios.put(url, data, {headers: headers})
             .then(res=>{

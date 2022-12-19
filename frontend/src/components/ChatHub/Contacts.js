@@ -41,7 +41,7 @@ const Contacts = (props) => {
                 name: "direct",
                 recipient: recipient.user.id
             }
-            const url = 'http://localhost:8000/api/v1/school/chat-group-create-direct/';
+            const url = `${process.env.API_URL}/api/v1/school/chat-group-create-direct/`;
             axios.post(url, data, {headers: headers})
                 .then(res=>{
                     console.log(res);

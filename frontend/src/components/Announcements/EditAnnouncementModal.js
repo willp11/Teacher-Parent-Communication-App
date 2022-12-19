@@ -22,7 +22,7 @@ const EditAnnouncementModal = (props) => {
             title,
             content
         };
-        const url = 'http://localhost:8000/api/v1/school/announcement-update/' + props.announcement.id + '/';
+        const url = `${process.env.API_URL}/api/v1/school/announcement-update/${props.announcement.id}/`;
         setLoading(true);
         axios.put(url, data, {headers: headers})
             .then(res=>{

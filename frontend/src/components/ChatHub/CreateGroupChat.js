@@ -18,7 +18,7 @@ const CreateGroupChat = (props) => {
         const data = {
             name: newGroupName.trim()
         }
-        const url = "http://localhost:8000/api/v1/school/chat-group-create/"
+        const url = `${process.env.API_URL}/api/v1/school/chat-group-create/`;
         setLoading(true);
         axios.post(url, data, {headers: headers})
             .then(res=>{
