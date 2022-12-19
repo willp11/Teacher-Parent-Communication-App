@@ -22,7 +22,7 @@ const AwardSticker = (props) => {
             student: props.studentId,
             type: selectedSticker
         }
-        const url = `${process.env.API_URL}/api/v1/school/sticker-create/`;
+        const url = `${process.env.REACT_APP_API_URL}/api/v1/school/sticker-create/`;
         axios.post(url, data, {headers: headers})
             .then(res=>{
                 console.log(res);

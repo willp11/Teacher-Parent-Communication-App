@@ -33,7 +33,7 @@ const StudentModal = (props) => {
             'Content-Type': 'multipart/form-data',
             'Authorization': 'Token ' + token
         }
-        const url = `${process.env.API_URL}/api/v1/school/student-image-upload/${props.student.id}/`;
+        const url = `${process.env.REACT_APP_API_URL}/api/v1/school/student-image-upload/${props.student.id}/`;
         const data = {
             image: imageToUpload
         }
@@ -69,7 +69,7 @@ const StudentModal = (props) => {
         const data = {
             name: newStudentName
         }
-        const url = `${process.env.API_URL}/api/v1/school/student-update/${props.student.id}/`;
+        const url = `${process.env.REACT_APP_API_URL}/api/v1/school/student-update/${props.student.id}/`;
         axios.put(url, data, {headers: headers})
             .then(res=>{
                 console.log(res);

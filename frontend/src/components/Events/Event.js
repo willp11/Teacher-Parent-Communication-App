@@ -51,7 +51,7 @@ const Event = (props) => {
             const data = {
                 event: props.event.id
             }
-            const url = `${process.env.API_URL}/api/v1/school/helper-create/`;
+            const url = `${process.env.REACT_APP_API_URL}/api/v1/school/helper-create/`;
             setLoading(true);
             axios.post(url, data, {headers: headers})
                 .then(res=>{
@@ -73,7 +73,7 @@ const Event = (props) => {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
         }
-        const url = `${process.env.API_URL}/api/v1/school/helper-delete/${props.event.id}`
+        const url = `${process.env.REACT_APP_API_URL}/api/v1/school/helper-delete/${props.event.id}`
         setLoading(true);
         axios.delete(url, {headers: headers})
             .then(res=>{

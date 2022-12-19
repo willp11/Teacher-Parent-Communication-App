@@ -10,7 +10,7 @@ export const useContacts = (token, accountType) => {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
         }
-        const url = `${process.env.API_URL}/api/v1/school/teacher-contacts-get/`;
+        const url = `${process.env.REACT_APP_API_URL}/api/v1/school/teacher-contacts-get/`;
         axios.get(url, {headers: headers})
             .then(res=>{
                 console.log(res);
@@ -26,7 +26,7 @@ export const useContacts = (token, accountType) => {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
         }
-        const url = `${process.env.API_URL}/api/v1/school/parent-contacts-get/`;
+        const url = `${process.env.REACT_APP_API_URL}/api/v1/school/parent-contacts-get/`;
         axios.get(url, {headers: headers})
             .then(res=>{
                 console.log(res);

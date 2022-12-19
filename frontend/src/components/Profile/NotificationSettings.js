@@ -39,7 +39,7 @@ const NotificationSettings = (props) => {
             'Authorization': 'Token ' + token
         };
         setLoading(true);
-        axios.put(`${process.env.API_URL}/api/v1/school/settings-update/`, editedParentSettings, {headers: headers})
+        axios.put(`${process.env.REACT_APP_API_URL}/api/v1/school/settings-update/`, editedParentSettings, {headers: headers})
             .then(res => {
                 console.log(res);
                 props.getUserProfile();

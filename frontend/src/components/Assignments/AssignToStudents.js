@@ -65,7 +65,7 @@ const AssignToStudents = (props) => {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
         }
-        const url = `${process.env.API_URL}/api/v1/school/assignee-create/${props.assignment.id}/`;
+        const url = `${process.env.REACT_APP_API_URL}/api/v1/school/assignee-create/${props.assignment.id}/`;
         axios.get(url, {headers: headers})
             .then(res=>{
                 console.log(res);
@@ -98,7 +98,7 @@ const AssignToStudents = (props) => {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
         }
-        const url = `${process.env.API_URL}/api/v1/school/assignee-create/${props.assignment.id}/`;
+        const url = `${process.env.REACT_APP_API_URL}/api/v1/school/assignee-create/${props.assignment.id}/`;
         axios.post(url, data_arr, {headers: headers})
             .then(res=>{
                 console.log(res);
@@ -120,7 +120,7 @@ const AssignToStudents = (props) => {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
         }
-        const url = `${process.env.API_URL}/api/v1/school/assignee-delete-list/${props.assignment.id}/`;
+        const url = `${process.env.REACT_APP_API_URL}/api/v1/school/assignee-delete-list/${props.assignment.id}/`;
         axios.delete(url, {headers: headers, data: data_arr})
             .then(res=>{
                 console.log(res);

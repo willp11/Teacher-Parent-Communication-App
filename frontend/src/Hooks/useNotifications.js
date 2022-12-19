@@ -25,7 +25,7 @@ export const useNotifications = () => {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
         }
-        const url = `${process.env.API_URL}/api/v1/school/notifications-get/`;
+        const url = `${process.env.REACT_APP_API_URL}/api/v1/school/notifications-get/`;
         try {
             setLoading(true);
             const res = await axios.get(url, {headers: headers});

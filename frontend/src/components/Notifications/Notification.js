@@ -17,7 +17,7 @@ const Notification = (props) => {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
         }
-        const url = `${process.env.API_URL}/api/v1/school/${endpoint}/${props.id}/`
+        const url = `${process.env.REACT_APP_API_URL}/api/v1/school/${endpoint}/${props.id}/`
         const data = {read: true}
         try {
             const res = await axios.put(url, data, {headers: headers});

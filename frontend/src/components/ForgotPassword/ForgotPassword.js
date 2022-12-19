@@ -22,7 +22,7 @@ const ForgotPassword = () => {
 
     // Function send handle reset request
     const handleResetPassword = (email) => {
-        const url = `${process.env.API_URL}/api/v1/dj-rest-auth/password/reset/`;
+        const url = `${process.env.REACT_APP_API_URL}/api/v1/dj-rest-auth/password/reset/`;
         const data = {
             email
         }

@@ -37,7 +37,7 @@ const Announcements = (props) => {
             content,
             school_class: props.classId
         }
-        const url = `${process.env.API_URL}/api/v1/school/announcement-create/`;
+        const url = `${process.env.REACT_APP_API_URL}/api/v1/school/announcement-create/`;
         setLoading(true);
         axios.post(url, data, {headers: headers})
             .then(res=>{

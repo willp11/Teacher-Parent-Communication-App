@@ -46,7 +46,7 @@ const Profile = () => {
             'Authorization': 'Token ' + token
         };
 
-        axios.get(`${process.env.API_URL}/api/v1/dj-rest-auth/user/`, {headers: headers})
+        axios.get(`${process.env.REACT_APP_API_URL}/api/v1/dj-rest-auth/user/`, {headers: headers})
             .then(res=>{
                 setProfile(res.data);
                 console.log(res.data)
@@ -72,7 +72,7 @@ const Profile = () => {
             'Authorization': 'Token ' + token
         };
 
-        axios.get(`${process.env.API_URL}/api/v1/school/school-list-create/`, {headers: headers})
+        axios.get(`${process.env.REACT_APP_API_URL}/api/v1/school/school-list-create/`, {headers: headers})
             .then(res=>{
                 setSchoolList(res.data);
             })

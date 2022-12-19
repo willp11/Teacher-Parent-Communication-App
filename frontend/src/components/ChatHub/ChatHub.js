@@ -19,7 +19,7 @@ const ChatHub = () => {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
         }
-        const url = `${process.env.API_URL}/api/v1/school/chat-group-user-get/`;
+        const url = `${process.env.REACT_APP_API_URL}/api/v1/school/chat-group-user-get/`;
         axios.get(url, {headers: headers})
             .then(res=>{
                 console.log(res);

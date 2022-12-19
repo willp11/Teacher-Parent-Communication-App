@@ -78,7 +78,7 @@ const AddMembers = (props) => {
             }
             data_arr.push(user)
         })
-        const url = `${process.env.API_URL}/api/v1/school/chat-group-add-members/${props.groupId}/`;
+        const url = `${process.env.REACT_APP_API_URL}/api/v1/school/chat-group-add-members/${props.groupId}/`;
         setLoading(true)
         axios.post(url, data_arr, {headers: headers})
             .then(res=>{

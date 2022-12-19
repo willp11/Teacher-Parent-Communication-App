@@ -30,7 +30,7 @@ const Story = (props) => {
             'Content-Type': 'multipart/form-data',
             'Authorization': 'Token ' + token
         }
-        const url = `${process.env.API_URL}/api/v1/school/story-media-create/`;
+        const url = `${process.env.REACT_APP_API_URL}/api/v1/school/story-media-create/`;
         const data = {
             image: imageToUpload,
             story: props.story.id
@@ -75,7 +75,7 @@ const Story = (props) => {
             'Content-Type': 'application/json',
             'Authorization': 'Token ' + token
         }
-        const url = `${process.env.API_URL}/api/v1/school/story-comment-list/${props.story.id}/`;
+        const url = `${process.env.REACT_APP_API_URL}/api/v1/school/story-comment-list/${props.story.id}/`;
         axios.get(url, {headers: headers})
             .then(res=>{
                 setComments(res.data);
