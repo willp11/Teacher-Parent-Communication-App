@@ -10,8 +10,6 @@ import {
 import store, { persistor } from "./store";
 import { PersistGate } from "redux-persist/integration/react";
 import { Provider } from "react-redux";
-
-import App from './App';
 import Home from './components/Home/Home';
 import Features from './components/Features/Features';
 import Login from './components/Login/Login';
@@ -22,7 +20,7 @@ import Logout from './components/Logout/Logout';
 import SchoolClass from './components/SchoolClass/SchoolClass';
 import StudentProfile from './components/StudentProfile/StudentProfile';
 import ChatHub from './components/ChatHub/ChatHub';
-import ChatGroup from './components/ChatGroup/ChatGroup';
+import ChatGroup from './components/ChatGroup/Chatgroup';
 import VideoChat from './components/VideoChat.js/VideoChat';
 import SubmitAssignment from './components/Assignments/SubmitAssignment';
 import Notifications from './components/Notifications/Notifications';

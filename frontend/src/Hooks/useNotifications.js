@@ -36,7 +36,7 @@ export const useNotifications = () => {
         } finally {
             setLoading(false);
         }
-    }, [token])
+    }, [token, setLoading, setNotifications])
 
     useEffect(()=>{
         getNotifications();
