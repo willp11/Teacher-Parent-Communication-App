@@ -11,7 +11,7 @@ import SchoolInfo from './SchoolInfo';
 import ClassesInfo from './ClassesInfo';
 import ChildrenInfo from './ChildrenInfo';
 import SelectAccountType from './SelectAccountType';
-import VerifyEmail from './VerifyEmail';
+// import VerifyEmail from './VerifyEmail';
 import {createMenuDiv} from '../../Utils/utils';
 
 const teacher_menu_items = ["User Details", "Change Password", "Settings", "School", "Classes"]
