@@ -5,13 +5,14 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useContacts } from "../../Hooks/useContacts";
 import { filterStudents } from "../../Utils/utils";
+import Spinner from "../Spinner/Spinner";
 
 const Contacts = (props) => {
 
     const navigate = useNavigate();
     const token = useSelector((state)=>state.auth.token);
     const account = useSelector((state)=>state.auth.account);
-    const contactList = useContacts(token, props.accountType);
+    const [loading, contactList] = useContacts(token, props.accountType);
 
     const [selectedClass, setSelectedClass] = useState(null);
     const [studentSearchTerm, setStudentSearchTerm] = useState("");
@@ -160,7 +161,7 @@ const Contacts = (props) => {
             <div className="h-[calc(100%-2.5rem)] flex flex-row md:flex-col">  
                 <div className="w-1/2 h-full md:w-full md:h-1/2 border-r-2 border-gray-300 md:border-r-0 md:border-b-2 p-1 overflow-x-auto">
                     <h3 className="text-left text-gray-500 text-base font-semibold pl-1">Your Classes</h3>
-                    {classes_list}
+                    {loading ? <Spinner /> : <>{classes_list}</>}
                 </div>
                 <div className="w-1/2 h-full md:w-full md:h-1/2 p-1 overflow-x-auto">
                     <h3 className="text-left text-gray-500 text-base font-semibold pl-1">Parents</h3>
