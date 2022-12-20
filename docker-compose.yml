@@ -7,7 +7,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - app:/app
+      - ./backend:/app
     command: >
       sh -c "python3 manage.py migrate &&
              gunicorn backend.wsgi:application --bind 0.0.0.0:8000"
@@ -29,32 +29,29 @@ services:
       - "6379"
     ports:
       - "6379:6379"
-  # celery:
-  #   restart: always
-  #   build:
-  #     context: .
-  #   command: celery -A backend worker -l info
-  #   volumes:
-  #     - ./backend:/app
-  #   env_file:
-  #     - ./.env
-  #   depends_on:
-  #     - db
-  #     - redis
-  #     - app
-  # daphne:
-  #   build:
-  #     context: .
-  #   command: daphne -b 0.0.0.0 -p 8001 backend.asgi:application
-  #   volumes:
-  #     - ./backend:/app
-  #   env_file:
-  #     - ./.env
-  #   ports:
-  #     - "8001:8001"
-  #   links:
-  #     - redis
-  #     - app
-
-volumes:
-  app:
+  celery:
+    restart: always
+    build:
+      context: .
+    command: celery -A backend worker -l info
+    volumes:
+      - ./backend:/app
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+      - redis
+      - app
+  daphne:
+    build:
+      context: .
+    command: daphne -b 0.0.0.0 -p 8001 backend.asgi:application
+    volumes:
+      - ./backend:/app
+    env_file:
+      - ./.env
+    ports:
+      - "8001:8001"
+    links:
+      - redis
+      - app
