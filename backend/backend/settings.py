@@ -97,23 +97,24 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 ASGI_APPLICATION = 'backend.asgi.application'
 
-CHANNEL_LAYERS={
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
-}
-
-# CHANNEL_LAYERS = {
-#     'default': {
-#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-#         'CONFIG': {
-#             'hosts': [('127.0.0.1', 6379)]
-#         },
+# CHANNEL_LAYERS={
+#     "default": {
+#         "BACKEND": "channels.layers.InMemoryChannelLayer"
 #     }
 # }
 
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': ['redis://redis:6379']
+        },
+    }
+}
+
+# using docker, localhost is not the same as the redis container, so need redis://redis:6379 rather than redis://localhost:6379
+CELERY_BROKER_URL = 'redis://redis:6379'
+CELERY_RESULT_BACKEND = 'redis://redis:6379'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
