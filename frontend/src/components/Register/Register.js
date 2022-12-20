@@ -8,6 +8,7 @@ import authSlice from "../../store/slices/auth";
 import Navigation from '../Navigation/Navigation';
 import { Link } from 'react-router-dom';
 import {extractErrors} from '../../Utils/utils';
+import Spinner from '../Spinner/Spinner';
 
 const Register = () => {
 
@@ -33,6 +34,7 @@ const Register = () => {
             password1: password,
             password2: passwordConfirmation
         };
+        setLoading(true);
         axios.post(`${process.env.REACT_APP_API_URL}/api/v1/dj-rest-auth/registration/`, data)
             .then((res) => {
                 dispatch(
@@ -150,8 +152,9 @@ const Register = () => {
                         <button 
                             disabled={loading} 
                             type="submit" 
-                            className="w-full rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-3 mt-4 mb-2 text-white font-bold"
+                            className="w-full flex justify-center items-center rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-3 mt-4 mb-2 text-white font-bold"
                         >
+                            {loading && <Spinner />}
                             SIGN UP
                         </button>
                     </form>

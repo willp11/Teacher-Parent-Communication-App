@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Navigation from '../Navigation/Navigation';
 import { Link } from 'react-router-dom';
 import {extractErrors} from '../../Utils/utils';
+import Spinner from '../Spinner/Spinner';
 
 const Login = () => {
     const [errors, setErrors] = useState([]);
@@ -108,8 +109,9 @@ const Login = () => {
                         <button 
                             disabled={loading}
                             type="submit"
-                            className="w-full rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-3 text-white font-bold my-2"
+                            className="w-full flex justify-center items-center rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-3 text-white font-bold my-2"
                         >
+                            {loading ? <Spinner /> : null}
                             LOGIN
                         </button>
                     </form>

@@ -13,6 +13,7 @@ import ChildrenInfo from './ChildrenInfo';
 import SelectAccountType from './SelectAccountType';
 // import VerifyEmail from './VerifyEmail';
 import {createMenuDiv} from '../../Utils/utils';
+import Spinner from '../Spinner/Spinner';
 
 const teacher_menu_items = ["User Details", "Change Password", "Settings", "School", "Classes"]
 const parent_menu_items = ["User Details", "Change Password", "Settings", "Children"]
@@ -23,7 +24,7 @@ const Profile = () => {
 
     // STATE
     const token = useSelector((state) => state.auth.token);
-
+    const [loading, setLoading] = useState(true);
     const [schoolList, setSchoolList] = useState([]);
     const [profile, setProfile] = useState({
         username: "",
@@ -62,6 +63,9 @@ const Profile = () => {
             })
             .catch(err=>{
                 console.log(err);
+            })
+            .finally(()=>{
+                setLoading(false);
             })
     }, [token, dispatch]);
 
@@ -103,8 +107,7 @@ const Profile = () => {
                 <SelectAccountType getUserProfile={getUserProfile} />
             </div>
         )
-    } 
-
+    }
     // TEACHER ACCOUNT
     else if (profile.teacher !== null) {
 
@@ -144,10 +147,19 @@ const Profile = () => {
                 <div className="w-full bg-indigo-500 text-white text-center py-2 mb-2">
                     <h1 className="drop-shadow-lg">Profile</h1>
                 </div>
-                {menu_div}
-                <div className="w-full sm:w-[600px] text-center">
-                    {profile_div}
-                </div>
+
+                {loading ? <Spinner /> : null}
+
+                {
+                    !loading && 
+                    <>
+                        {menu_div}
+                        <div className="w-full sm:w-[600px] text-center">
+                            {profile_div}
+                        </div>
+                    </>
+                }
+                
             </div>
         </div>
     );

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import Spinner from "../Spinner/Spinner";
 
 const SelectAccountType = (props) => {
 
@@ -8,6 +9,7 @@ const SelectAccountType = (props) => {
     const account = useSelector((state)=>state.auth.account);
 
     const [selectedAccountType, setSelectedAccountType] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     // CREATE PARENT - SUBMIT INVITE CODE
     const handleSubmitCreateParent = () => {
@@ -20,6 +22,7 @@ const SelectAccountType = (props) => {
         const data = {
             user: account.id
         }
+        setLoading(true);
         axios.post(`${process.env.REACT_APP_API_URL}/api/v1/school/parent-create/`, data, {headers: headers})
             .then(res=>{
                 console.log(res);
@@ -30,6 +33,9 @@ const SelectAccountType = (props) => {
             })
             .catch(err=>{
                 console.log(err);
+            })
+            .finally(()=>{
+                setLoading(false);
             })
     }
 
@@ -53,6 +59,9 @@ const SelectAccountType = (props) => {
             .catch(err=>{
                 console.log(err);
             })
+            .finally(()=>{
+                setLoading(false);
+            })
     }
 
     // Select Teacher or Parent account type
@@ -60,18 +69,20 @@ const SelectAccountType = (props) => {
     if (selectedAccountType === 'teacher') {
         submit_btn = (
             <button 
-                className="w-24 rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold" 
+                className="w-24 flex justify-center items-center rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold" 
                 onClick={handleSubmitCreateTeacher}
             >
+                {loading ? <Spinner /> : null}
                 Submit
             </button>
         )
     } else if (selectedAccountType === 'parent') {
         submit_btn = (
             <button 
-                className="w-24 rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold" 
+                className="w-24 flex justify-center items-center rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold" 
                 onClick={handleSubmitCreateParent}
             >
+                {loading ? <Spinner /> : null}
                 Submit
             </button>
         )
