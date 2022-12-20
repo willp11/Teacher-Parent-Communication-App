@@ -89,7 +89,7 @@ const VideoChat = () => {
     const connectSocket = () => {
 
         const callSocket = new WebSocket(
-            `ws://127.0.0.1:8000/ws/call/${id}/${token}/`
+            `${process.env.REACT_APP_WS_URL}/ws/call/${id}/${token}/`
         );
     
         callSocket.onopen = (e) =>{

@@ -52,7 +52,7 @@ const ChatGroup = () => {
     // connect to websocket - called inside getGroupData
     const connectSocket = useCallback(() => {
         const chatSocket = new WebSocket(
-            `wss://api-teacher.williampage.me/ws/chat/${id}/${token}/`
+            `${process.env.REACT_APP_WS_URL}/ws/chat/${id}/${token}/`
         );
         // print that we have connected successfully
         chatSocket.onopen = function(e) {
