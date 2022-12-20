@@ -52,7 +52,7 @@ const ChatGroup = () => {
     // connect to websocket - called inside getGroupData
     const connectSocket = useCallback(() => {
         const chatSocket = new WebSocket(
-            `wss://teacher-parent-communication-app.vercel.app/ws/chat/${id}/${token}/`
+            `wss://api-teacher.williampage.me/ws/chat/${id}/${token}/`
         );
         // print that we have connected successfully
         chatSocket.onopen = function(e) {
