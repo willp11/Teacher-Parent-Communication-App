@@ -9,6 +9,7 @@ import Stories from '../Stories/Stories';
 import Students from '../Students/Students';
 import Assignments from '../Assignments/Assignments';
 import { createMenuDiv } from '../../Utils/utils';
+import Spinner from '../Spinner/Spinner';
 
 const teacher_menu_items = ["Classroom", "Stories", "Announcements", "Events", "Assignments"]
 const parent_menu_items = ["Stories", "Announcements", "Events"]
@@ -19,6 +20,7 @@ const SchoolClass = () => {
     const token = useSelector((state) => state.auth.token);
     const accountType = useSelector((state) => state.auth.accountType);
 
+    const [loading, setLoading] = useState(true);
     const [schoolClass, setSchoolClass] = useState(null);
     const [componentToShow, setComponentToShow] = useState("Stories");
 
@@ -43,6 +45,9 @@ const SchoolClass = () => {
             .catch(err => {
                 console.log(err);
             })
+            .finally(()=>{
+                setLoading(false);
+            });
     }, [token, id])
 
     // ON MOUNT - GET SCHOOL CLASS DATA
@@ -103,7 +108,18 @@ const SchoolClass = () => {
     return (
         <div className="relative bg-slate-100 overflow-auto min-h-screen">
             <Navigation />
-            {school_class_div}
+            <div className="w-full flex flex-col items-center">
+            {
+                loading ? 
+                <>
+                    <div className="w-full bg-indigo-500 text-center py-2">
+                        <h1 className="text-white">School Class</h1>
+                    </div>
+                    <Spinner />
+                </> :
+                school_class_div
+            }
+            </div>
         </div>
     );
 }

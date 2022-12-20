@@ -4,6 +4,7 @@ import axios from 'axios';
 export const useContacts = (token, accountType) => {
 
     const [contactList, setContactList] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const getTeacherContacts = useCallback(() => {
         const headers = {
@@ -11,6 +12,7 @@ export const useContacts = (token, accountType) => {
             'Authorization': 'Token ' + token
         }
         const url = `${process.env.REACT_APP_API_URL}/api/v1/school/teacher-contacts-get/`;
+        setLoading(true);
         axios.get(url, {headers: headers})
             .then(res=>{
                 console.log(res);
@@ -19,6 +21,9 @@ export const useContacts = (token, accountType) => {
             .catch(err=>{
                 console.log(err);
             })
+            .finally(()=>{
+                setLoading(false);
+            });
     }, [token]);
 
     const getParentContacts = useCallback(() => {
@@ -27,6 +32,7 @@ export const useContacts = (token, accountType) => {
             'Authorization': 'Token ' + token
         }
         const url = `${process.env.REACT_APP_API_URL}/api/v1/school/parent-contacts-get/`;
+        setLoading(true);
         axios.get(url, {headers: headers})
             .then(res=>{
                 console.log(res);
@@ -41,6 +47,9 @@ export const useContacts = (token, accountType) => {
             .catch(err=>{
                 console.log(err);
             })
+            .finally(()=>{
+                setLoading(false);
+            });
     }, [token])
 
     useEffect(()=>{
@@ -48,5 +57,5 @@ export const useContacts = (token, accountType) => {
         if (accountType === "parent") getParentContacts()
     }, [getTeacherContacts, getParentContacts, accountType])
     
-    return contactList;
+    return [loading, contactList];
 }
