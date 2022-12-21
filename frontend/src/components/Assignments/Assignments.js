@@ -7,7 +7,7 @@ import AssignToStudents from "./AssignToStudents";
 import Assignment from "./Assignment";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 import { useMessage } from "../../Hooks/useMessage";
-import Spinner from "../Spinner/Spinner";
+import SubmitBtn from "../UI/SubmitBtn";
 
 const Assignments = (props) => {
 
@@ -87,16 +87,12 @@ const Assignments = (props) => {
 
     // SUBMIT BTN
     let submit_btn = (
-        <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 m-2 text-white font-semibold">Submit</button>
+        <SubmitBtn
+            loading={loading}
+            clickHandler={assignment_formik.handleSubmit}
+            textContent="Submit"
+        />
     )
-    if (loading) {
-        submit_btn = (
-            <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 my-2 mx-auto text-white font-semibold flex justify-center" disabled>
-                <Spinner />
-                Loading
-            </button>
-        )
-    }
 
     let create_assignment_form = (
         <div className="relative w-full sm:w-[500px] p-2 mx-auto mt-2 rounded-md shadow-md shadow-gray-300 bg-white border-2 border-gray-300 text-center">
@@ -178,8 +174,9 @@ const Assignments = (props) => {
                     </div>
                 </div>
                 {assignment_formik.errors.response_format ? <div className="text-sm text-left pl-1">{assignment_formik.errors.response_format} </div> : null}
-
-                {submit_btn}
+                <div className="flex justify-center mt-2">
+                    {submit_btn}
+                </div>
                 <p className="text-sm">{message}</p>
             </form> : null}
         </div>

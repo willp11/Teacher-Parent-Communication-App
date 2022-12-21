@@ -6,7 +6,7 @@ import Announcement from "./Announcement";
 import { useState, useMemo } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 import { useMessage } from "../../Hooks/useMessage";
-import Spinner from "../Spinner/Spinner";
+import SubmitBtn from "../UI/SubmitBtn";
 
 const Announcements = (props) => {
 
@@ -72,16 +72,12 @@ const Announcements = (props) => {
 
     // SUBMIT BTN
     let submit_btn = (
-        <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 m-2 text-white font-semibold">Submit</button>
+        <SubmitBtn
+            loading={loading}
+            clickHandler={announcement_formik.handleSubmit}
+            textContent="Submit"
+        />
     )
-    if (loading) {
-        submit_btn = (
-            <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 my-2 mx-auto text-white font-semibold flex justify-center" disabled>
-                <Spinner />
-                Loading
-            </button>
-        )
-    }
 
     // CREATE ANNOUNCEMENT FORM
     let create_announcement_form = (
@@ -113,7 +109,9 @@ const Announcements = (props) => {
                     className="border border-gray-300 mt-2 w-full"
                 /> <br/>
                 {announcement_formik.errors.content ? <div className="text-sm w-full text-left pl-2 mt-1">{announcement_formik.errors.content} </div> : null}
-                {submit_btn}
+                <div className="flex justify-center mt-2">
+                    {submit_btn}
+                </div>
                 <p className="text-sm">{message}</p>
             </form> : null }
         </div>

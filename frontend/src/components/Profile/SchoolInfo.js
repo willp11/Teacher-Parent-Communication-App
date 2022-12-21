@@ -53,21 +53,6 @@ const SchoolInfo = (props) => {
         </select>
     )
 
-    // let submit_btn = (
-    //     <button className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold mt-4" onClick={submitSelectSchoolHandler} disabled={false}>Submit</button>
-    // )
-    // if (loading) {
-    //     submit_btn = (
-    //         <button 
-    //             className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold mt-4 mx-auto flex justify-center" 
-    //             onClick={submitSelectSchoolHandler} disabled={true}
-    //         >   
-    //             <Spinner />
-    //             Submit
-    //         </button>
-    //     )
-    // }
-
     let submit_btn = (
         <SubmitBtn
             loading={loading}
