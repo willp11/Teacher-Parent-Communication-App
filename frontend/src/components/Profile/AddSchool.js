@@ -2,10 +2,11 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useState } from 'react';
 import { useMessage } from '../../Hooks/useMessage';
-import Spinner from '../Spinner/Spinner';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/outline';
+import SubmitBtn from '../UI/SubmitBtn';
+// import Spinner from '../Spinner/Spinner';
 
 const AddSchool = (props) => {
 
@@ -60,16 +61,12 @@ const AddSchool = (props) => {
 
     // SUBMIT BTN
     let submit_btn = (
-        <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 m-2 text-white font-semibold">Submit</button>
+        <SubmitBtn
+            loading={loading}
+            textContent="Submit"
+            clickHandler={formik.handleSubmit}
+        />
     )
-    if (loading) {
-        submit_btn = (
-            <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 my-2 mx-auto text-white font-semibold flex justify-center" disabled>
-                <Spinner />
-                Loading
-            </button>
-        )
-    }
 
     let add_school_form = (
         <div className="relative w-full sm:w-[500px] p-2 mx-auto mt-2 rounded-md shadow shadow-gray-300 bg-gray-50 border border-gray-300 text-center">
@@ -112,7 +109,10 @@ const AddSchool = (props) => {
                 /> <br/>
                 {formik.errors.country ? <div className="text-sm w-full text-left pl-2">{formik.errors.country} </div> : null}
 
-                {submit_btn}
+                <div className="flex justify-center mt-2">
+                    {submit_btn}
+                </div>
+
                 <p className="text-sm">{message}</p>
             </form> : null}
         </div>

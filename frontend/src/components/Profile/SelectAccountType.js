@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import Spinner from "../Spinner/Spinner";
+import SubmitBtn from "../UI/SubmitBtn";
 
 const SelectAccountType = (props) => {
 
@@ -28,7 +28,6 @@ const SelectAccountType = (props) => {
                 console.log(res);
                 if (res.status === 201) {
                     props.getUserProfile()
-                    console.log("Created parent account")
                 }
             })
             .catch(err=>{
@@ -66,27 +65,22 @@ const SelectAccountType = (props) => {
 
     // Select Teacher or Parent account type
     let submit_btn = null;
-    if (selectedAccountType === 'teacher') {
+    if (selectedAccountType) {
+        let clickHandler;
+        if (selectedAccountType === 'teacher') {
+            clickHandler = handleSubmitCreateTeacher;
+        } else if (selectedAccountType === 'parent') {
+            clickHandler = handleSubmitCreateParent;
+        }
         submit_btn = (
-            <button 
-                className="w-24 flex justify-center items-center rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold" 
-                onClick={handleSubmitCreateTeacher}
-            >
-                {loading ? <Spinner /> : null}
-                Submit
-            </button>
-        )
-    } else if (selectedAccountType === 'parent') {
-        submit_btn = (
-            <button 
-                className="w-24 flex justify-center items-center rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold" 
-                onClick={handleSubmitCreateParent}
-            >
-                {loading ? <Spinner /> : null}
-                Submit
-            </button>
+            <SubmitBtn
+                loading={loading}
+                clickHandler={clickHandler}
+                textContent="Submit"
+            />
         )
     }
+
     let select_account_type_div = (
         <div className="rounded shadow-md mb-2 bg-white p-4">
             <h2 className="text-md">Select Account Type</h2>

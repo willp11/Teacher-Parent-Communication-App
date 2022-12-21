@@ -4,7 +4,7 @@ import axios from "axios";
 import * as Yup from 'yup';
 import { useState } from "react";
 import { extractErrors } from "../../Utils/utils";
-import Spinner from '../Spinner/Spinner';
+import SubmitBtn from "../UI/SubmitBtn";
 
 const ChangePassword = () => {
 
@@ -64,18 +64,12 @@ const ChangePassword = () => {
 
     // SUBMIT BTN
     let submit_btn = (
-        <button className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold mt-4 flex justify-center mx-auto" type="submit" disabled={false}>
-            Submit
-        </button>
+        <SubmitBtn
+            loading={loading}
+            clickHandler={formik.handleSubmit}
+            textContent="Submit"
+        />
     )
-    if (loading) {
-        submit_btn = (
-            <button className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold mt-4 flex justify-center mx-auto" type="submit" disabled={true}>
-                <Spinner />
-                Loading
-            </button>
-        )
-    }
 
     // JSX
     let change_password_div = (
@@ -107,7 +101,7 @@ const ChangePassword = () => {
                     />
                     {formik.errors.passwordConfirmation ? <div className="text-sm pl-2 py-1">{formik.errors.passwordConfirmation} </div> : null}
                 </div>
-                <div>
+                <div className="flex justify-center mt-4">
                     {submit_btn}
                 </div>
             </form>

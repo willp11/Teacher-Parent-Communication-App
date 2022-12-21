@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import Spinner from "../Spinner/Spinner";
 import {useMessage} from '../../Hooks/useMessage';
 import { BellIcon } from "@heroicons/react/outline";
+import SubmitBtn from "../UI/SubmitBtn";
 
 const NotificationSettings = (props) => {
 
@@ -94,24 +94,25 @@ const NotificationSettings = (props) => {
                 </>
             }
             
-            <button className="w-32 rounded bg-sky-500 hover:bg-indigo-500 px-2 py-2 text-white font-semibold my-4" onClick={()=>setEditSettingsMode(true)}>Edit Settings</button>
+            <button 
+                className="w-32 rounded bg-sky-500 hover:bg-indigo-500 px-2 py-2 text-white font-semibold my-4" 
+                onClick={()=>setEditSettingsMode(true)}
+            >
+                    Edit Settings
+            </button>
             <p className="text-sm">{message}</p>
         </div>
     )
 
     // SUBMIT BTN
     let submit_btn = (
-        <button className="w-24 rounded bg-sky-500 hover:bg-indigo-500 py-2 text-white font-semibold m-2" onClick={submitEditParentSettings} disabled={false}>Submit</button>
+        <SubmitBtn
+            loading={loading}
+            textContent="Submit"
+            clickHandler={submitEditParentSettings}
+        />
     )
-    if (loading) {
-        submit_btn = (
-            <button className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold m-2 flex justify-center mx-auto" type="submit" disabled={true}>
-                <Spinner />
-                Loading
-            </button>
-        )
-    }
-
+    
     // EDIT MODE ON
     if (editSettingsMode) {
         notification_settings = (
@@ -168,8 +169,19 @@ const NotificationSettings = (props) => {
                         </div>
                     </>
                 }
-                {loading ? null : <button className="w-24 rounded bg-red-600 hover:bg-red-700 py-2 text-white font-semibold my-4" onClick={cancelEditParentSettings}>Cancel</button>}
-                {submit_btn}
+                
+                <div className="flex justify-center items-center">
+                    {loading ? null : 
+                        <button 
+                            className="w-24 rounded bg-red-600 hover:bg-red-700 py-2 text-white font-semibold my-4 mr-2" 
+                            onClick={cancelEditParentSettings}
+                        >
+                                Cancel
+                        </button>
+                    }
+                    {submit_btn}
+                </div>
+
                 <p className="text-sm">{message}</p>
             </div>
         );
