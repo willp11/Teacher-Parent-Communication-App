@@ -5,3 +5,4 @@ backend/images
 __pycache__/
 .env
 dump.rdb
+postgres_data
