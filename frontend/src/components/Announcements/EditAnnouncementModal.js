@@ -3,8 +3,8 @@ import { useState } from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
-import { XIcon } from "@heroicons/react/outline";
 import SubmitBtn from "../UI/SubmitBtn";
+import EditModal from "../UI/EditModal";
 
 const EditAnnouncementModal = (props) => {
 
@@ -12,7 +12,7 @@ const EditAnnouncementModal = (props) => {
 
     const [loading, setLoading] = useState(false);
 
-    // Confirm button
+    // EDIT ANNOUNCEMENT REQUEST HANDLER
     const handleEditConfirm = (title, content) => {
         const headers = {
             'Content-Type': 'application/json',
@@ -62,49 +62,41 @@ const EditAnnouncementModal = (props) => {
         />
     )
     
+    // EDIT ANNOUNCEMENT FORM
     let edit_form = (
-        <div className="relative w-full sm:w-[500px] p-4 mx-auto mt-2 rounded-md shadow-md bg-slate-100 text-center">
-            <XIcon 
-                className="absolute top-2 right-2 h-[24px] w-[24px] hover:border hover:border-gray-300 cursor-pointer"
-                onClick={props.toggleEditMode}
-            />
-            <form onSubmit={announcement_formik.handleSubmit}>
-                <h3>Edit Announcement</h3>
-                <input
-                    type="text"
-                    placeholder="Type the title..."
-                    name="title"
-                    value={announcement_formik.values.title}
-                    onChange={announcement_formik.handleChange}
-                    onBlur={announcement_formik.handleBlur}
-                    className="border border-gray-300 mt-2 h-10 w-full"
-                /> <br/>
-                {announcement_formik.errors.title ? <div className="text-sm w-full text-left pl-2 mt-1">{announcement_formik.errors.title} </div> : null}
+        <form onSubmit={announcement_formik.handleSubmit}>
+            <input
+                type="text"
+                placeholder="Type the title..."
+                name="title"
+                value={announcement_formik.values.title}
+                onChange={announcement_formik.handleChange}
+                onBlur={announcement_formik.handleBlur}
+                className="border border-gray-300 mt-2 h-10 w-full"
+            /> <br/>
+            {announcement_formik.errors.title ? <div className="text-sm w-full text-left pl-2 mt-1">{announcement_formik.errors.title} </div> : null}
 
-                <textarea
-                    rows="3"
-                    name="content"
-                    value={announcement_formik.values.content}
-                    onChange={announcement_formik.handleChange}
-                    onBlur={announcement_formik.handleBlur}
-                    placeholder="Write the content..."
-                    className="border border-gray-300 mt-2 w-full"
-                /> <br/>
-                {announcement_formik.errors.content ? <div className="text-sm w-full text-left pl-2 mt-1">{announcement_formik.errors.content} </div> : null}
-                <div className="flex justify-center mt-2">
-                    {submit_btn}
-                </div>
-            </form>
-        </div>
+            <textarea
+                rows="3"
+                name="content"
+                value={announcement_formik.values.content}
+                onChange={announcement_formik.handleChange}
+                onBlur={announcement_formik.handleBlur}
+                placeholder="Write the content..."
+                className="border border-gray-300 mt-2 w-full"
+            /> <br/>
+            {announcement_formik.errors.content ? <div className="text-sm w-full text-left pl-2 mt-1">{announcement_formik.errors.content} </div> : null}
+            <div className="flex justify-center mt-2">
+                {submit_btn}
+            </div>
+        </form>
     )
 
-    let edit_modal = (
-        <div className="fixed top-0 left-0 bg-[rgba(0,0,0,0.7)] z-20 w-screen h-screen flex items-center justify-center">
+    return (
+        <EditModal title="Edit Announcement" toggleEditMode={props.toggleEditMode}>
             {edit_form}
-        </div>
+        </EditModal>
     )
-
-    return edit_modal;
 }
 
 export default EditAnnouncementModal;

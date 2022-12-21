@@ -5,6 +5,7 @@ import { useFormik } from "formik";
 import * as Yup from 'yup';
 import { XIcon } from "@heroicons/react/outline";
 import SubmitBtn from "../UI/SubmitBtn";
+import EditModal from "../UI/EditModal";
 
 const EditStoryModal = (props) => {
 
@@ -61,14 +62,8 @@ const EditStoryModal = (props) => {
         />
     )
 
-    let edit_story_form = (
-        <div className="relative w-full sm:w-[500px] p-4 mx-auto mt-2 rounded-md shadow-md bg-slate-100 text-center">
-            <XIcon 
-                className="absolute top-2 right-2 h-[24px] w-[24px] hover:border hover:border-gray-300 cursor-pointer"
-                onClick={props.toggleEditMode}
-            />
+    let edit_form = (
             <form onSubmit={story_formik.handleSubmit}>
-                <h3>Edit Story</h3>
                 <input
                     type="text"
                     placeholder="Type a title..."
@@ -94,16 +89,13 @@ const EditStoryModal = (props) => {
                     {submit_btn}
                 </div>
             </form>
-        </div>
     )
 
-    let edit_modal = (
-        <div className="fixed top-0 left-0 bg-[rgba(0,0,0,0.7)] z-20 w-screen h-screen flex items-center justify-center">
-            {edit_story_form}
-        </div>
+    return (
+        <EditModal title="Edit Story" toggleEditMode={props.toggleEditMode}>
+            {edit_form}
+        </EditModal>
     )
-
-    return edit_modal;
 }
 
 export default EditStoryModal;

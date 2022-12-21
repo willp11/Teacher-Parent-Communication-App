@@ -216,7 +216,7 @@ const Events = (props) => {
         return <Event key={event.id} event={event} handleDelete={props.handleDelete} getClassInfo={props.getClassInfo} finished={finished}/>
     });
     events = (
-        <div className="mt-4 mb-16">
+        <div className="mt-2 mb-16">
             <h3 className="mb-4">{div_title}</h3>
             {event_arr.length === 0 ? <p className="text-center">{div_txt}</p> : null}
             {selected_events}
@@ -232,7 +232,7 @@ const Events = (props) => {
         return <button key={type} className={style} onClick={()=>setSelectedEventType(type)}>{type}</button>
     })
     let buttons_div = (
-        <div className="w-[calc(100%-1rem)] sm:w-[500px] mx-auto flex justify-evenly mt-2">
+        <div className="w-[calc(100%-1rem)] sm:w-[500px] mx-auto flex justify-evenly mt-4">
             {buttons}
         </div>
     )
@@ -242,7 +242,6 @@ const Events = (props) => {
             {accountType === "teacher" ? create_event_form : null}
             {buttons_div}
             {events}
-
         </div>
     )
 

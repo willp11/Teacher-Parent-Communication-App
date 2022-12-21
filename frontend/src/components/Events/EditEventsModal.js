@@ -2,9 +2,9 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
-import { XIcon } from "@heroicons/react/outline";
 import { useState } from "react";
 import SubmitBtn from "../UI/SubmitBtn";
+import EditModal from "../UI/EditModal";
 
 const EditEventsModal = (props) => {
 
@@ -74,70 +74,61 @@ const EditEventsModal = (props) => {
     )
     
     let edit_form = (
-        <div className="relative w-full sm:w-[500px] p-4 mx-auto mt-2 rounded-md shadow-md bg-slate-100 text-center">
-            <XIcon 
-                className="absolute top-2 right-2 h-[24px] w-[24px] hover:border hover:border-gray-300 cursor-pointer"
-                onClick={props.toggleEditMode}
-            />
-            <form onSubmit={event_formik.handleSubmit}>
-                <h3>Edit Event</h3>
-                <input
-                    type="text"
-                    placeholder="Type event name..."
-                    name="name"
-                    value={event_formik.values.name}
-                    onChange={event_formik.handleChange}
-                    onBlur={event_formik.handleBlur}
-                    className="border border-gray-300 mt-2 h-10 w-full"
-                /> <br/>
-                {event_formik.errors.name ? <div className="text-sm w-full text-left pl-2">{event_formik.errors.name} </div> : null}
+        <form onSubmit={event_formik.handleSubmit}>
+            <input
+                type="text"
+                placeholder="Type event name..."
+                name="name"
+                value={event_formik.values.name}
+                onChange={event_formik.handleChange}
+                onBlur={event_formik.handleBlur}
+                className="border border-gray-300 mt-2 h-10 w-full"
+            /> <br/>
+            {event_formik.errors.name ? <div className="text-sm w-full text-left pl-2">{event_formik.errors.name} </div> : null}
 
-                <input
-                    type="date"
-                    placeholder="Date"
-                    name="date"
-                    value={event_formik.values.date}
-                    onChange={event_formik.handleChange}
-                    onBlur={event_formik.handleBlur}
-                    className="border border-gray-300 mt-2 h-10 w-full"
-                /> <br/>
-                {event_formik.errors.date ? <div className="text-sm w-full text-left pl-2">{event_formik.errors.date} </div> : null}
+            <input
+                type="date"
+                placeholder="Date"
+                name="date"
+                value={event_formik.values.date}
+                onChange={event_formik.handleChange}
+                onBlur={event_formik.handleBlur}
+                className="border border-gray-300 mt-2 h-10 w-full"
+            /> <br/>
+            {event_formik.errors.date ? <div className="text-sm w-full text-left pl-2">{event_formik.errors.date} </div> : null}
 
-                <textarea
-                    rows="3"
-                    placeholder="Type description..."
-                    name="description"
-                    value={event_formik.values.description}
-                    onChange={event_formik.handleChange}
-                    onBlur={event_formik.handleBlur}
-                    className="border border-gray-300 mt-2 w-full"
-                /> <br/>
-                {event_formik.errors.description ? <div className="text-sm w-full text-left pl-2">{event_formik.errors.description} </div> : null}
+            <textarea
+                rows="3"
+                placeholder="Type description..."
+                name="description"
+                value={event_formik.values.description}
+                onChange={event_formik.handleChange}
+                onBlur={event_formik.handleBlur}
+                className="border border-gray-300 mt-2 w-full"
+            /> <br/>
+            {event_formik.errors.description ? <div className="text-sm w-full text-left pl-2">{event_formik.errors.description} </div> : null}
 
-                <input
-                    type="number"
-                    placeholder="Type number helpers..."
-                    name="helpers"
-                    value={event_formik.values.helpers}
-                    onChange={event_formik.handleChange}
-                    onBlur={event_formik.handleBlur}
-                    className="border border-gray-300 mt-2 h-10 w-full"
-                /> <br/>
-                {event_formik.errors.helpers ? <div className="text-sm w-full text-left pl-2">{event_formik.errors.helpers} </div> : null}
-                <div className="flex justify-center mt-2">
-                    {submit_btn}
-                </div>
-            </form>
-        </div>
+            <input
+                type="number"
+                placeholder="Type number helpers..."
+                name="helpers"
+                value={event_formik.values.helpers}
+                onChange={event_formik.handleChange}
+                onBlur={event_formik.handleBlur}
+                className="border border-gray-300 mt-2 h-10 w-full"
+            /> <br/>
+            {event_formik.errors.helpers ? <div className="text-sm w-full text-left pl-2">{event_formik.errors.helpers} </div> : null}
+            <div className="flex justify-center mt-2">
+                {submit_btn}
+            </div>
+        </form>
     )
 
-    let edit_modal = (
-        <div className="fixed top-0 left-0 bg-[rgba(0,0,0,0.7)] z-20 w-screen h-screen flex items-center justify-center">
+    return (
+        <EditModal title="Edit Event" toggleEditMode={props.toggleEditMode}>
             {edit_form}
-        </div>
+        </EditModal>
     )
-
-    return edit_modal;
 }
 
 export default EditEventsModal;
