@@ -7,7 +7,7 @@ import { useEffect, useState, useCallback } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 import { useMessage } from "../../Hooks/useMessage";
 import SubmitBtn from "../UI/SubmitBtn";
-// import Spinner from "../Spinner/Spinner";
+import EventForm from "../Forms/EventForm";
 
 const eventTypes = ["Today", "Upcoming", "Finished"]
 
@@ -100,7 +100,7 @@ const Events = (props) => {
             })
     }
 
-    // CREATE EVENT FORM
+    // EVENT FORMIK
     const formatDate = () => {
         return new Date().toLocaleDateString()
     }
@@ -124,15 +124,7 @@ const Events = (props) => {
         })
     });
 
-    // SUBMIT BTN
-    let submit_btn = (
-        <SubmitBtn
-            loading={loading}
-            clickHandler={event_formik.handleSubmit}
-            textContent="Submit"
-        />
-    )
-
+    // CREATE FORM
     let create_event_form = (
         <div className="relative w-full sm:w-[500px] p-2 mx-auto mt-2 rounded-md shadow-md shadow-gray-300 bg-white border-2 border-gray-300 text-center">
             <h3>Create Event</h3>
@@ -140,55 +132,15 @@ const Events = (props) => {
             {showForm ? <ChevronUpIcon onClick={()=>setShowForm(false)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />
              : <ChevronDownIcon onClick={()=>setShowForm(true)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />}
 
-            {showForm ? <form onSubmit={event_formik.handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Type event name..."
-                    name="name"
-                    value={event_formik.values.name}
-                    onChange={event_formik.handleChange}
-                    onBlur={event_formik.handleBlur}
-                    className="border border-gray-300 mt-2 h-10 w-full"
-                /> <br/>
-                {event_formik.errors.name ? <div className="text-sm w-full text-left pl-2">{event_formik.errors.name} </div> : null}
-
-                <input
-                    type="date"
-                    placeholder="Date"
-                    name="date"
-                    value={event_formik.values.date}
-                    onChange={event_formik.handleChange}
-                    onBlur={event_formik.handleBlur}
-                    className="border border-gray-300 mt-2 h-10 w-full"
-                /> <br/>
-                {event_formik.errors.date ? <div className="text-sm w-full text-left pl-2">{event_formik.errors.date} </div> : null}
-
-                <textarea
-                    rows="3"
-                    placeholder="Type description..."
-                    name="description"
-                    value={event_formik.values.description}
-                    onChange={event_formik.handleChange}
-                    onBlur={event_formik.handleBlur}
-                    className="border border-gray-300 mt-2 w-full"
-                /> <br/>
-                {event_formik.errors.description ? <div className="text-sm w-full text-left pl-2">{event_formik.errors.description} </div> : null}
-
-                <input
-                    type="number"
-                    placeholder="Type number helpers..."
-                    name="helpers"
-                    value={event_formik.values.helpers}
-                    onChange={event_formik.handleChange}
-                    onBlur={event_formik.handleBlur}
-                    className="border border-gray-300 mt-2 h-10 w-full"
-                /> <br/>
-                {event_formik.errors.helpers ? <div className="text-sm w-full text-left pl-2">{event_formik.errors.helpers} </div> : null}
-                <div className="flex justify-center mt-2">
-                    {submit_btn}
-                </div>
-                <p className="text-sm">{message}</p>
-            </form> : null}
+            {showForm && 
+                <EventForm formik={event_formik} message={message}>
+                    <SubmitBtn
+                        loading={loading}
+                        clickHandler={event_formik.handleSubmit}
+                        textContent="Submit"
+                    />
+                </EventForm>
+            }
         </div>
     )
 
@@ -237,15 +189,13 @@ const Events = (props) => {
         </div>
     )
 
-    let events_div = (
+    return (
         <div>
             {accountType === "teacher" ? create_event_form : null}
             {buttons_div}
             {events}
         </div>
     )
-
-    return events_div;
 }
 
 export default Events;
