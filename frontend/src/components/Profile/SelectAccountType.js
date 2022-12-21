@@ -97,8 +97,8 @@ const SelectAccountType = (props) => {
                 <div 
                     className={selectedAccountType === 'parent' ? "selected" : "unselected cursor-pointer hover:bg-sky-500 hover:text-white hover:font-semibold"}
                     onClick={()=>setSelectedAccountType('parent')}>Parent</div>
+                {submit_btn}
             </div>
-            {submit_btn}
         </div>
     )
 
