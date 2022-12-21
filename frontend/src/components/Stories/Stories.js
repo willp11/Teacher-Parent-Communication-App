@@ -7,6 +7,7 @@ import { useState, useMemo } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 import {useMessage} from "../../Hooks/useMessage";
 import SubmitBtn from "../UI/SubmitBtn";
+import StoryForm from "../Forms/StoryForm";
 
 const Stories = (props) => {
 
@@ -17,7 +18,7 @@ const Stories = (props) => {
     const [message, setMessage] = useMessage();
     const [loading, setLoading] = useState(false);
 
-    // sort stories - newest first
+    // SORT - newest first
     const sortedStories = useMemo(()=>{
         let stories = [...props.stories]
         stories.sort((a,b)=>{
@@ -70,16 +71,7 @@ const Stories = (props) => {
         })
     });
 
-    // SUBMIT BTN
-    let submit_btn = (
-        <SubmitBtn
-            loading={loading}
-            clickHandler={story_formik.handleSubmit}
-            textContent="Submit"
-        />
-    )
-
-    // STORIES
+    // CREATE STORY FORM
     let create_story_form = (
         <div className="relative w-full sm:w-[500px] p-2 mx-auto mt-2 rounded-lg shadow-md shadow-gray-300 border-2 border-gray-300 bg-white text-center">
             <h3>Create Story</h3>
@@ -88,37 +80,18 @@ const Stories = (props) => {
              : <ChevronDownIcon onClick={()=>setShowForm(true)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />}
 
             {showForm ? 
-                <form onSubmit={story_formik.handleSubmit}>
-                    <input
-                        type="text"
-                        placeholder="Type title..."
-                        name="title"
-                        value={story_formik.values.title}
-                        onChange={story_formik.handleChange}
-                        onBlur={story_formik.handleBlur}
-                        className="border border-gray-300 mt-2 h-10 w-full"
-                    /> <br/>
-                    {story_formik.errors.title ? <div className="text-sm w-full text-left pl-2 mt-1">{story_formik.errors.title} </div> : null}
-
-                    <textarea
-                        rows="3"
-                        name="content"
-                        placeholder="Type content..."
-                        value={story_formik.values.content}
-                        onChange={story_formik.handleChange}
-                        onBlur={story_formik.handleBlur}
-                        className="border border-gray-300 mt-2 w-full"
-                    /> <br/>
-                    {story_formik.errors.content ? <div className="text-sm w-full text-left pl-2">{story_formik.errors.content} </div> : null}
-                    <div className="flex justify-center mt-1">
-                        {submit_btn}
-                    </div>
-                    <p className="text-sm">{message}</p>
-                </form> 
+                <StoryForm formik={story_formik} message={message}>
+                    <SubmitBtn
+                        loading={loading}
+                        clickHandler={story_formik.handleSubmit}
+                        textContent="Submit"
+                    />
+                </StoryForm>
             : null}
         </div>
     )
 
+    // STORIES
     let stories = null;
     if (sortedStories !== undefined && sortedStories !== null) {
         stories = sortedStories.map((story)=>{
@@ -126,18 +99,14 @@ const Stories = (props) => {
         });
     }
 
-    let stories_div = (
+    return (
         <div>
             {accountType === "teacher" ? create_story_form : null}
-            
             <div className="mt-4 mb-16">
                 {stories}
             </div>
-            
         </div>
     )
-
-    return stories_div;
 }
 
 export default Stories;

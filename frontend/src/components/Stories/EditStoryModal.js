@@ -3,9 +3,9 @@ import { useState } from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
-import { XIcon } from "@heroicons/react/outline";
 import SubmitBtn from "../UI/SubmitBtn";
 import EditModal from "../UI/EditModal";
+import StoryForm from "../Forms/StoryForm";
 
 const EditStoryModal = (props) => {
 
@@ -53,47 +53,15 @@ const EditStoryModal = (props) => {
         })
     });
 
-    // SUBMIT BTN
-    let submit_btn = (
-        <SubmitBtn
-            loading={loading}
-            clickHandler={story_formik.handleSubmit}
-            textContent="Submit"
-        />
-    )
-
-    let edit_form = (
-            <form onSubmit={story_formik.handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Type a title..."
-                    name="title"
-                    value={story_formik.values.title}
-                    onChange={story_formik.handleChange}
-                    onBlur={story_formik.handleBlur}
-                    className="border border-gray-300 mt-2 h-10 w-full"
-                /> <br/>
-                {story_formik.errors.title ? <div className="text-sm w-full text-left pl-2 mt-1">{story_formik.errors.title} </div> : null}
-
-                <textarea
-                    rows="3"
-                    name="content"
-                    placeholder="Write your story..."
-                    value={story_formik.values.content}
-                    onChange={story_formik.handleChange}
-                    onBlur={story_formik.handleBlur}
-                    className="border border-gray-300 mt-2 w-full"
-                /> <br/>
-                {story_formik.errors.content ? <div className="text-sm w-full text-left pl-2">{story_formik.errors.content} </div> : null}
-                <div className="flex justify-center mt-1">
-                    {submit_btn}
-                </div>
-            </form>
-    )
-
     return (
         <EditModal title="Edit Story" toggleEditMode={props.toggleEditMode}>
-            {edit_form}
+            <StoryForm formik={story_formik} message={null}>
+                <SubmitBtn
+                    loading={loading}
+                    clickHandler={story_formik.handleSubmit}
+                    textContent="Submit"
+                />
+            </StoryForm>
         </EditModal>
     )
 }

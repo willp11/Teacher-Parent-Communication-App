@@ -25,7 +25,6 @@ const Story = (props) => {
     }
 
     const confirmUploadImageHandler = () => {
-        console.log(imageToUpload);
         const headers = {
             'Content-Type': 'multipart/form-data',
             'Authorization': 'Token ' + token
