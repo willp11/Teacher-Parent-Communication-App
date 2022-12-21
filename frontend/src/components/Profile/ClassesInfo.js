@@ -52,24 +52,26 @@ const ClassesInfo = (props) => {
 
     let submit_btn = (
         <button 
-            className="w-24 rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold" 
+            className="w-24 rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold flex justify-center" 
             onClick={createClassHandler}
+            disabled={loading}
         >
-            Create
+            {loading ? <Spinner /> : null}
+            {loading ? "Loading" : "Create"}
         </button>
     )
-    if (loading) {
-        submit_btn = (
-            <button 
-                className="rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold flex justify-center mx-auto" 
-                onClick={createClassHandler}
-                disabled
-            >
-                <Spinner />
-                Loading
-            </button>
-        )
-    }
+    // if (loading) {
+    //     submit_btn = (
+    //         <button 
+    //             className="rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold flex justify-center mx-auto" 
+    //             onClick={createClassHandler}
+    //             disabled
+    //         >
+    //             <Spinner />
+    //             Loading
+    //         </button>
+    //     )
+    // }
 
     let classes_info_div = (
         <div className="rounded-md bg-white shadow-md mt-2 mb-4 p-4 min-h-[250px]">

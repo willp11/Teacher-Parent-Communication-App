@@ -94,7 +94,7 @@ const EditEventsModal = (props) => {
                     onBlur={event_formik.handleBlur}
                     className="border border-gray-300 mt-2 h-10 w-full"
                 /> <br/>
-                {event_formik.errors.name ? <div className="ErrorMsg">{event_formik.errors.name} </div> : null}
+                {event_formik.errors.name ? <div className="text-sm w-full text-left pl-2">{event_formik.errors.name} </div> : null}
 
                 <input
                     type="date"

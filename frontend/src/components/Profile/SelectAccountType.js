@@ -98,7 +98,9 @@ const SelectAccountType = (props) => {
                     className={selectedAccountType === 'parent' ? "selected" : "unselected cursor-pointer hover:bg-sky-500 hover:text-white hover:font-semibold"}
                     onClick={()=>setSelectedAccountType('parent')}>Parent</div>
             </div>
-            {submit_btn}
+            <div className="flex justify-center">
+                {submit_btn}
+            </div>
         </div>
     )
 
