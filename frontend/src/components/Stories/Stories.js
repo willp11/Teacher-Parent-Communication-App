@@ -110,7 +110,7 @@ const Stories = (props) => {
                         className="border border-gray-300 mt-2 w-full"
                     /> <br/>
                     {story_formik.errors.content ? <div className="text-sm w-full text-left pl-2">{story_formik.errors.content} </div> : null}
-                    <div className="flex justify-center mt-2">
+                    <div className="flex justify-center mt-1">
                         {submit_btn}
                     </div>
                     <p className="text-sm">{message}</p>
