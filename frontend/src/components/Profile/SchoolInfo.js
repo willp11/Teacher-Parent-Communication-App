@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import {useMessage} from '../../Hooks/useMessage';
-import Spinner from '../Spinner/Spinner';
 import AddSchool from "./AddSchool";
+import SubmitBtn from "../UI/SubmitBtn";
 
 const SchoolInfo = (props) => {
 
@@ -54,21 +54,15 @@ const SchoolInfo = (props) => {
     )
 
     let submit_btn = (
-        <button className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold mt-4" onClick={submitSelectSchoolHandler} disabled={false}>Submit</button>
+        <SubmitBtn
+            loading={loading}
+            textContent="Submit"
+            clickHandler={submitSelectSchoolHandler}
+        />
     )
-    if (loading) {
-        submit_btn = (
-            <button 
-                className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold mt-4 mx-auto flex justify-center" 
-                onClick={submitSelectSchoolHandler} disabled={true}
-            >   
-                <Spinner />
-                Submit
-            </button>
-        )
-    }
+
     let select_school_div = (
-        <div className="pb-2">
+        <div className="pb-2 flex justify-center">
             {dropdown} <br/>
             {submit_btn}
         </div>
@@ -77,7 +71,7 @@ const SchoolInfo = (props) => {
     let school_info_div = (
         <div className="rounded-md shadow-md bg-white mt-2 mb-4 p-4 min-h-[250px]">
             <h2 className="text-base text-gray-500">Your School</h2>
-            <h2 className="pb-4">{props.profile.teacher.school === null ? "You do not have a school yet!" : props.profile.teacher.school.name}</h2>
+            <h2 className="pb-2">{props.profile.teacher.school === null ? "You do not have a school yet!" : props.profile.teacher.school.name}</h2>
             {select_school_div}
             <p className="text-sm">{message}</p>
             <div className="border-b-2 border-gray-300 my-2"></div>

@@ -5,6 +5,7 @@ import profileImg from '../../Assets/Images/blank-profile.png';
 import Navigation from "../Navigation/Navigation";
 import { useGroupMembers } from "../../Hooks/useGroupMembers";
 import MemberList from "./MemberList";
+import PageTitle from "../UI/PageTitle";
 
 const VideoChat = () => {
 
@@ -452,9 +453,7 @@ const VideoChat = () => {
         <div className="relative bg-slate-100 overflow-auto h-screen">
             <Navigation />
             <div className="w-full flex-col items-center justify-center">
-                <div className="w-full bg-indigo-500 py-2">
-                    <h1 className="font-white drop-shadow-lg text-white">Video Chat</h1>
-                </div>
+                <PageTitle title="Video Chat" />
                 <div className=" relative w-[calc(100%-1rem)] mx-auto flex flex-col items-center">
                     <MemberList members={groupMembers} loading={loadingMembers} connected={connected} otherUserConnected={otherUserConnected} disconnect={disconnect} connect={connect}/>
 

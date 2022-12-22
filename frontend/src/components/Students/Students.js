@@ -6,6 +6,7 @@ import ProfileImg from '../../Assets/Images/blank-profile.png';
 import StudentModal from "./StudentModal";
 import { useState } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
+import SubmitBtn from "../UI/SubmitBtn";
 
 const Students = (props) => {
 
@@ -13,7 +14,7 @@ const Students = (props) => {
 
     const [showStudentModal, setShowStudentModal] = useState(false);
     const [studentToShow, setStudentToShow] = useState(null);
-
+    const [loading, setLoading] = useState(false);
     const [showForm, setShowForm] = useState(false);
 
     // SHOW/HIDE STUDENT MODAL
@@ -37,6 +38,7 @@ const Students = (props) => {
             school_class: props.classId
         }
         const url = `${process.env.REACT_APP_API_URL}/api/v1/school/student-create/`;
+        setLoading(true);
         axios.post(url, data, {headers: headers})
             .then(res=>{
                 console.log(res);
@@ -45,6 +47,9 @@ const Students = (props) => {
             })
             .catch(err => {
                 console.log(err);
+            })
+            .finally(()=>{
+                setLoading(false);
             })
     }
 
@@ -60,6 +65,15 @@ const Students = (props) => {
             name: Yup.string().trim().required("Name is required")
         })
     });
+
+    // SUBMIT BTN
+    let submit_btn = (
+        <SubmitBtn
+            loading={loading}
+            clickHandler={student_formik.handleSubmit}
+            textContent="Submit"
+        />
+    )
 
     // STUDENTS
     let create_student_form = (
@@ -81,8 +95,8 @@ const Students = (props) => {
                     /> <br/>
                     {student_formik.errors.name ? <div className="text-sm">{student_formik.errors.name} </div> : null}
                 </div>
-                <div>
-                    <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 m-2 text-white font-semibold">Submit</button>
+                <div className="flex justify-center mt-2">
+                    {submit_btn}
                 </div>
             </form> : null}
         </div>

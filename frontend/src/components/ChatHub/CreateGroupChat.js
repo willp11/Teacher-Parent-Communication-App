@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import axios from 'axios';
 import { useMessage } from "../../Hooks/useMessage";
-import Spinner from "../Spinner/Spinner";
+import SubmitBtn from "../UI/SubmitBtn";
 
 const CreateGroupChat = (props) => {
     const token = useSelector((state)=>state.auth.token);
@@ -37,24 +37,12 @@ const CreateGroupChat = (props) => {
     }
 
     let submit_btn = (
-        <button 
-            onClick={handleCreateGroup}
-            className="bg-sky-500 hover:bg-indigo-500 text-white font-semibold rounded px-4 py-2"
-        >
-            Submit
-        </button>
+        <SubmitBtn
+            loading={loading}
+            clickHandler={handleCreateGroup}
+            textContent="Submit"
+        />
     )
-    if (loading) {
-        submit_btn = (
-            <button 
-                onClick={handleCreateGroup}
-                className="bg-sky-500 hover:bg-indigo-500 text-white font-semibold rounded px-4 py-2 flex justify-center"
-            >
-                <Spinner />
-                Loading
-            </button>
-        )
-    }
 
     let create_group_div = (
         <div className="rounded-md bg-slate-100 p-1 mt-1 mb-2">

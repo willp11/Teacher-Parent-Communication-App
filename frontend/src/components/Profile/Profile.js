@@ -14,6 +14,7 @@ import SelectAccountType from './SelectAccountType';
 // import VerifyEmail from './VerifyEmail';
 import {createMenuDiv} from '../../Utils/utils';
 import Spinner from '../Spinner/Spinner';
+import PageTitle from '../UI/PageTitle';
 
 const teacher_menu_items = ["User Details", "Change Password", "Settings", "School", "Classes"]
 const parent_menu_items = ["User Details", "Change Password", "Settings", "Children"]
@@ -144,9 +145,7 @@ const Profile = () => {
         <div className="relative bg-white h-screen overflow-auto">
             <Navigation />
             <div className="bg-slate-100 h-[calc(100%-80px)] w-full flex flex-col items-center justify-start">
-                <div className="w-full bg-indigo-500 text-white text-center py-2 mb-2">
-                    <h1 className="drop-shadow-lg">Profile</h1>
-                </div>
+                <PageTitle title="Profile" />
 
                 {loading ? <Spinner /> : null}
 

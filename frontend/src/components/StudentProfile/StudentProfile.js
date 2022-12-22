@@ -7,6 +7,7 @@ import axios from "axios";
 import starImg from '../../Assets/Images/star-sticker.jpg';
 import dinosaurImg from '../../Assets/Images/dinosaur-sticker.jpg';
 import catImg from '../../Assets/Images/cat-sticker.jpg';
+import PageTitle from "../UI/PageTitle";
 
 const StudentProfile = () => {
 
@@ -215,7 +216,7 @@ const StudentProfile = () => {
 
         student_profile_div = (
             <div className="w-full sm:w-[600px] md:w-[750px] rounded-md border-2 border-gray-300 shadow-md bg-white p-2 text-center">
-                <h1 className="mb-2">{studentProfile.name}</h1>
+                <h2 className="mb-2 text-3xl">{studentProfile.name}</h2>
                 {student_info_div}
                 {assignments_div}
             </div>
@@ -234,8 +235,8 @@ const StudentProfile = () => {
     return (
         <div className="relative bg-slate-100 overflow-auto min-h-screen">
             <Navigation />
-            <div className="w-full flex flex-col items-center justify-start pb-2 overflow-auto">
-                <h1 className="w-full bg-indigo-500 text-white drop-shadow-lg py-2 mb-2">Portfolio</h1>
+            <PageTitle title="Portfolio" />
+            <div className="w-full flex flex-col items-center justify-start py-2 overflow-auto">
                 {student_profile_div}
             </div>
         </div>

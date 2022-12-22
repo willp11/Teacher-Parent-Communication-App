@@ -8,7 +8,9 @@ import authSlice from "../../store/slices/auth";
 import Navigation from '../Navigation/Navigation';
 import { Link } from 'react-router-dom';
 import {extractErrors} from '../../Utils/utils';
-import Spinner from '../Spinner/Spinner';
+import RegisterForm from '../Forms/RegisterForm';
+import PageTitle from '../UI/PageTitle';
+import RoundedSubmitBtn from '../UI/RoundedSubmitBtn';
 
 const Register = () => {
 
@@ -84,80 +86,13 @@ const Register = () => {
         <div className="relative bg-slate-100 overflow-auto min-h-screen">
 
             <Navigation />
-            <div className="w-full bg-indigo-500 text-white text-center py-2 mb-2">
-                <h1 className="drop-shadow-lg">Register</h1>
-            </div>
+            <PageTitle title="Register" />
             <div className="w-full p-2 flex flex-col items-center justify-center">
                 <div className="w-96 rounded-md p-8 shadow-lg bg-white border-2 border-gray-300 shadow-md">
-                    <form onSubmit={formik.handleSubmit}>
-                        <p className="text-base pt-6 pl-2 pb-2 font-bold">E-mail</p>
-                        <input 
-                            type="text"
-                            name="email"
-                            placeholder="Type your e-mail" 
-                            className="p-2 border border-gray-300 w-full h-10" 
-                            value={formik.values.email} 
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                        />
-                        {formik.errors.email ? <div className="text-sm pl-2 py-1">{formik.errors.email} </div> : null}
 
-                        <p className="text-base p-2 font-bold">First Name</p>
-                        <input
-                            type="text"
-                            name="firstName"
-                            placeholder="Type your first name" 
-                            className="p-2 border border-gray-300 w-full h-10" 
-                            value={formik.values.firstName} 
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                        />
-                        {formik.errors.firstName ? <div className="text-sm pl-2 py-1">{formik.errors.firstName} </div> : null}
-
-                        <p className="text-base p-2 font-bold">Last Name</p>
-                        <input 
-                            type="text"
-                            name="lastName"
-                            placeholder="Type your last name (optional)" 
-                            className="p-2 border border-gray-300 w-full h-10" 
-                            value={formik.values.lastName} 
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                        />
-
-                        <p className="text-base p-2 font-bold">Password</p>
-                        <input 
-                            type="password"
-                            name="password"
-                            placeholder="Type your password" 
-                            className="p-2 border border-gray-300 w-full h-10"
-                            value={formik.values.password}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                        />
-                        {formik.errors.password ? <div className="text-sm pl-2 py-1">{formik.errors.password} </div> : null}
-
-                        <p className="text-base p-2 font-bold">Password Confirmation</p>
-                        <input 
-                            type="password"
-                            name="passwordConfirmation"
-                            placeholder="Type your password again" 
-                            className="p-2 border border-gray-300 w-full h-10"
-                            value={formik.values.passwordConfirmation}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                        />
-                        {formik.errors.passwordConfirmation ? <div className="text-sm pl-2 py-1">{formik.errors.passwordConfirmation} </div> : null}
-
-                        <button 
-                            disabled={loading} 
-                            type="submit" 
-                            className="w-full flex justify-center items-center rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-3 mt-4 mb-2 text-white font-bold"
-                        >
-                            {loading && <Spinner />}
-                            SIGN UP
-                        </button>
-                    </form>
+                    <RegisterForm formik={formik}>
+                        <RoundedSubmitBtn textContent="REGISTER" loading={loading} />
+                    </RegisterForm>
 
                     {errors_div}
                 

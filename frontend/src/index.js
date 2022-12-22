@@ -21,7 +21,7 @@ import SchoolClass from './components/SchoolClass/SchoolClass';
 import StudentProfile from './components/StudentProfile/StudentProfile';
 import ChatHub from './components/ChatHub/ChatHub';
 import ChatGroup from './components/ChatGroup/Chatgroup';
-import VideoChat from './components/VideoChat.js/VideoChat';
+import VideoChat from './components/VideoChat/VideoChat';
 import SubmitAssignment from './components/Assignments/SubmitAssignment';
 import Notifications from './components/Notifications/Notifications';
 import { NotificationsProvider } from './Hooks/useNotifications';

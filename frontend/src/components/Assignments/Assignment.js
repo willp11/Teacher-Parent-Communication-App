@@ -43,7 +43,7 @@ const Assignment = (props) => {
 
     // Copy response link to clipboard
     const copyLink = () => {
-        navigator.clipboard.writeText(`${process.env.FRONTEND_URL}/assignment/${props.assignment.code}`);
+        navigator.clipboard.writeText(`${process.env.REACT_APP_FRONTEND_URL}/assignment/${props.assignment.code}`);
         setShowCopiedNotification(true);
     }
  

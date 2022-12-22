@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import Contacts from './Contacts';
 import GroupChats from './GroupChats';
+import PageTitle from '../UI/PageTitle';
 
 const ChatHub = () => {
 
@@ -46,8 +47,8 @@ const ChatHub = () => {
         <div className="relative bg-slate-100 overflow-auto min-h-screen">
             <Navigation />
             <div className="w-full max-h-screen h-[750px] flex flex-col items-center justify-start pb-2 overflow-auto">
-                <h1 className="w-full bg-indigo-500 text-white drop-shadow-lg py-2 mb-2">Chat</h1>
-                <div className="bg-white h-full w-[calc(100%-1rem)] md:w-[750px] lg:w-[800px] border-2 border-gray-300 flex flex-col md:flex-row rounded-md shadow-md">
+                <PageTitle title="Chat" />
+                <div className="bg-white h-full w-[calc(100%-1rem)] md:w-[750px] lg:w-[800px] border-2 border-gray-300 flex flex-col md:flex-row rounded-md shadow-md mt-4">
                     <Contacts directChats={directChats} accountType={accountType}/>
                     <GroupChats groupChats={groupChats} getUserChatGroups={getUserChatGroups} />
                 </div>

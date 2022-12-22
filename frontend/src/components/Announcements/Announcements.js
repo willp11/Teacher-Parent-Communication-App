@@ -6,7 +6,8 @@ import Announcement from "./Announcement";
 import { useState, useMemo } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 import { useMessage } from "../../Hooks/useMessage";
-import Spinner from "../Spinner/Spinner";
+import SubmitBtn from "../UI/SubmitBtn";
+import AnnouncementForm from "../Forms/AnnouncementForm";
 
 const Announcements = (props) => {
 
@@ -55,7 +56,7 @@ const Announcements = (props) => {
             })
     }
 
-    // CREATE ANNOUNCEMENT FORM
+    // FORMIK
     const announcement_formik = useFormik({
         initialValues: {
             title: "",
@@ -70,19 +71,6 @@ const Announcements = (props) => {
         })
     });
 
-    // SUBMIT BTN
-    let submit_btn = (
-        <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 m-2 text-white font-semibold">Submit</button>
-    )
-    if (loading) {
-        submit_btn = (
-            <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 my-2 mx-auto text-white font-semibold flex justify-center" disabled>
-                <Spinner />
-                Loading
-            </button>
-        )
-    }
-
     // CREATE ANNOUNCEMENT FORM
     let create_announcement_form = (
         <div className="relative w-full sm:w-[500px] p-2 mx-auto mt-2 rounded-md shadow-md bg-white shadow-gray-300 border-2 border-gray-300 text-center">
@@ -91,31 +79,18 @@ const Announcements = (props) => {
             {showForm ? <ChevronUpIcon onClick={()=>setShowForm(false)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />
              : <ChevronDownIcon onClick={()=>setShowForm(true)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />}
 
-            {showForm ? <form onSubmit={announcement_formik.handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Type title..."
-                    name="title"
-                    value={announcement_formik.values.title}
-                    onChange={announcement_formik.handleChange}
-                    onBlur={announcement_formik.handleBlur}
-                    className="border border-gray-300 mt-2 h-10 w-full"
-                /> <br/>
-                {announcement_formik.errors.title ? <div className="text-sm w-full text-left pl-2 mt-1">{announcement_formik.errors.title} </div> : null}
-
-                <textarea
-                    rows="3"
-                    name="content"
-                    value={announcement_formik.values.content}
-                    onChange={announcement_formik.handleChange}
-                    onBlur={announcement_formik.handleBlur}
-                    placeholder="Type content..."
-                    className="border border-gray-300 mt-2 w-full"
-                /> <br/>
-                {announcement_formik.errors.content ? <div className="text-sm w-full text-left pl-2 mt-1">{announcement_formik.errors.content} </div> : null}
-                {submit_btn}
-                <p className="text-sm">{message}</p>
-            </form> : null }
+            {showForm && 
+                <AnnouncementForm
+                    formik={announcement_formik}
+                    message={message}
+                >
+                    <SubmitBtn
+                        loading={loading}
+                        clickHandler={announcement_formik.handleSubmit}
+                        textContent="Submit"
+                    />
+                </AnnouncementForm>
+            }
         </div>
     )
 
@@ -127,18 +102,14 @@ const Announcements = (props) => {
         });   
     }
 
-    let announcements_div = (
+    return (
         <div>
             {accountType === "teacher" ? create_announcement_form : null}
-
             <div className="mt-4 mb-16">
                 {announcements}
-            </div>
-            
+            </div>   
         </div>
     )
-
-    return announcements_div;
 }
 
 export default Announcements;

@@ -7,7 +7,8 @@ import AssignToStudents from "./AssignToStudents";
 import Assignment from "./Assignment";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 import { useMessage } from "../../Hooks/useMessage";
-import Spinner from "../Spinner/Spinner";
+import SubmitBtn from "../UI/SubmitBtn";
+import AssignmentForm from "../Forms/AssignmentForm";
 
 const Assignments = (props) => {
 
@@ -85,19 +86,6 @@ const Assignments = (props) => {
         })
     });
 
-    // SUBMIT BTN
-    let submit_btn = (
-        <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 m-2 text-white font-semibold">Submit</button>
-    )
-    if (loading) {
-        submit_btn = (
-            <button type="submit" className="w-32 rounded bg-sky-500 hover:bg-indigo-500 p-2 my-2 mx-auto text-white font-semibold flex justify-center" disabled>
-                <Spinner />
-                Loading
-            </button>
-        )
-    }
-
     let create_assignment_form = (
         <div className="relative w-full sm:w-[500px] p-2 mx-auto mt-2 rounded-md shadow-md shadow-gray-300 bg-white border-2 border-gray-300 text-center">
             <h3>Create Assignment</h3>
@@ -105,85 +93,16 @@ const Assignments = (props) => {
             {showForm ? <ChevronUpIcon onClick={()=>setShowForm(false)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />
             : <ChevronDownIcon onClick={()=>setShowForm(true)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />}
 
-            {showForm ? <form onSubmit={assignment_formik.handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Type title..."
-                    name="title"
-                    value={assignment_formik.values.title}
-                    onChange={assignment_formik.handleChange}
-                    onBlur={assignment_formik.handleBlur}
-                    className="border border-gray-300 mt-2 h-10 w-full"
-                /> <br/>
-                {assignment_formik.errors.title ? <div className="text-sm text-left pl-1">{assignment_formik.errors.title} </div> : null}
-
-                <textarea
-                    rows="3"
-                    name="description"
-                    placeholder="Type description..."
-                    value={assignment_formik.values.description}
-                    onChange={assignment_formik.handleChange}
-                    onBlur={assignment_formik.handleBlur}
-                    className="border border-gray-300 mt-2 w-full"
-                /> <br/>
-                {assignment_formik.errors.description ? <div className="text-sm text-left pl-1">{assignment_formik.errors.description} </div> : null}
-
-                <input
-                    type="number"
-                    placeholder="Enter maximum score"
-                    name="maximum_score"
-                    value={assignment_formik.values.maximum_score}
-                    onChange={assignment_formik.handleChange}
-                    onBlur={assignment_formik.handleBlur}
-                    className="border border-gray-300 mt-2 h-10 w-full"
-                /> <br/>
-                {assignment_formik.errors.maximum_score ? <div className="text-sm text-left pl-1">{assignment_formik.errors.maximum_score} </div> : null}
-
-                <div className="py-2 px-1 border border-gray-300 mt-2">
-                    <p className="mb-1 text-left font-semibold text-sm">Response format:</p>
-                    <div className="w-full flex justify-start">
-                        <div>
-                            <input
-                                type="radio"
-                                name="response_format"
-                                value="Text"
-                                id="Text"
-                                onChange={assignment_formik.handleChange}
-                                onBlur={assignment_formik.handleBlur}
-                            />
-                            <label htmlFor="Text" className="ml-1 mr-4">Text</label> 
-                        </div>
-                        <div>
-                            <input
-                                type="radio"
-                                name="response_format"
-                                value="Image"
-                                id="Image"
-                                onChange={assignment_formik.handleChange}
-                                onBlur={assignment_formik.handleBlur}
-                            />
-                            <label htmlFor="Image" className="ml-1 mr-4">Image</label>
-                        </div>
-                        <div>
-                            <input
-                                type="radio"
-                                name="response_format"
-                                value="Video"
-                                id="Video"
-                                onChange={assignment_formik.handleChange}
-                                onBlur={assignment_formik.handleBlur}
-                            />
-                            <label htmlFor="Video" className="ml-1 mr-4">Video</label>
-                        </div>
-                    </div>
-                </div>
-                {assignment_formik.errors.response_format ? <div className="text-sm text-left pl-1">{assignment_formik.errors.response_format} </div> : null}
-
-                {submit_btn}
-                <p className="text-sm">{message}</p>
-            </form> : null}
+            {showForm &&
+                <AssignmentForm formik={assignment_formik} message={message}>
+                    <SubmitBtn
+                        loading={loading}
+                        clickHandler={assignment_formik.handleSubmit}
+                        textContent="Submit"
+                    />
+                </AssignmentForm>
+            }
         </div>
-        
     )
 
     // ASSIGNMENTS
@@ -200,10 +119,8 @@ const Assignments = (props) => {
                 {props.assignments.length !== 0 ? <p className="text-sm font-semibold text-center">Students can submit their work for an assignment by following the "Student Link"</p> : null}
                 {assignments}
             </div>
-
         </div>
     )
-
 
     if (assignMode) {
         return <AssignToStudents students={props.students} assignment={assignmentToAssign} toggleAssignMode={toggleAssignMode}/>
