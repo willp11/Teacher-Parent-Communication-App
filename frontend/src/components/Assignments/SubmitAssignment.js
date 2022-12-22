@@ -6,6 +6,7 @@ import axios from "axios";
 import { useMessage } from "../../Hooks/useMessage";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
 import SubmitBtn from "../UI/SubmitBtn";
+import PageTitle from "../UI/PageTitle";
 
 const SubmitAssignment = () => {
 
@@ -160,9 +161,7 @@ const SubmitAssignment = () => {
         return (
             <div className="relative bg-slate-100 overflow-auto min-h-screen">
                 <Navigation />
-                <div className="w-full bg-indigo-500 text-center py-2">
-                    <h1 className="text-white">Submit Assignment</h1>
-                </div>
+                <PageTitle title="Submit Assignment" />
                 <p className="text-center">Loading...</p>
             </div>
         )
@@ -170,9 +169,7 @@ const SubmitAssignment = () => {
         return (
             <div className="relative bg-slate-100 overflow-auto min-h-screen">
                 <Navigation />
-                <div className="w-full bg-indigo-500 text-center py-2">
-                    <h1 className="text-white">Submit Assignment</h1>
-                </div>
+                <PageTitle title="Submit Assignment" />
                 <div className="flex flex-col sm:flex-row w-[calc(100%-1rem)] md:w-[750px] lg:w-[800px] h-[750px] max-h-screen overflow-auto mx-auto my-4 bg-white rounded-md shadow-md border-2 border-gray-300">
                     <div className="w-full sm:w-[250px] h-[300px] sm:h-full border-b-2 sm:border-r-2 border-gray-300 overflow-auto">
                         <div className="border-b-2 border-gray-300 p-1">

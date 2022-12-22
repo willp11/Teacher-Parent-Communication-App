@@ -6,6 +6,7 @@ import MemberList from './MemberList';
 import Navigation from '../Navigation/Navigation';
 import Messages from './Messages';
 import { useGroupMembers } from '../../Hooks/useGroupMembers';
+import PageTitle from '../UI/PageTitle';
 
 const ChatGroup = () => {
 
@@ -142,9 +143,7 @@ const ChatGroup = () => {
     if (group !== null) {
         group_div = (
             <div className="w-full text-center">
-                <div className="w-full bg-indigo-500 py-2">
-                    <h1 className="font-white drop-shadow-lg text-white">{group.direct_message ? "Direct Message" : group.name}</h1>
-                </div>
+                <PageTitle title={group.direct_message ? "Direct Message" : group.name} />
                 <div className="w-[calc(100%-1rem)] mx-auto flex flex-col items-center">
                     <MemberList groupId={id} members={groupMembers} direct={group.direct_message} getGroupMembers={getGroupMembers} userId={userId} />
                     <Messages groupId={id} messages={messages} sendMessage={sendMessage} newMessage={messageCountRef.current}/>

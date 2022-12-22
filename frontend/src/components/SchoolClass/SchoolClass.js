@@ -10,6 +10,7 @@ import Students from '../Students/Students';
 import Assignments from '../Assignments/Assignments';
 import { createMenuDiv } from '../../Utils/utils';
 import Spinner from '../Spinner/Spinner';
+import PageTitle from '../UI/PageTitle';
 
 const teacher_menu_items = ["Classroom", "Stories", "Announcements", "Events", "Assignments"]
 const parent_menu_items = ["Stories", "Announcements", "Events"]
@@ -87,10 +88,9 @@ const SchoolClass = () => {
 
         school_class_div = (
             <div className="w-full flex flex-col items-center justify-center">
-                <div className="w-full bg-indigo-500 text-center py-2">
-                    <h1 className="text-white">{schoolClass.name}</h1>
+                <PageTitle title={schoolClass.name}>
                     <p className="text-lg font-bold text-sky-100">{schoolClass.teacher.user.first_name + " " + schoolClass.teacher.user.last_name}</p>
-                </div>
+                </PageTitle>
 
                 <div className="w-full">
                     {menu_div}
@@ -112,9 +112,7 @@ const SchoolClass = () => {
             {
                 loading ? 
                 <>
-                    <div className="w-full bg-indigo-500 text-center py-2">
-                        <h1 className="text-white">School Class</h1>
-                    </div>
+                    <PageTitle title="Classroom" />
                     <Spinner />
                 </> :
                 school_class_div

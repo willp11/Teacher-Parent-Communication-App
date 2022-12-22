@@ -41,7 +41,7 @@ export const createMenuDiv = (arr, componentToShow, setComponentToShow) => {
     })
 
     let menu_div = (
-        <div className="w-full text-center text-center py-2 overflow-y-auto">
+        <div className="w-full text-center text-center pt-4 pb-2 overflow-y-auto">
             {menu_div_items}
         </div>
     )
