@@ -22,20 +22,21 @@ Go to the chat hub page, find the other account in the contact's list and click 
 
 ### Backend
 
-Django - Python web development framework.
-Celery - Asynchronous task queue/job queue.
-Redis - Message broker between Django and Celery. Store for Django Channels to implement WebSockets.
+- Django - Python web development framework.
+- Celery - Asynchronous task queue/job queue.
+- Redis - Message broker between Django and Celery. Store for Django Channels to implement WebSockets.
+- Postgresql - SQL database.
 
 In production:
-Gunicorn used for serving HTTP requests.
-Daphne used for serving WebSocket connections.
+- Gunicorn used for serving HTTP requests.
+- Daphne used for serving WebSocket connections.
 
 (You do not need to use Gunicorn as Daphne can handle both HTTP and WS)
 
 ### Frontend
 
-React JS
-Tailwind CSS
+- React JS
+- Tailwind CSS
 
 ## Running the application
 
