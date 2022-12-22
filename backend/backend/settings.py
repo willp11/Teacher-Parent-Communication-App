@@ -107,14 +107,13 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': ['redis://redis:6379/1']
+            'hosts': [os.environ.get('CHANNELS_REDIS_URL')]
         },
     }
 }
 
-# using docker, localhost is not the same as the redis container, so need redis://redis:6379 rather than redis://localhost:6379
-CELERY_BROKER_URL = 'redis://redis:6379/0'
-CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+CELERY_BROKER_URL = os.environ.get('CELERY_REDIS_URL')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_REDIS_URL')
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
