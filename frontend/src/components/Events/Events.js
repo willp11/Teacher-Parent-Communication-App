@@ -4,10 +4,10 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import Event from "./Event";
 import { useEffect, useState, useCallback } from "react";
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 import { useMessage } from "../../Hooks/useMessage";
 import SubmitBtn from "../UI/SubmitBtn";
 import EventForm from "../Forms/EventForm";
+import CreateContainer from "../UI/CreateContainer";
 
 const eventTypes = ["Today", "Upcoming", "Finished"]
 
@@ -126,22 +126,15 @@ const Events = (props) => {
 
     // CREATE FORM
     let create_event_form = (
-        <div className="relative w-full sm:w-[500px] p-2 mx-auto mt-2 rounded-md shadow-md shadow-gray-300 bg-white border-2 border-gray-300 text-center">
-            <h3>Create Event</h3>
-
-            {showForm ? <ChevronUpIcon onClick={()=>setShowForm(false)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />
-             : <ChevronDownIcon onClick={()=>setShowForm(true)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />}
-
-            {showForm && 
-                <EventForm formik={event_formik} message={message}>
-                    <SubmitBtn
-                        loading={loading}
-                        clickHandler={event_formik.handleSubmit}
-                        textContent="Submit"
-                    />
-                </EventForm>
-            }
-        </div>
+        <CreateContainer title="Create Event" showForm={showForm} setShowForm={setShowForm}>
+            <EventForm formik={event_formik} message={message}>
+                <SubmitBtn
+                    loading={loading}
+                    clickHandler={event_formik.handleSubmit}
+                    textContent="Submit"
+                />
+            </EventForm>
+        </CreateContainer>
     )
 
     // Events divs

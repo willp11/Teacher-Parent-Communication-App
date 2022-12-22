@@ -4,10 +4,10 @@ import * as Yup from 'yup';
 import axios from "axios";
 import Story from "./Story";
 import { useState, useMemo } from "react";
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 import {useMessage} from "../../Hooks/useMessage";
 import SubmitBtn from "../UI/SubmitBtn";
 import StoryForm from "../Forms/StoryForm";
+import CreateContainer from "../UI/CreateContainer";
 
 const Stories = (props) => {
 
@@ -73,22 +73,15 @@ const Stories = (props) => {
 
     // CREATE STORY FORM
     let create_story_form = (
-        <div className="relative w-full sm:w-[500px] p-2 mx-auto mt-2 rounded-lg shadow-md shadow-gray-300 border-2 border-gray-300 bg-white text-center">
-            <h3>Create Story</h3>
-
-            {showForm ? <ChevronUpIcon onClick={()=>setShowForm(false)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />
-             : <ChevronDownIcon onClick={()=>setShowForm(true)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />}
-
-            {showForm ? 
-                <StoryForm formik={story_formik} message={message}>
-                    <SubmitBtn
-                        loading={loading}
-                        clickHandler={story_formik.handleSubmit}
-                        textContent="Submit"
-                    />
-                </StoryForm>
-            : null}
-        </div>
+        <CreateContainer title="Create Story" setShowForm={setShowForm} showForm={showForm}>
+            <StoryForm formik={story_formik} message={message}>
+                <SubmitBtn
+                    loading={loading}
+                    clickHandler={story_formik.handleSubmit}
+                    textContent="Submit"
+                />
+            </StoryForm>
+        </CreateContainer>
     )
 
     // STORIES

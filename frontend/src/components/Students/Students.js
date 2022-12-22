@@ -5,8 +5,9 @@ import axios from "axios";
 import ProfileImg from '../../Assets/Images/blank-profile.png';
 import StudentModal from "./StudentModal";
 import { useState } from "react";
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 import SubmitBtn from "../UI/SubmitBtn";
+import StudentForm from "../Forms/StudentForm";
+import CreateContainer from "../UI/CreateContainer";
 
 const Students = (props) => {
 
@@ -53,7 +54,7 @@ const Students = (props) => {
             })
     }
 
-    // CREATE STUDENT FORM
+    // FORMIK
     const student_formik = useFormik({
         initialValues: {
             name: ""
@@ -66,42 +67,21 @@ const Students = (props) => {
         })
     });
 
-    // SUBMIT BTN
-    let submit_btn = (
-        <SubmitBtn
-            loading={loading}
-            clickHandler={student_formik.handleSubmit}
-            textContent="Submit"
-        />
+
+    // CREATE STUDENT FORM
+    let create_student_form = (
+        <CreateContainer title="Add Student" showForm={showForm} setShowForm={setShowForm}>
+            <StudentForm formik={student_formik}>
+                <SubmitBtn
+                    loading={loading}
+                    clickHandler={student_formik.handleSubmit}
+                    textContent="Submit"
+                />
+            </StudentForm>
+        </CreateContainer>  
     )
 
     // STUDENTS
-    let create_student_form = (
-        <div className="relative w-full sm:w-[500px] p-2 mx-auto mt-2 rounded-md shadow-md shadow-gray-300 bg-white border-2 border-gray-300 text-center">
-            <h3>Add Student</h3>
-            {showForm ? <ChevronUpIcon onClick={()=>setShowForm(false)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />
-             : <ChevronDownIcon onClick={()=>setShowForm(true)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />}
-            {showForm ? <form className="transition ease-in-out transition-duration-1000ms" onSubmit={student_formik.handleSubmit}>
-                <div>
-                    <input
-                        type="text"
-                        placeholder="Type student's name..."
-                        name="name"
-                        value={student_formik.values.name}
-                        onChange={student_formik.handleChange}
-                        onBlur={student_formik.handleBlur}
-                        style={{textAlign: "center"}}
-                        className="border border-gray-300 mt-2 h-10"
-                    /> <br/>
-                    {student_formik.errors.name ? <div className="text-sm">{student_formik.errors.name} </div> : null}
-                </div>
-                <div className="flex justify-center mt-2">
-                    {submit_btn}
-                </div>
-            </form> : null}
-        </div>
-    )
-
     let students = props.students.map((student, idx)=>{
         let profile_img_src = ProfileImg;
         if (student.image !== null) {
