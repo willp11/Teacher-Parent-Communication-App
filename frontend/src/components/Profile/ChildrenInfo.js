@@ -53,7 +53,7 @@ const ChildrenInfo = (props) => {
                 <input 
                     placeholder="Type invite code..." 
                     onChange={(e)=>setInviteCode(e.target.value)}
-                    className="p-2 border border-gray-300 h-10"
+                    className="p-2 border border-gray-300 h-10 mr-2"
                     value={inviteCode}
                 />
                 <SubmitBtn
