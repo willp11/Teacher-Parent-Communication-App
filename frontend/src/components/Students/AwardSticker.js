@@ -25,6 +25,7 @@ const AwardSticker = (props) => {
             type: selectedSticker
         }
         const url = `${process.env.REACT_APP_API_URL}/api/v1/school/sticker-create/`;
+        setLoading(true);
         axios.post(url, data, {headers: headers})
             .then(res=>{
                 console.log(res);
@@ -34,6 +35,9 @@ const AwardSticker = (props) => {
             .catch(err=>{
                 console.log(err);
             })
+            .finally(()=>{
+                setLoading(false);
+            });
     }
 
     // Sticker image styles
