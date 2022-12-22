@@ -2,8 +2,8 @@ import { useState } from "react";
 import {useMessage} from '../../Hooks/useMessage';
 import { useSelector } from "react-redux";
 import axios from "axios";
-import Spinner from '../Spinner/Spinner';
 import Child from "./Child";
+import SubmitBtn from "../UI/SubmitBtn";
 
 const ChildrenInfo = (props) => {
 
@@ -45,38 +45,23 @@ const ChildrenInfo = (props) => {
             })
     }
 
-    let submit_btn = (
-        <button 
-            onClick={()=>handleSubmitAddChild(inviteCode)}
-            className="w-24 rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold ml-2"
-        >
-            Submit
-        </button>
-    )
-    if (loading) {
-        submit_btn = (
-            <button 
-                onClick={()=>handleSubmitAddChild(inviteCode)}
-                className="w-24 rounded bg-sky-500 hover:bg-indigo-500 p-2 text-white font-semibold ml-2 mx-auto flex justify-center items-center"
-                disabled
-            >
-                <Spinner />
-                Loading
-            </button>
-        )
-    }
-
     // Add children
     let invite_code_div = (
         <div className="mb-4">
             <h2 className="text-gray-600 text-sm">Add Child</h2>
-            <input 
-                placeholder="Type invite code..." 
-                onChange={(e)=>setInviteCode(e.target.value)}
-                className="p-2 border border-gray-300 h-10"
-                value={inviteCode}
-            />
-            {submit_btn}
+            <div className="flex justify-center items-center">
+                <input 
+                    placeholder="Type invite code..." 
+                    onChange={(e)=>setInviteCode(e.target.value)}
+                    className="p-2 border border-gray-300 h-10"
+                    value={inviteCode}
+                />
+                <SubmitBtn
+                    loading={loading}
+                    clickHandler={()=>handleSubmitAddChild(inviteCode)}
+                    textContent="Submit"
+                />
+            </div>
             <p className="text-sm">{message}</p>
         </div>
     )
