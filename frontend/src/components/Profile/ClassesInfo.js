@@ -50,15 +50,7 @@ const ClassesInfo = (props) => {
         )
     })
 
-    let submit_btn = (
-        <SubmitBtn
-            loading={loading}
-            clickHandler={createClassHandler}
-            textContent="Create"
-        />
-    )
-
-    let classes_info_div = (
+    return (
         <div className="rounded-md bg-white shadow-md mt-2 mb-4 p-4 min-h-[250px]">
             <h2 className="pb-4 text-md">Classes</h2>
             <div className="mb-6">
@@ -69,15 +61,17 @@ const ClassesInfo = (props) => {
                         onChange={(e)=>setNewClassName(e.target.value)} 
                         placeholder="Type class name..."
                     />
-                    {submit_btn}
+                    <SubmitBtn
+                        loading={loading}
+                        clickHandler={createClassHandler}
+                        textContent="Create"
+                    />
                 </div>
                 <p className="text-sm">{message}</p>
             </div>
             {school_class_list}
         </div>
     )
-
-    return classes_info_div;
 }
 
 export default ClassesInfo;
