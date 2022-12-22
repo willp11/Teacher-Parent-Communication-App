@@ -4,10 +4,10 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import Announcement from "./Announcement";
 import { useState, useMemo } from "react";
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/outline";
 import { useMessage } from "../../Hooks/useMessage";
 import SubmitBtn from "../UI/SubmitBtn";
 import AnnouncementForm from "../Forms/AnnouncementForm";
+import CreateContainer from "../UI/CreateContainer";
 
 const Announcements = (props) => {
 
@@ -73,25 +73,15 @@ const Announcements = (props) => {
 
     // CREATE ANNOUNCEMENT FORM
     let create_announcement_form = (
-        <div className="relative w-full sm:w-[500px] p-2 mx-auto mt-2 rounded-md shadow-md bg-white shadow-gray-300 border-2 border-gray-300 text-center">
-            <h3>Create Announcement</h3>
-
-            {showForm ? <ChevronUpIcon onClick={()=>setShowForm(false)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />
-             : <ChevronDownIcon onClick={()=>setShowForm(true)} className="h-[24px] w-[24px] absolute right-2 top-3 cursor-pointer" />}
-
-            {showForm && 
-                <AnnouncementForm
-                    formik={announcement_formik}
-                    message={message}
-                >
-                    <SubmitBtn
-                        loading={loading}
-                        clickHandler={announcement_formik.handleSubmit}
-                        textContent="Submit"
-                    />
-                </AnnouncementForm>
-            }
-        </div>
+        <CreateContainer title="Create Announcement" showForm={showForm} setShowForm={setShowForm}>
+            <AnnouncementForm formik={announcement_formik} message={message} >
+                <SubmitBtn
+                    loading={loading}
+                    clickHandler={announcement_formik.handleSubmit}
+                    textContent="Submit"
+                />
+            </AnnouncementForm>
+        </CreateContainer>
     )
 
     // ANNOUNCEMENTS
