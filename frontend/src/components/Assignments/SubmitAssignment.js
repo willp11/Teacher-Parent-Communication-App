@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useMessage } from "../../Hooks/useMessage";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
+import SubmitBtn from "../UI/SubmitBtn";
 
 const SubmitAssignment = () => {
 
@@ -143,12 +144,11 @@ const SubmitAssignment = () => {
                 <div className="mt-2">
                     {assignment_input}
                     <br />
-                    <button 
-                        className="rounded w-24 p-2 bg-sky-500 text-white font-semibold hover:bg-indigo-500 ml-1 mt-2"
-                        onClick={submitAssignment}
-                    >
-                        Submit
-                    </button>
+                    <SubmitBtn
+                        loading={loading}
+                        clickHandler={submitAssignment}
+                        textContent="Submit"
+                    />
                     <p className="text-sm text-left font-semibold mt-2">{message}</p>
                 </div>
             )
