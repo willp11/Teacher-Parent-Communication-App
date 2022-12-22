@@ -26,18 +26,6 @@ const LoginForm = ({formik, children}) => {
             {formik.errors.password ? <div className="text-sm pl-2 py-1">{formik.errors.password} </div> : null}
 
             {children}
-
-            {/* <div className="w-full flex justify-end align-center">
-                <Link to="/resetPassword" className="text-sm p-2 cursor-pointer text-gray-500  text-gray-500 hover:text-gray-900">Forgot password?</Link>
-            </div>
-            <button 
-                disabled={loading}
-                type="submit"
-                className="w-full flex justify-center items-center rounded-full bg-sky-500 hover:bg-indigo-500 px-4 py-3 text-white font-bold my-2"
-            >
-                {loading ? <Spinner /> : null}
-                LOGIN
-            </button> */}
         </form>
     )
 }
